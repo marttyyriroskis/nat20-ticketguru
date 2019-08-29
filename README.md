@@ -88,23 +88,6 @@ erillisiin dokumentteihin.
 
 Tänne kirjataan myös lopuksi järjestelmän tunnetut ongelmat, joita ei ole korjattu.
 
-## Tietoturvallisuuden arviointi
-
-Järjestelmän tietoturvallisuuden arviointi: turvallisuustarpeiden tunnistaminen,
-miten järjestelmä vastaa tarpeeseen sekä miten tietoturvallisuuden toteutuminen
-testataan.
-
-Tietoturvallisuuden arviointi voisi vastata esim. kysymyksiin
--   Mitä luottamuksellista tai salaista tietoa järjestelmässä on (esim.
-    henkilötiedot)?
--   Miten luottamuksellinen tieto suojataan?
--   Miten käyttäjä tunnistetaan (jos tunnistetaan)? Tarvitaanko vahvaa tunnistusta (esim TUPAS)?
--   Missä kohdin tieto voisi vääristyä tai tuhoutua tahallisesti tai
-    tahattomasti? Miten tiedon vääristymistä ehkäistään tai havaitaan?
--   Miten varmistetaan järjestelmän riittävä kapasiteetti?
--   Aiheuttaisivatko tiedon saatavuuden häiriötilanteet merkittävää vahinkoa
-    käyttäjälle? Miten niistä toivutaan?
-
 ## Asennustiedot
 
 Järjestelmän asennus on syytä dokumentoida kahdesta näkökulmasta:
@@ -123,8 +106,7 @@ käyttäjätunnus, salasana, tietokannan luonti yms.).
 
 Tyypillisesti tässä riittää kertoa ohjelman käynnistykseen tarvittava URL sekä
 mahdolliset kirjautumiseen tarvittavat tunnukset. Jos järjestelmän
-käynnistämiseen tai käyttöön liittyy joitain muita toimenpiteitä, isiä
-toimintajärjestykseen liittyviä asioita, nekin kerrotaan tässä yhteydessä.
+käynnistämiseen tai käyttöön liittyy joitain muita toimenpiteitä tai toimintajärjestykseen liittyviä asioita, nekin kerrotaan tässä yhteydessä.
 
 Usko tai älä, tulet tarvitsemaan tätä itsekin, kun tauon jälkeen palaat
 järjestelmän pariin !
