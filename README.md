@@ -20,11 +20,9 @@ Määrittelyssä järjestelmää tarkastellaan käyttäjän näkökulmasta. Jär
 toiminnot hahmotellaan käyttötapausten tai käyttäjätarinoiden kautta, ja kuvataan järjestelmän
 käyttäjäryhmät.
 
--   Käyttäjäroolit ja roolien tarvitsemat toiminnot, esim. käyttötapauskaaviona
-    (use case diagram)
-
 -   Lyhyt kuvaus käyttäjäryhmistä (rooleista)
-
+-   Käyttäjäroolit ja roolien tarvitsemat toiminnot, esim. käyttötapauskaaviona
+    (use case diagram) tai käyttäjätarinoina.
 -   Lyhyt kuvaus käyttötapauksista tai käyttäjätarinat
 
 Kuvauksissa kannattaa harkita, mikä on toteuttajalle ja asiakkaalle oleellista
@@ -32,23 +30,19 @@ tietoa ja keskittyä siihen.
 
 ## Käyttöliittymä
 
-Käyttöliittymän tärkeimmät (vain ne!) näkymät ja niiden väliset siirtymät esitetään
-käyttöliittymäkaaviona.
+Esitetään käyttöliittymän tärkeimmät (vain ne!) näkymät sekä niiden väliset siirtymät käyttöliittymäkaaviona. 
 
 Jos näkymän tarkoitus ei ole itsestään selvä, se pitää kuvata lyhyesti.
 
 ## Tietokanta
 
 Järjestelmään säilöttävä ja siinä käsiteltävät tiedot ja niiden väliset suhteet
-kuvataan käsitekaaviolla. Käsitemalliin
-sisältyy myös taulujen välisten viiteyhteyksien ja avainten
-määritykset. Tietokanta kuvataan käyttäen jotain kuvausmenetelmää, joko
-ER-kaaviota ja UML-luokkakaaviota.
+kuvataan käsitekaaviolla. Käsitemalliin sisältyy myös taulujen välisten viiteyhteyksien ja avainten
+määritykset. Tietokanta kuvataan käyttäen jotain kuvausmenetelmää, joko ER-kaaviota ja UML-luokkakaaviota.
 
 Lisäksi kukin järjestelmän tietoelementti ja sen attribuutit kuvataan
 tietohakemistossa. Tietohakemisto tarkoittaa yksinkertaisesti vain jokaisen elementin (taulun) ja niiden
 attribuuttien (kentät/sarakkeet) listausta ja lyhyttä kuvausta esim. tähän tyyliin:
-
 
 > ### _Tilit_
 > _Tilit-taulu sisältää käyttäjätilit. Käyttäjällä voi olla monta tiliä. Tili kuuluu aina vain yhdelle käyttäjälle._
@@ -62,14 +56,16 @@ attribuuttien (kentät/sarakkeet) listausta ja lyhyttä kuvausta esim. tähän t
 
 ## Tekninen kuvaus
 
-Teknisessä kuvauksessa esitetään järjestelmän toteutuksen suunnittelun tekniset
+Teknisessä kuvauksessa esitetään järjestelmän toteutuksen suunnittelussa tehdyt tekniset
 ratkaisut, esim.
+
 -   Missä mikäkin järjestelmän komponentti ajetaan (tietokone, palvelinohjelma)
     ja komponenttien väliset yhteydet (vaikkapa tähän tyyliin:
     https://security.ufl.edu/it-workers/risk-assessment/creating-an-information-systemdata-flow-diagram/)
--   Palvelintoteutuksen yleiskuvaus
--   Keskeisten rajapintojen kuvaukset, esimerkit client-server -rajapinnan käytöstä (sekvenssikaaviot)
--   Toteutuksen yleiset periaatteet, esim. käyttäjän tunnistus, istunnonhallinta.
+-   Palvelintoteutuksen yleiskuvaus: teknologiat, deployment-ratkaisut yms.
+-   Keskeisten rajapintojen kuvaukset, esimerkit REST-rajapinta. Tarvittaessa voidaan rajapinnan käyttöä täsmentää
+    UML-sekvenssikaavioilla.
+-   Toteutuksen yleisiä ratkaisuja, esim. turvallisuus.
 
 Tämän lisäksi
 
