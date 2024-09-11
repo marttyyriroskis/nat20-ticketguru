@@ -1,4 +1,4 @@
-# Projektin nimi
+# Nat20 TicketGuru
 
 Tiimi: Etunimi Sukunimi, Etunimi Sukunimi
 
