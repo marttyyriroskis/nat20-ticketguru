@@ -1,18 +1,18 @@
 # Nat20 TicketGuru
 
-Tiimi: Etunimi Sukunimi, Etunimi Sukunimi
+Tiimi: Janne Airaksinen, Paul Carlson, Jesse Hellman, Julia Hämäläinen & Tomi Lappalainen
 
 ## Johdanto
 
-Johdantoon kirjoitetaan lyhyt, ytimekäs kuvaus siitä, mikä on projektin aihe,
-kuka on asiakas (käyttäjä), mitä hän haluaa ja saa järjestelmältä, mitä
-tekniikoita käytetään ja mitä konkreettisesti on valmiina, kun projekti päättyy.
+Tässä projektissa luodaan lipunmyyntijärjestelmä TicketGuru, jonka avulla lipputoimisto voi seurata tapahtumiaan ja tarjolla olevia lippuja sekä myydä lippuja asiakkaille.
 
--   Järjestelmän tarkoitus ja tiivis kuvaus siitä, mistä on kyse ja kenelle järjestelmä on tarkoitettu.
--   Toteutus- ja toimintaympäristö lyhyesti:  
-    -   Palvelinpuolen ratkaisut ja teknologiat (esim. palvelinteknologia, mikä tietokantajärjestelmä on käytössä)
-    -   Käyttöliittymäratkaisut ja teknologiat (esim. päätelaitteet: puhelin,
-    täppäri, desktop)
+Projektin asiakkaana toimii lipputoimisto. Järjestelmän varsinaiset käyttäjät ovat lipputoimiston lipunmyyjät, jotka myyvät lippuja tapahtumiin fyysisesti lipunmyyntipisteessä. Järjestelmää käyttävät myös tapahtumakoordinaattorit ja järjestelmän hallinnoijat. Jatkokehittelynä TicketGuruun on tarkoitus lisätä verkkokauppa, mutta sen toteuttaminen ei kuulu tämän projektin laajuuteen.
+
+TicketGuru-järjestelmän avulla lipputoimisto voi tehostaa liiketoimintaansa myymällä lippuja helpommin, seuraamalla tapahtuma- ja lipputarjontaa sekä pohjaamalla päätöksentekoaan järjestelmän tuottamiin liiketoiminnan raportteihin.
+
+Teknologioina projektissa käytetään Javaa, Spring Boot -viitekehystä ja PostgreSQL-relaatiotietokantaa. Käyttöliittymänä hyödynnetään Thymeleafia. Järjestelmää on tarkoitus käyttää desktop-tietokoneelta; tabletti- tai mobiilikäyttöliittymiä ei tässä projektissa rakenneta.
+
+Projektin lopputuotteena on käyttövalmis TicketGuru-lipunmyyntijärjestelmä sekä siihen liittyvä dokumentaatio.
 
 ## Järjestelmän määrittely
 
