@@ -30,7 +30,7 @@ tietoa ja keskittyä siihen.
 
 ## Käyttöliittymä
 
-![GUI Diagram](https://hellmanstudios.fi/ticketguru-diagram.png)
+![GUI Diagram](https://hellmanstudios.fi/nat20-ticketguru-gui.png)
 
 ## Tietokanta
 
