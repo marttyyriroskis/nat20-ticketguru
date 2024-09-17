@@ -20,13 +20,150 @@ Määrittelyssä järjestelmää tarkastellaan käyttäjän näkökulmasta. Jär
 toiminnot hahmotellaan käyttötapausten tai käyttäjätarinoiden kautta, ja kuvataan järjestelmän
 käyttäjäryhmät.
 
-- Lyhyt kuvaus käyttäjäryhmistä (rooleista)
-- Käyttäjäroolit ja roolien tarvitsemat toiminnot, esim. käyttötapauskaaviona
-  (use case diagram) tai käyttäjätarinoina.
-- Lyhyt kuvaus käyttötapauksista tai käyttäjätarinat
+### Käyttäjäryhmät
 
-Kuvauksissa kannattaa harkita, mikä on toteuttajalle ja asiakkaalle oleellista
-tietoa ja keskittyä siihen.
+- Lipunmyyjä on järjestelmän ensisijainen käyttäjä joka myy asiakkaille tapahtuma lippuja järjestelmän kautta.
+- Tapahtumakoordinaattori lisää uusia tapahtumia tarjolle ja määrittää niille oleelliset tiedot sekä näkee tapahtumaan myytyjen lippujen tilastoja, jotta voi tehdä muutoksia tarvittaessa.
+- Järjestelmää hallitseva ylläpitäjä voi lisätä, muokata ja poistaa käyttäjiä ja niihin liittyviä tietoja, sekä lisätä, muokata ja poistaa käyttäjärooleja. Ylläpitäjä näkee myös järjestelmä raportteja ja lokeja ongelmien ehkäisemiseksi.
+
+### Käyttäjätarinat
+
+#### Käyttäjätarina 1
+
+_"Lipunmyyjänä haluan nähdä tulevat tapahtumat ja saatavilla olevat liput pysyäkseni ajan tasalla."_
+
+**Hyväksymiskriteerit:**
+
+- Lipunmyyjä näkee kaikki tulevat tapahtumat ja niihin liittyvät tiedot: päivämäärä, aika ja tapahtuman nimi
+- Lipunmyyjä näkee tapahtuman saatavilla olevien lippujen määrän
+
+#### Käyttäjätarina 2
+
+_"Lipunmyyjänä haluan valita tapahtuman ja haluamani määrän lippuja voidakseni palvella asiakkaitani."_
+
+**Hyväksymiskriteerit:**
+
+- Lipunmyyjä voi valita tapahtuman saadakseen lisätietoja (paikka, kuvaus, kaupunki ja lippujen tyypit)
+- Lipunmyyjä voi valita haluamansa määrän lippuja per lippu tyyppi myytäväksi valittuun tapahtumaan
+- Täyteen varattujen tapahtumien lippuja ei voida myydä
+
+#### Käyttäjätarina 3
+
+_"Lipunmyyjänä haluan tulostaa myydyt liput viimeistelläkseni ostotapahtuman."_
+
+**Hyväksymiskriteerit:**
+
+- Lipunmyyjä voi tulostaa myydyt liput
+- Tulostetussa lipussa on kaikki olennaiset tiedot: myyntitapahtuma, ostoajankohta, summa, tapahtuma, lippu tyyppi, lipun hinta ja lipun yksilöllinen koodi
+
+#### Käyttäjätarina 4
+
+_"Lipunmyyjänä haluan voida etsiä myytyä lippua ongelmatilanteessa."_
+
+**Hyväksymiskriteerit:**
+
+- Lipunmyyjä voi etsiä myytyä lippua yksilöllisen koodin avulla
+- Haku näyttää kaikki olennaiset tiedot: myyntitapahtuma, ostoajankohta, tapahtuma, lippu tyyppi ja hinta
+
+#### Käyttäjätarina 5
+
+_"Lipunmyyjänä haluan voida peruuttaa myydyn lipun, jotta asiakas saa rahansa takaisin."_
+
+**Hyväksymiskriteerit:**
+
+- Lipunmyyjä voi peruuttaa lipun
+- Peruutettua lippua ei voida enää käyttää tapahtumassa
+
+#### Käyttäjätarina 6
+
+_"Tapahtumakoordinaattorina haluan muokata tapahtumia, jos niissä on virhe."_
+
+**Hyväksymiskriteerit:**
+
+- Tapahtumakoordinaattori voi muokata tiettyjä tietoja tapahtumasta, kuten kuvausta, maksimilippujen määrää, lippujen tyyppejä tai hintoja
+
+#### Käyttäjätarina 7
+
+_"Tapahtumakoordinaattorina haluan luoda uuden tapahtuman, jotta lippuja voidaan myydä tapahtumaan."_
+
+**Hyväksymiskriteerit:**
+
+- Tapahtumakoordinaattori voi luoda uuden tapahtuman kaikilla olennaisilla tiedoilla (tapahtuman nimi, aika, paikka, kuvaus, kaupunki, lippujen tyypit, hinnat ja myytävien lippujen maksimimäärä)
+- Tapahtuma näkyy tapahtumakoordinaattoreille ja lipunmyyjille oikealla lipputilanteella
+
+#### Käyttäjätarina 8
+
+_"Tapahtumakoordinaattorina haluan nähdä myyntiraportteja, jotta voin seurata tietyn tapahtuman myyntiä ja tehdä muutoksia tarvittaessa."_
+
+**Hyväksymiskriteerit:**
+
+- Tapahtumakoordinaattori näkee myyntiraportit (myydyt liput tyypeittäin, summat ja yksittäiset myynnit)
+
+#### Käyttäjätarina 9
+
+_"Ylläpitäjänä haluan lisätä käyttäjiä, jotta ihmiset voivat käyttää järjestelmää."_
+
+**Hyväksymiskriteerit:**
+
+- Ylläpitäjä voi luoda uusia käyttäjiä kaikilla olennaisilla tiedoilla (vähimmäisvaatimus: sähköpostiosoite ja salasana)
+- Uudet käyttäjät voivat kirjautua sisään
+
+#### Käyttäjätarina 10
+
+_"Ylläpitäjänä haluan poistaa käyttäjiä, jotta käyttäjätiedot ovat ajantasaisia."_
+
+**Hyväksymiskriteerit:**
+
+- Ylläpitäjä voi poistaa käyttäjiä
+- Poistettujen käyttäjien tiedot eivät ole enää saatavilla järjestelmässä
+
+#### Käyttäjätarina 11
+
+_"Ylläpitäjänä haluan muokata käyttäjiä, jotta käyttäjätiedot ovat ajantasaisia."_
+
+**Hyväksymiskriteerit:**
+
+- Ylläpitäjä voi muokata käyttäjiä
+- Muokattujen käyttäjien tiedot ovat ajantasaisia
+
+#### Käyttäjätarina 12
+
+_"Ylläpitäjänä haluan lisätä käyttäjärooleja, jotta vain järjestelmään oikeutetut voivat käyttää sitä."_
+
+**Hyväksymiskriteerit:**
+
+- Ylläpitäjä voi lisätä käyttäjille rooleja
+- Roolit muuttuvat sen mukaisesti
+- Käyttäjien oikeudet määräytyvät heidän rooliensa perusteella
+
+#### Käyttäjätarina 13
+
+_"Ylläpitäjänä haluan muokata käyttäjärooleja, jotta vain järjestelmään oikeutetut voivat käyttää sitä."_
+
+**Hyväksymiskriteerit:**
+
+- Ylläpitäjä voi muokata käyttäjille annettuja rooleja
+- Roolit muuttuvat sen mukaisesti
+- Käyttäjien oikeudet määräytyvät heidän rooliensa perusteella
+
+#### Käyttäjätarina 14
+
+_"Ylläpitäjänä haluan poistaa käyttäjärooleja, jotta vain järjestelmään oikeutetut voivat käyttää sitä."_
+
+**Hyväksymiskriteerit:**
+
+- Ylläpitäjä voi poistaa käyttäjiltä rooleja
+- Roolit muuttuvat sen mukaisesti
+- Käyttäjien oikeudet määräytyvät heidän rooliensa perusteella
+
+#### Käyttäjätarina 15
+
+_"Ylläpitäjänä haluan nähdä järjestelmäraportit ja lokit ongelmatilanteissa."_
+
+**Hyväksymiskriteerit:**
+
+- Ylläpitäjä voi nähdä järjestelmäraportit
+- Ylläpitäjä voi nähdä lokit
 
 ## Käyttöliittymä
 
