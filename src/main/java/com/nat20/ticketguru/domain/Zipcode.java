@@ -19,7 +19,6 @@ public class Zipcode {
         this.city = city;
     }
 
-    // Getters and setters
     public String getZipcode() {
         return zipcode;
     }

@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 
 import com.nat20.ticketguru.domain.Role;
 import com.nat20.ticketguru.domain.RoleRepository;
+import com.nat20.ticketguru.domain.Sale;
+import com.nat20.ticketguru.domain.SaleRepository;
 import com.nat20.ticketguru.domain.Ticket;
 import com.nat20.ticketguru.domain.TicketRepository;
 import com.nat20.ticketguru.domain.User;
@@ -26,7 +28,7 @@ public class TicketguruApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(TicketRepository ticketRepository, UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository) {
+    public CommandLineRunner demo(TicketRepository ticketRepository, UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository, SaleRepository saleRepository) {
         return (args) -> {
             log.info("Creating a few ticket test entries");
             ticketRepository.save(new Ticket());
@@ -66,6 +68,10 @@ public class TicketguruApplication {
             zipcodeRepository.save(new Zipcode("60100", "Seinäjoki"));
             zipcodeRepository.save(new Zipcode("80100", "Joensuu"));
             zipcodeRepository.save(new Zipcode("90140", "Oulu"));
+
+            log.info("Creating a few sale test entries");
+            saleRepository.save(new Sale(userRepository.findById(1L).get()));
+            saleRepository.save(new Sale(userRepository.findById(2L).get()));
 
         };
     }
