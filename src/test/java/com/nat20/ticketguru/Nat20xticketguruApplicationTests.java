@@ -1,4 +1,4 @@
-package ohjelmistoprojekti1.nat20xticketguru;
+package com.nat20.ticketguru;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

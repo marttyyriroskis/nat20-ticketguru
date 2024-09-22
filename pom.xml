@@ -8,11 +8,11 @@
 		<version>3.3.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>ohjelmistoprojekti1</groupId>
-	<artifactId>nat20xticketguru</artifactId>
+	<groupId>com.nat20</groupId>
+	<artifactId>ticketguru</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>nat20xticketguru</name>
-	<description>Demo project for Spring Boot</description>
+	<name>ticketguru</name>
+	<description>Ticket Sales and Check</description>
 	<url/>
 	<licenses>
 		<license/>

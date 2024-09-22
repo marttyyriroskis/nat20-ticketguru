@@ -1,4 +1,4 @@
-package ohjelmistoprojekti1.nat20xticketguru;
+package com.nat20.ticketguru;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
