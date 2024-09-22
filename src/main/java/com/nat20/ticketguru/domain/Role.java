@@ -21,7 +21,7 @@ public class Role {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
     @JsonIgnore
-    private List<AppUser> appUsers;
+    private List<User> users;
 
     public Role() {
     }
@@ -30,9 +30,9 @@ public class Role {
         this.title = title;
     }
 
-    public Role(String title, List<AppUser> appUsers) {
+    public Role(String title, List<User> users) {
         this.title = title;
-        this.appUsers = appUsers;
+        this.users = users;
     }
 
     public long getId() {
@@ -56,12 +56,12 @@ public class Role {
         return "Role [id=" + id + ", title=" + title + "]";
     }
 
-    public List<AppUser> getUsers() {
-        return appUsers;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUsers(List<AppUser> appUsers) {
-        this.appUsers = appUsers;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
 }

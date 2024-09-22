@@ -11,8 +11,8 @@ import com.nat20.ticketguru.domain.Role;
 import com.nat20.ticketguru.domain.RoleRepository;
 import com.nat20.ticketguru.domain.Ticket;
 import com.nat20.ticketguru.domain.TicketRepository;
-import com.nat20.ticketguru.domain.AppUser;
-import com.nat20.ticketguru.domain.AppUserRepository;
+import com.nat20.ticketguru.domain.User;
+import com.nat20.ticketguru.domain.UserRepository;
 
 @SpringBootApplication
 public class TicketguruApplication {
@@ -24,7 +24,7 @@ public class TicketguruApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(TicketRepository ticketRepository, AppUserRepository userRepository, RoleRepository roleRepository) {
+    public CommandLineRunner demo(TicketRepository ticketRepository, UserRepository userRepository, RoleRepository roleRepository) {
         return (args) -> {
             log.info("Creating a few ticket test entries");
             ticketRepository.save(new Ticket());
@@ -35,8 +35,8 @@ public class TicketguruApplication {
             roleRepository.save(new Role("event organizer"));
 
             log.info("Creating a few user test entries");
-            userRepository.save(new AppUser("test1@test.com", "User1", "Cashier", "VerySecureHash1", roleRepository.findByTitle("cashier").get()));
-            userRepository.save(new AppUser("test2@test.com", "User2", "Event Organizer", "VerySecureHash2", roleRepository.findByTitle("event organizer").get()));
+            userRepository.save(new User("test1@test.com", "User1", "Cashier", "VerySecureHash1", roleRepository.findByTitle("cashier").get()));
+            userRepository.save(new User("test2@test.com", "User2", "Event Organizer", "VerySecureHash2", roleRepository.findByTitle("event organizer").get()));
 
         };
     }

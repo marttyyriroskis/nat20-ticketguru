@@ -6,9 +6,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-public class AppUser {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,17 +25,17 @@ public class AppUser {
     @JoinColumn(name = "roleid")
     private Role role;
 
-    public AppUser() {
+    public User() {
     }
 
-        public AppUser(String email, String firstName, String lastName, String passwordHash) {
+        public User(String email, String firstName, String lastName, String passwordHash) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.passwordHash = passwordHash;
     }
 
-    public AppUser(String email, String firstName, String lastName, String passwordHash, Role role) {
+    public User(String email, String firstName, String lastName, String passwordHash, Role role) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
