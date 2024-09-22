@@ -16,12 +16,12 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String title;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
     @JsonIgnore
-    private List<User> users;
+    private List<AppUser> appUsers;
 
     public Role() {
     }
@@ -30,9 +30,9 @@ public class Role {
         this.title = title;
     }
 
-    public Role(String title, List<User> users) {
+    public Role(String title, List<AppUser> appUsers) {
         this.title = title;
-        this.users = users;
+        this.appUsers = appUsers;
     }
 
     public long getId() {
@@ -56,12 +56,12 @@ public class Role {
         return "Role [id=" + id + ", title=" + title + "]";
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<AppUser> getUsers() {
+        return appUsers;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setUsers(List<AppUser> appUsers) {
+        this.appUsers = appUsers;
     }
 
 }
