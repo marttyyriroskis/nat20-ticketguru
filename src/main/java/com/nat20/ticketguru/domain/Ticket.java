@@ -26,7 +26,13 @@ public class Ticket {
     private TicketType ticketType; */
 
     public Ticket() {
-        // Generate barcode?
+        // Generate barcode from timestamp
+        this.barcode = String.valueOf(System.currentTimeMillis());
+    }
+
+    public Ticket(String eventCode) { // TODO: Figure out how the barcode should be generated
+        // Generate barcode from timestamp and event code
+        this.barcode = eventCode + "-" + System.currentTimeMillis();
     }
 
     public Long getId() {
@@ -51,6 +57,10 @@ public class Ticket {
 
     public void setUsedAt(LocalDateTime usedAt) {
         this.usedAt = usedAt;
+    }
+
+    public void use() {
+        this.usedAt = LocalDateTime.now();
     }
 
     /* public TicketType getTicketType() {
