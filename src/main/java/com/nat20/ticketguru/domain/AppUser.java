@@ -8,11 +8,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class User {
+public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String email;
     private String firstName;
@@ -23,16 +23,24 @@ public class User {
     @JoinColumn(name = "roleid")
     private Role role;
 
-    public User() {
+    public AppUser() {
     }
 
-    public User(String email, String firstName, String lastName, String passwordHash, Role role) {
+        public AppUser(String email, String firstName, String lastName, String passwordHash) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.passwordHash = passwordHash;
+    }
+
+    public AppUser(String email, String firstName, String lastName, String passwordHash, Role role) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.passwordHash = passwordHash;
         this.role = role;
     }
+
 
     public long getId() {
         return id;
