@@ -13,6 +13,8 @@ import com.nat20.ticketguru.domain.Sale;
 import com.nat20.ticketguru.domain.SaleRepository;
 import com.nat20.ticketguru.domain.Ticket;
 import com.nat20.ticketguru.domain.TicketRepository;
+import com.nat20.ticketguru.domain.TicketSale;
+import com.nat20.ticketguru.domain.TicketSaleRepository;
 import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.domain.UserRepository;
 import com.nat20.ticketguru.domain.Zipcode;
@@ -28,7 +30,7 @@ public class TicketguruApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(TicketRepository ticketRepository, UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository, SaleRepository saleRepository) {
+    public CommandLineRunner demo(TicketRepository ticketRepository, UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository, SaleRepository saleRepository, TicketSaleRepository ticketSaleRepository) {
         return (args) -> {
             log.info("Creating a few ticket test entries");
             ticketRepository.save(new Ticket());
@@ -73,6 +75,9 @@ public class TicketguruApplication {
             saleRepository.save(new Sale(userRepository.findById(1L).get()));
             saleRepository.save(new Sale(userRepository.findById(2L).get()));
 
+            log.info("Creating a few ticket_sale test entries");
+            ticketSaleRepository.save(new TicketSale(19.99, saleRepository.findById(1L).get(), ticketRepository.findById(1L).get()));
+            ticketSaleRepository.save(new TicketSale(25.50, saleRepository.findById(1L).get(), ticketRepository.findById(2L).get()));
         };
     }
 
