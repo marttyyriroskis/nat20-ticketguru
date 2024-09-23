@@ -222,6 +222,40 @@ permissions-taulu sisältää luvat. Roolilla voi olla monta lupaa, ja sama lupa
 | id     | int PK      | Luvan id      |
 | title  | varchar(50) | Luvan otsikko |
 
+### users
+
+users-taulu sisältää käyttäjät. Yhdellä käyttäjällä on vain yksi rooli, mutta sama rooli voi kuulua useammalle käyttäjälle.
+
+| Kenttä     | Tyyppi       | Kuvaus                                    |
+| ---------- | ------------ | ----------------------------------------- |
+| id         | int PK       | Käyttäjän id                              |
+| email      | varchar(150) | Käyttäjän email                           |
+| first_name | varchar(150) | Käyttäjän etunimi                         |
+| last_name  | varchar(150) | Käyttäjän sukunimi                        |
+| password   | varchar(250) | Salasanan hash(+salt)                     |
+| role_id    | int FK       | Viittaus rooliin [roles](#roles)-taulussa |
+
+### sales
+
+sales taulu kuvaa yhtä myyntitapahtumaa. Jokaisella myyntitapahtumalla on yksi myynnin hoitanut käyttäjä.
+
+| Kenttä  | Tyyppi   | Kuvaus                                       |
+| ------- | -------- | -------------------------------------------- |
+| id      | int PK   | Myyntitapahtuman id                          |
+| paid_at | datetime | Myyntihetki                                  |
+| user_id | int FK   | Viittaus käyttäjään [users](#users)-taulussa |
+
+### sales_tickets
+
+sales_tickets -taulu yhdistää lipun ja sen myyntitapahtuman (sales) toisiinsa. Tauluun listataan kaikki yhdessä myyntitapahtumassa myydyt liput ja niiden myyntihinnat. Yhdessä myyntitapahtumassa voi olla monta lippua, mutta jokainen yksittäinen lippu voidaan myydä vain kerran.
+
+| Kenttä    | Tyyppi | Kuvaus                                                |
+| --------- | ------ | ----------------------------------------------------- |
+| id        | int PK | Myyntirivin id                                        |
+| ticket_id | int FK | Viittaus myytyyn lippuun [tickets](#tickets)-taulussa |
+| sale_id   | int FK | Viittaus myyjään [users](#users)-taulussa             |
+| price     | double | Lipusta maksettu hinta                                |
+
 ### events
 
 events-taulu sisältää tapahtumat. Jokaiselle tapahtumalle luodaan oma rivi. Tapahtuma pidetään aina yhdessä tapahtumapaikassa (venue), mutta yhdessä tapahtumapaikassa voidaan pitää monta tapahtumaa eri aikoihin.
