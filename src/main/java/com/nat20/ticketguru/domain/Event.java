@@ -21,6 +21,7 @@ public class Event {
     private int total_tickets;
     private LocalDateTime begins_at, ends_at, ticket_sale_begins;
 
+    // Venue class not yet added to project
     @ManyToOne
     @JoinColumn(name = "venue_id")
     private Venue venue;
