@@ -55,6 +55,21 @@ attribuuttien (kentät/sarakkeet) listausta ja lyhyttä kuvausta esim. tähän t
 > | avatar     | int FK      | Tilin avatar, viittaus [avatar](#Avatar)-tauluun   |
 > | kayttaja   | int FK      | Viittaus käyttäjään [käyttäjä](#Kayttaja)-taulussa |
 
+> ### _Events_
+>
+> _Events-taulu sisältää tapahtumat. Jokaiselle tapahtumalle luodaan oma rivi._
+>
+> | Kenttä             | Tyyppi    | Kuvaus                                                |
+> | ------------------ | --------- | ----------------------------------------------------- |
+> | id                 | int PK    | Tapahtuman id                                         |
+> | name               | varchar   | Tapahtuman nimi                                       |
+> | total_tickets      | int       | Myytävien loppujen määrä                              |
+> | begins_at          | datetime  | Tapahtuman aloituspäivä ja -aika                      |
+> | ends_at            | datetime  | Tapahtuman päättymispäivä ja -aika                    |
+> | ticket_sale_begins | date time | Tapahtuman lipunmyynnin aloituspäivä ja -aika         |
+> | description        | varchar   | Tapahtuman kuvaus                                     |
+> | venue              | int FK    | Viittaus tapahtumapaikkaan [Venues](#Venues)-taulussa |
+
 ## Tekninen kuvaus
 
 Teknisessä kuvauksessa esitetään järjestelmän toteutuksen suunnittelussa tehdyt tekniset

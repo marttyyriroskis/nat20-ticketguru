@@ -29,9 +29,8 @@ public class Event {
     public Event() {
     }
 
-    public Event(Long id, String name, String description, int total_tickets, LocalDateTime begins_at,
+    public Event(String name, String description, int total_tickets, LocalDateTime begins_at,
             LocalDateTime ends_at, LocalDateTime ticket_sale_begins, Venue venue) {
-        this.id = id;
         this.name = name;
         this.description = description;
         this.total_tickets = total_tickets;
