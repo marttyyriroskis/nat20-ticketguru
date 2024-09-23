@@ -196,22 +196,22 @@ attribuuttien (kentät/sarakkeet) listausta ja lyhyttä kuvausta esim. tähän t
 
 ticket_types-taulu sisältää lipputyypit. Yhdessä tapahtumassa voi olla monta lipputyyppiä. Lipputyyppi määrittää aina vain yhtä lippua kerrallaan.
 
-| Kenttä          | Tyyppi      | Kuvaus                                              |
-| --------------- | ----------- | --------------------------------------------------- |
-| id              | int PK      | Lipputyypin id                                      |
-| name            | varchar(50) | Lipputyypin nimimerkki                              |
-| retail_price    | double      | Lipputyypin OVH                                     |
-| event_id        | int FK      | Viittaus tapahtumaan [tapahtumat](#events)-taulussa |
-| total_available | int         | Lippuja saatavilla                                  |
+| Kenttä          | Tyyppi      | Kuvaus                                          |
+| --------------- | ----------- | ----------------------------------------------- |
+| id              | int PK      | Lipputyypin id                                  |
+| name            | varchar(50) | Lipputyypin nimimerkki                          |
+| retail_price    | double      | Lipputyypin OVH                                 |
+| event_id        | int FK      | Viittaus tapahtumaan [events](#events)-taulussa |
+| total_available | int         | Lippuja saatavilla                              |
 
 ### role_permissions
 
 role_permissions on välitaulu roolien ja niiden lupien välillä. Sillä on siis monen suhde yhteen molempiin tauluihin.
 
-| Kenttä        | Tyyppi | Kuvaus                                         |
-| ------------- | ------ | ---------------------------------------------- |
-| role_id       | int PK | Viittaus rooliin [roolit](#roles)-taulussa     |
-| permission_id | int PK | Viittaus lupaan [luvat](#permissions)-taulussa |
+| Kenttä        | Tyyppi | Kuvaus                                               |
+| ------------- | ------ | ---------------------------------------------------- |
+| role_id       | int PK | Viittaus rooliin [roles](#roles)-taulussa            |
+| permission_id | int PK | Viittaus lupaan [permissions](#permissions)-taulussa |
 
 ### permissions
 
