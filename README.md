@@ -171,6 +171,8 @@ _"Ylläpitäjänä haluan nähdä järjestelmäraportit ja lokit ongelmatilantei
 
 ## Tietokanta
 
+![Database Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/IMG_0327.png)
+
 Järjestelmään säilöttävä ja siinä käsiteltävät tiedot ja niiden väliset suhteet
 kuvataan käsitekaaviolla. Käsitemalliin sisältyy myös taulujen välisten viiteyhteyksien ja avainten
 määritykset. Tietokanta kuvataan käyttäen jotain kuvausmenetelmää, joko ER-kaaviota ja UML-luokkakaaviota.
@@ -190,35 +192,35 @@ attribuuttien (kentät/sarakkeet) listausta ja lyhyttä kuvausta esim. tähän t
 > | avatar     | int FK      | Tilin avatar, viittaus [avatar](#Avatar)-tauluun   |
 > | kayttaja   | int FK      | Viittaus käyttäjään [käyttäjä](#Kayttaja)-taulussa |
 
-> ### ticket_types
->
-> ticket_types-taulu sisältää lipputyypit. Yhdessä tapahtumassa voi olla monta lipputyyppiä. Lipputyyppi määrittää aina vain yhtä lippua kerrallaan.
->
-> | Kenttä          | Tyyppi      | Kuvaus                                              |
-> | --------------- | ----------- | --------------------------------------------------- |
-> | id              | int PK      | Lipputyypin id                                      |
-> | name            | varchar(50) | Lipputyypin nimimerkki                              |
-> | retail_price    | double      | Lipputyypin OVH                                     |
-> | event_id        | int FK      | Viittaus tapahtumaan [tapahtumat](#events)-taulussa |
-> | total_available | int         | Lippuja saatavilla                                  |
+### ticket_types
 
-> ### role_permissions
->
-> role_permissions on välitaulu roolien ja niiden lupien välillä. Sillä on siis monen suhde yhteen molempiin tauluihin.
->
-> | Kenttä        | Tyyppi | Kuvaus                                         |
-> | ------------- | ------ | ---------------------------------------------- |
-> | role_id       | int PK | Viittaus rooliin [roolit](#roles)-taulussa     |
-> | permission_id | int PK | Viittaus lupaan [luvat](#permissions)-taulussa |
+ticket_types-taulu sisältää lipputyypit. Yhdessä tapahtumassa voi olla monta lipputyyppiä. Lipputyyppi määrittää aina vain yhtä lippua kerrallaan.
 
-> ### permissions
->
-> permissions-taulu sisältää luvat. Roolilla voi olla monta lupaa, ja sama lupa voi kuulua useampaan eri rooliin. Siksi näillä on välitaulu, role_permissions.
->
-> | Kenttä | Tyyppi      | Kuvaus        |
-> | ------ | ----------- | ------------- |
-> | id     | int PK      | Luvan id      |
-> | title  | varchar(50) | Luvan otsikko |
+| Kenttä          | Tyyppi      | Kuvaus                                              |
+| --------------- | ----------- | --------------------------------------------------- |
+| id              | int PK      | Lipputyypin id                                      |
+| name            | varchar(50) | Lipputyypin nimimerkki                              |
+| retail_price    | double      | Lipputyypin OVH                                     |
+| event_id        | int FK      | Viittaus tapahtumaan [tapahtumat](#events)-taulussa |
+| total_available | int         | Lippuja saatavilla                                  |
+
+### role_permissions
+
+role_permissions on välitaulu roolien ja niiden lupien välillä. Sillä on siis monen suhde yhteen molempiin tauluihin.
+
+| Kenttä        | Tyyppi | Kuvaus                                         |
+| ------------- | ------ | ---------------------------------------------- |
+| role_id       | int PK | Viittaus rooliin [roolit](#roles)-taulussa     |
+| permission_id | int PK | Viittaus lupaan [luvat](#permissions)-taulussa |
+
+### permissions
+
+permissions-taulu sisältää luvat. Roolilla voi olla monta lupaa, ja sama lupa voi kuulua useampaan eri rooliin. Siksi näillä on välitaulu, role_permissions.
+
+| Kenttä | Tyyppi      | Kuvaus        |
+| ------ | ----------- | ------------- |
+| id     | int PK      | Luvan id      |
+| title  | varchar(50) | Luvan otsikko |
 
 ## Tekninen kuvaus
 
