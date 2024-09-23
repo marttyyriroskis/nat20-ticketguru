@@ -63,17 +63,17 @@ public class Ticket {
         this.usedAt = LocalDateTime.now();
     }
 
-    /* public TicketType getTicketType() {
+    public TicketType getTicketType() {
         return ticketType;
     }
 
     public void setTicketType(TicketType ticketType) {
         this.ticketType = ticketType;
-    } */
+    }
 
     @Override
     public String toString() {
         return "Ticket [barcode=" + barcode + ", id=" + id + ", usedAt=" + usedAt + "]";
     }
-    
+
 }
