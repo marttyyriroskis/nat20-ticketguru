@@ -21,9 +21,9 @@ public class Ticket {
     private String barcode;
     private LocalDateTime usedAt;
 
-/*     @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "ticket_type_id")
-    private TicketType ticketType; */
+    private TicketType ticketType;
 
     public Ticket() {
         // Generate barcode from timestamp
