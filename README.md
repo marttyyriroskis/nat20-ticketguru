@@ -171,38 +171,20 @@ _"Ylläpitäjänä haluan nähdä järjestelmäraportit ja lokit ongelmatilantei
 
 ## Tietokanta
 
+Alla mallikuva tietokannasta, josta käy ilmi tietokannan sisältämät tiedot, taulujen väliset suhteet ja avainten määritykset.
+
 ![Database Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/IMG_0327.png)
 
-Järjestelmään säilöttävä ja siinä käsiteltävät tiedot ja niiden väliset suhteet
-kuvataan käsitekaaviolla. Käsitemalliin sisältyy myös taulujen välisten viiteyhteyksien ja avainten
-määritykset. Tietokanta kuvataan käyttäen jotain kuvausmenetelmää, joko ER-kaaviota ja UML-luokkakaaviota.
+Lisäksi jokainen tietokannan taulu ja niiden attribuutit kuvataan tässä tietohakemistossa.
 
-Lisäksi kukin järjestelmän tietoelementti ja sen attribuutit kuvataan
-tietohakemistossa. Tietohakemisto tarkoittaa yksinkertaisesti vain jokaisen elementin (taulun) ja niiden
-attribuuttien (kentät/sarakkeet) listausta ja lyhyttä kuvausta esim. tähän tyyliin:
+### permissions
 
-> ### _Tilit_
->
-> _Tilit-taulu sisältää käyttäjätilit. Käyttäjällä voi olla monta tiliä. Tili kuuluu aina vain yhdelle käyttäjälle._
->
-> | Kenttä     | Tyyppi      | Kuvaus                                             |
-> | ---------- | ----------- | -------------------------------------------------- |
-> | id         | int PK      | Tilin id                                           |
-> | nimimerkki | varchar(30) | Tilin nimimerkki                                   |
-> | avatar     | int FK      | Tilin avatar, viittaus [avatar](#Avatar)-tauluun   |
-> | kayttaja   | int FK      | Viittaus käyttäjään [käyttäjä](#Kayttaja)-taulussa |
+permissions-taulu sisältää luvat. Roolilla voi olla monta lupaa, ja sama lupa voi kuulua useampaan eri rooliin. Siksi näillä on välitaulu, role_permissions.
 
-### ticket_types
-
-ticket_types-taulu sisältää lipputyypit. Yhdessä tapahtumassa voi olla monta lipputyyppiä. Lipputyyppi määrittää aina vain yhtä lippua kerrallaan.
-
-| Kenttä          | Tyyppi      | Kuvaus                                          |
-| --------------- | ----------- | ----------------------------------------------- |
-| id              | int PK      | Lipputyypin id                                  |
-| name            | varchar(50) | Lipputyypin nimimerkki                          |
-| retail_price    | double      | Lipputyypin OVH                                 |
-| event_id        | int FK      | Viittaus tapahtumaan [events](#events)-taulussa |
-| total_available | int         | Lippuja saatavilla                              |
+| Kenttä | Tyyppi      | Kuvaus        |
+| ------ | ----------- | ------------- |
+| id     | int PK      | Luvan id      |
+| title  | varchar(50) | Luvan otsikko |
 
 ### role_permissions
 
@@ -213,14 +195,14 @@ role_permissions on välitaulu roolien ja niiden lupien välillä. Sillä on sii
 | role_id       | int PK | Viittaus rooliin [roles](#roles)-taulussa            |
 | permission_id | int PK | Viittaus lupaan [permissions](#permissions)-taulussa |
 
-### permissions
+### roles
 
-permissions-taulu sisältää luvat. Roolilla voi olla monta lupaa, ja sama lupa voi kuulua useampaan eri rooliin. Siksi näillä on välitaulu, role_permissions.
+roles-taulu määrittää kaikki mahdolliset käyttäjäroolit, joita käyttäjillä voi olla.
 
-| Kenttä | Tyyppi      | Kuvaus        |
-| ------ | ----------- | ------------- |
-| id     | int PK      | Luvan id      |
-| title  | varchar(50) | Luvan otsikko |
+| Kenttä | Tyyppi      | Kuvaus      |
+| ------ | ----------- | ----------- |
+| id     | int PK      | Roolin id   |
+| title  | varchar(50) | Roolin nimi |
 
 ### users
 
@@ -237,7 +219,7 @@ users-taulu sisältää käyttäjät. Yhdellä käyttäjällä on vain yksi rool
 
 ### sales
 
-sales taulu kuvaa yhtä myyntitapahtumaa. Jokaisella myyntitapahtumalla on yksi myynnin hoitanut käyttäjä.
+sales-taulu kuvaa yhtä myyntitapahtumaa. Jokaisella myyntitapahtumalla on yksi myynnin hoitanut käyttäjä.
 
 | Kenttä  | Tyyppi   | Kuvaus                                       |
 | ------- | -------- | -------------------------------------------- |
@@ -256,6 +238,29 @@ sales_tickets -taulu yhdistää lipun ja sen myyntitapahtuman (sales) toisiinsa.
 | sale_id   | int FK | Viittaus myyjään [users](#users)-taulussa             |
 | price     | double | Lipusta maksettu hinta                                |
 
+### tickets
+
+tickets-taulu sisältää yksittäisiä lippuja eri tapahtumiin. Lipuilla voi olla monta eri lipputyyppiä, ja yksi lippu voidaan myydä vain kerran.
+
+| Kenttä         | Tyyppi      | Kuvaus                                                         |
+| -------------- | ----------- | -------------------------------------------------------------- |
+| id             | int PK      | Lipun id                                                       |
+| ticket_type_id | int FK      | Viittaus lipun tyyppiin [ticket_types](#ticket_types)-taulussa |
+| barcode        | varchar(50) | Viivakoodi, jolla voidaan skannata lippu                       |
+| used_at        | datetime    | Päivämäärä ja aika, jolloin lippu on merkitty käytetyksi       |
+
+### ticket_types
+
+ticket_types-taulu sisältää lipputyypit. Yhdessä tapahtumassa voi olla monta lipputyyppiä. Lipputyyppi määrittää aina vain yhtä lippua kerrallaan.
+
+| Kenttä          | Tyyppi      | Kuvaus                                          |
+| --------------- | ----------- | ----------------------------------------------- |
+| id              | int PK      | Lipputyypin id                                  |
+| name            | varchar(50) | Lipputyypin nimimerkki                          |
+| retail_price    | double      | Lipputyypin OVH                                 |
+| event_id        | int FK      | Viittaus tapahtumaan [events](#events)-taulussa |
+| total_available | int         | Lippuja saatavilla                              |
+
 ### events
 
 events-taulu sisältää tapahtumat. Jokaiselle tapahtumalle luodaan oma rivi. Tapahtuma pidetään aina yhdessä tapahtumapaikassa (venue), mutta yhdessä tapahtumapaikassa voidaan pitää monta tapahtumaa eri aikoihin.
@@ -270,6 +275,15 @@ events-taulu sisältää tapahtumat. Jokaiselle tapahtumalle luodaan oma rivi. T
 | ticket_sale_begins | date time    | Tapahtuman lipunmyynnin aloituspäivä ja -aika         |
 | description        | varchar(500) | Tapahtuman kuvaus                                     |
 | venue              | int FK       | Viittaus tapahtumapaikkaan [venues](#venues)-taulussa |
+
+### zipcodes
+
+zipcodes-taulu sisältää tapahtumapaikkojen osoitteiden postinumerot ja kaupungit.
+
+| Kenttä  | Tyyppi        | Kuvaus                         |
+| ------- | ------------- | ------------------------------ |
+| zipcode | varchar(5) PK | Postinumero                    |
+| city    | varchar(100)  | Postinumeron mukainen kaupunki |
 
 ## Tekninen kuvaus
 
