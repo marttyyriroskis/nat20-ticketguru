@@ -289,6 +289,17 @@ events-taulu sisältää tapahtumat. Jokaiselle tapahtumalle luodaan oma rivi. T
 | description        | varchar(500) | Tapahtuman kuvaus                                     |
 | venue              | int FK       | Viittaus tapahtumapaikkaan [venues](#venues)-taulussa |
 
+### venues
+
+venues-taulu sisältää tapahtumapaikat. Yksi tapahtumapaikka on aina yhdessä postinumerossa, mutta yhdellä postinumerolla voi olla useampia tapahtumia.
+
+| Kenttä  | Tyyppi        | Kuvaus                                                           |
+| ------- | ------------- | ---------------------------------------------------------------- |
+| id      | int PK        | tapahtumapaikan id                                               |
+| name    | varchar(20)   | tapahtumapaikan nimi                                             |
+| address | varchar(20)   | tapahtumapaikan osoite                                           |
+| zipcode | varchar(5) FK | Viittaus tapahtumapaikan postiosoitteeseen [zipcodes](#zipcodes) |
+
 ### zipcodes
 
 zipcodes-taulu sisältää tapahtumapaikkojen osoitteiden postinumerot ja kaupungit.
