@@ -169,6 +169,19 @@ _"Ylläpitäjänä haluan nähdä järjestelmäraportit ja lokit ongelmatilantei
 
 ![GUI Diagram](https://hellmanstudios.fi/nat20-ticketguru-gui.png)
 
+Yllä oleva kuva esittää TicketGuru-ohjelman käyttöliittymää ja sen eri näkymien välisiä siirtymiä
+
+- Päävalikko: Käyttäjän aloitusvalikko, josta pääsee kaikkiin ohjelman osioihin.
+  - Lipunmyynti: Toiminto, joka kattaa lipunmyyntiprosessin. Täältä siirrytään seuraaviin:
+    - Myyntitapahtumat: Näyttää yksityiskohtaisesti kaikki myyntitapahtumat.
+    - Lippujen tulostus: Tulostaa myydyt liput asiakkaalle.
+  - Raportit: Näyttää myyntitapahtumien raportit.
+  - Tapahtumahallinta: Täältä hallitaan tapahtumia, mukaan lukien:
+    - Lipputyypit: Mahdollistaa erilaisten lipputyyppien määrittelyn ja hallinnan.
+  - Lippujen tarkastus: Tarkistaa ostettujen lippujen kelpoisuuden tapahtuman sisäänkäynnillä.
+
+Lisäksi lisätään mahdollisesti hallintaosio tapahtumapaikoille.
+
 ## Tietokanta
 
 Alla mallikuva tietokannasta, josta käy ilmi tietokannan sisältämät tiedot, taulujen väliset suhteet ja avainten määritykset.
