@@ -8,17 +8,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import com.nat20.ticketguru.domain.Role;
-import com.nat20.ticketguru.domain.RoleRepository;
 import com.nat20.ticketguru.domain.Sale;
-import com.nat20.ticketguru.domain.SaleRepository;
 import com.nat20.ticketguru.domain.Ticket;
-import com.nat20.ticketguru.domain.TicketRepository;
 import com.nat20.ticketguru.domain.TicketSale;
-import com.nat20.ticketguru.domain.TicketSaleRepository;
 import com.nat20.ticketguru.domain.User;
-import com.nat20.ticketguru.domain.UserRepository;
 import com.nat20.ticketguru.domain.Zipcode;
-import com.nat20.ticketguru.domain.ZipcodeRepository;
+import com.nat20.ticketguru.repository.RoleRepository;
+import com.nat20.ticketguru.repository.SaleRepository;
+import com.nat20.ticketguru.repository.TicketRepository;
+import com.nat20.ticketguru.repository.TicketSaleRepository;
+import com.nat20.ticketguru.repository.UserRepository;
+import com.nat20.ticketguru.repository.ZipcodeRepository;
 
 @SpringBootApplication
 public class TicketguruApplication {
