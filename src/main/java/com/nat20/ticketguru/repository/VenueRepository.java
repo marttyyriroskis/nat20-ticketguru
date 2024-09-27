@@ -9,5 +9,4 @@ import com.nat20.ticketguru.domain.Venue;
 public interface VenueRepository extends CrudRepository<Venue, Long> {
 
     List<Venue> findByName(String name);
-
 }
