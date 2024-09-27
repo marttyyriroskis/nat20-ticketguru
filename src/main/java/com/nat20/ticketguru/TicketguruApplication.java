@@ -1,5 +1,7 @@
 package com.nat20.ticketguru;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -7,17 +9,21 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import com.nat20.ticketguru.domain.Event;
 import com.nat20.ticketguru.domain.Role;
 import com.nat20.ticketguru.domain.Sale;
 import com.nat20.ticketguru.domain.Ticket;
 import com.nat20.ticketguru.domain.TicketSale;
 import com.nat20.ticketguru.domain.User;
+import com.nat20.ticketguru.domain.Venue;
 import com.nat20.ticketguru.domain.Zipcode;
+import com.nat20.ticketguru.repository.EventRepository;
 import com.nat20.ticketguru.repository.RoleRepository;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.repository.TicketSaleRepository;
 import com.nat20.ticketguru.repository.UserRepository;
+import com.nat20.ticketguru.repository.VenueRepository;
 import com.nat20.ticketguru.repository.ZipcodeRepository;
 
 @SpringBootApplication
@@ -30,7 +36,15 @@ public class TicketguruApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(TicketRepository ticketRepository, UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository, SaleRepository saleRepository, TicketSaleRepository ticketSaleRepository) {
+    public CommandLineRunner demo(
+            TicketRepository ticketRepository,
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            ZipcodeRepository zipcodeRepository,
+            SaleRepository saleRepository,
+            TicketSaleRepository ticketSaleRepository,
+            VenueRepository venueRepository,
+            EventRepository eventRepository) {
         return (args) -> {
             log.info("Creating a few ticket test entries");
             ticketRepository.save(new Ticket());
@@ -47,6 +61,7 @@ public class TicketguruApplication {
             log.info("Creating a few zipcode test entries");
             zipcodeRepository.save(new Zipcode("00100", "Helsinki"));
             zipcodeRepository.save(new Zipcode("00200", "Helsinki"));
+            zipcodeRepository.save(new Zipcode("00250", "Helsinki"));
             zipcodeRepository.save(new Zipcode("00300", "Helsinki"));
             zipcodeRepository.save(new Zipcode("00500", "Helsinki"));
             zipcodeRepository.save(new Zipcode("02100", "Espoo"));
@@ -78,6 +93,14 @@ public class TicketguruApplication {
             log.info("Creating a few ticket_sale test entries");
             ticketSaleRepository.save(new TicketSale(19.99, saleRepository.findById(1L).get(), ticketRepository.findById(1L).get()));
             ticketSaleRepository.save(new TicketSale(25.50, saleRepository.findById(1L).get(), ticketRepository.findById(2L).get()));
+
+            log.info("Creating a few venue test entries");
+            venueRepository.save(new Venue("Bunkkeri", "Bunkkeritie 1", zipcodeRepository.findById("00100").get()));
+            venueRepository.save(new Venue("Helsingin jäähalli", "Nordenskiöldinkatu 11-13", zipcodeRepository.findById("00250").get()));
+
+            log.info("Creating a few event test entries");
+            eventRepository.save(new Event("Death metal karaoke", "Öriöriöriöriörirprir!!!!!", 10, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), venueRepository.findById(1L).get()));
+            eventRepository.save(new Event("Disney On Ice", "Mikki-hiiret jäällä. Suih suih vaan!", 10000, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), venueRepository.findById(2L).get()));
         };
     }
 
