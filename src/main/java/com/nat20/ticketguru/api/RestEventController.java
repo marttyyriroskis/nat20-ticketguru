@@ -9,6 +9,9 @@ import com.nat20.ticketguru.repository.EventRepository;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -26,6 +29,12 @@ public class RestEventController {
     @GetMapping("/event/{id}")
     <Optional>Event getEvent(@PathVariable("id") Long eventId) {
         return eventRepository.findById(eventId).orElse(null);
+    }
+    // Post a new event
+    @PostMapping("/events")
+    public Event createEvent(@RequestBody Event event) {
+        Event savedEvent = eventRepository.save(event);
+        return savedEvent;
     }
     
 
