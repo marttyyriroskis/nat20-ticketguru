@@ -26,6 +26,7 @@ public class RestEventController {
     public Iterable<Event> getEvents() {
         return eventRepository.findAll();
     }
+    // Get event by id
     @GetMapping("/event/{id}")
     <Optional>Event getEvent(@PathVariable("id") Long eventId) {
         return eventRepository.findById(eventId).orElse(null);
