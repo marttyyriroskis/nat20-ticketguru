@@ -12,9 +12,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "events")
@@ -25,25 +26,28 @@ public class Event {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
-    @NotEmpty
+    @NotEmpty(message = "Name must not be empty")
+    @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters long")
     @Column(name = "name", nullable = false)
     private String name;
-    
-    @Positive
+
+    @Positive(message = "Total tickets must be positive")
     @Column(name = "total_tickets", nullable = false)
     private int total_tickets;
 
-    @NotNull
-    @Column(name = "begins_at", nullable = false)
+    @FutureOrPresent(message = "Begin date must be future or present")
+    @Column(name = "begins_at")
     private LocalDateTime begins_at;
 
+    @FutureOrPresent(message = "End date must be future or present")
     @Column(name = "ends_at")
     private LocalDateTime ends_at;
 
-    @NotNull
-    @Column(name = "ticket_sale_begins", nullable = false)
+    @FutureOrPresent(message = "Ticket sale begin date must be future or present")
+    @Column(name = "ticket_sale_begins")
     private LocalDateTime ticket_sale_begins;
 
+    @Size(min = 1, max = 500, message = "Description must be between 1 and 500 characters long")
     @Column(name = "description")
     private String description;
 
