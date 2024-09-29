@@ -50,7 +50,7 @@ public class Event {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "venue_id")
+    @JoinColumn(name = "venue_id", nullable = true)
     private Venue venue;
 
     public Event() {

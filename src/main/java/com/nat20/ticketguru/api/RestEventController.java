@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -58,6 +59,23 @@ public class RestEventController {
     // Post a new event
     @PostMapping("/events")
     public Event createEvent(@RequestBody Event event) {
+        
+        // checks if the venue id is null instead of entire venue being null
+        if (event.getVenue() != null && event.getVenue().getId() == null) {
+            event.setVenue(null);
+        }
+        // if venue is not null, check if it is already exists
+        if (event.getVenue() != null) {
+            Optional<Venue> existingVenue = venueRepository.findById(event.getVenue().getId());
+
+            if (!existingVenue.isPresent()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Venue does not exist!");
+            }
+
+            event.setVenue(existingVenue.get());
+
+        }
         Event savedEvent = eventRepository.save(event);
         return savedEvent;
     }
