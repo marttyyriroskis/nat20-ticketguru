@@ -35,7 +35,7 @@ public class RestEventController {
     }
 
     // Get event by id
-    @GetMapping("/event/{id}")
+    @GetMapping("/events/{id}")
     <Optional> Event getEvent(@PathVariable("id") Long eventId) {
         return eventRepository.findById(eventId).orElse(null);
     }
