@@ -1,10 +1,10 @@
-# Update Event
+# Get Event
 
-Allow updating `Event` details of the given `id`.
+Allow getting `Event` details of the given `id`.
 
 **URL** : `/api/events/{id}`
 
-**Method** : `PUT`
+**Method** : `GET`
 
 **Auth required** : NO
 
@@ -12,9 +12,9 @@ Allow updating `Event` details of the given `id`.
 
 **Path Parameters** :
 
-| Parameter | Type | Description                               |
-| --------- | ---- | ----------------------------------------- |
-| `id`      | Long | Unique identifier for the event to update |
+| Parameter | Type | Description                            |
+| --------- | ---- | -------------------------------------- |
+| `id`      | Long | Unique identifier for the event to get |
 
 **Data constraints** :
 
@@ -33,30 +33,17 @@ The request body should be a JSON object representing the `Event`. It may includ
 #### Example Request
 
 ```json
-PUT /events/2
-Content-Type: application/json
-
-{
-    "name": "Disney On Meth-Ice",
-    "description": "Mikki-hiiret jäällä. Suih suih vaan!",
-    "total_tickets": 10000,
-    "begins_at": "2024-09-29T09:18:26.535823",
-    "ends_at": "2024-09-29T09:18:26.535823",
-    "ticket_sale_begins": "2024-09-29T09:18:26.535823",
-    "venue": {
-        "id": 2
-    }
-
-}
+GET /events/2
+Accept: application/json
 ```
 
 ## Success Responses
 
-**Condition** : Data provided is valid.
+**Condition** : Provided event `id` is valid.
 
 **Code** : `200 OK`
 
-**Content example** : Returns the updated `Event` object, with the `id` field and `Venue` details.
+**Content example** : Returns the `Event` object of the given `id`, with the `Venue` details.
 
 ```json
 {
@@ -81,20 +68,6 @@ Content-Type: application/json
 
 ## Error Response
 
-**Condition** : If the provided `Venue` does not exist.
-
-**Code** : `400 BAD REQUEST`
-
-**Content example** :
-
-```json
-{
-  "status": 400,
-  "error": "Bad Request",
-  "message": "Invalid venue"
-}
-```
-
 **Condition**: If the event with the specified `id` does not exist.
 
 **Code** : `404 NOT FOUND`
@@ -108,9 +81,3 @@ Content-Type: application/json
   "message": "Event not found"
 }
 ```
-
-#### Notes
-
-- To remove the association with a venue, set the `venue` field to `null`.
-- This endpoint does not allow the creation of a new venue. Only existing venues can be assigned to the event.
-- Ensure that all date and time fields are in ISO 8601 format.

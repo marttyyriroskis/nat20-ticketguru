@@ -48,7 +48,6 @@ public class Event {
     private String description;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "venue_id")
     private Venue venue;
 
