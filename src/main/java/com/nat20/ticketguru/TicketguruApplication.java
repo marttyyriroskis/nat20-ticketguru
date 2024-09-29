@@ -92,9 +92,9 @@ public class TicketguruApplication {
             venueRepository.save(new Venue("National Museum", "Museokatu 1", zipcodeRepository.findByZipcode("00100")));
 
             log.info("Creating a few event test entries");
-            eventRepository.save(new Event("Death metal karaoke", "Öriöriöriöriörirprir!!!!!", 10, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), venueRepository.findById(1L).get()));
-            eventRepository.save(new Event("Disney On Ice", "Mikki-hiiret jäällä. Suih suih vaan!", 10000, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), venueRepository.findById(2L).get()));
-            eventRepository.save(new Event("A Night at the Museum", "Night-show at the National Museum", 500, LocalDateTime.now(), LocalDateTime.of(2025, 10, 12, 12, 00), LocalDateTime.now(), venueRepository.findById(1L).get()));
+            eventRepository.save(new Event("Death metal karaoke", "Öriöriöriöriörirprir!!!!!", 10, LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get()));
+            eventRepository.save(new Event("Disney On Ice", "Mikki-hiiret jäällä. Suih suih vaan!", 10000, LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(2L).get()));
+            eventRepository.save(new Event("A Night at the Museum", "Night-show at the National Museum", 500, LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get()));
 
         };
     }

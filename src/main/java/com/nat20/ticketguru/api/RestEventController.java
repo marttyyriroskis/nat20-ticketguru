@@ -1,15 +1,21 @@
 package com.nat20.ticketguru.api;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,8 +24,11 @@ import com.nat20.ticketguru.domain.Venue;
 import com.nat20.ticketguru.repository.EventRepository;
 import com.nat20.ticketguru.repository.VenueRepository;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
+@Validated
 public class RestEventController {
 
     @Autowired
@@ -55,7 +64,7 @@ public class RestEventController {
 
     // Edit event with PUT request
     @PutMapping("events/{id}")
-    public Event editEvent(@RequestBody Event editedEvent, @PathVariable("id") Long eventId) {
+    public Event editEvent(@Valid @RequestBody Event editedEvent, @PathVariable("id") Long eventId) {
         Optional<Event> optionalEvent = eventRepository.findById(eventId);
         if (!optionalEvent.isPresent()) {
             throw new ResponseStatusException(
@@ -85,5 +94,18 @@ public class RestEventController {
         }
 
         return eventRepository.save(event);
+    }
+
+    // Exception handler for validation errors
+    // If validation fails, a MethodArgumentNotValidException is thrown,
+    // which then returns the failed field(s) and the validation failure message(s)
+    // as a BAD_REQUEST response
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error
+                -> errors.put(error.getField(), error.getDefaultMessage()));
+        return errors;
     }
 }
