@@ -23,10 +23,10 @@ The request body should be a JSON object representing the `Event`. It may includ
 | Field                | Type                     | Required | Description                                                                       |
 | -------------------- | ------------------------ | -------- | --------------------------------------------------------------------------------- |
 | `name`               | String                   | Yes      | The name of the event (1-100 char).                                               |
-| `description`        | String                   | Yes      | A description of the event (1-500 char).                                          |
+| `description`        | String                   | No       | A description of the event (1-500 char).                                          |
 | `total_tickets`      | Integer                  | Yes      | The total number of tickets available for the event.                              |
 | `begins_at`          | String (ISO 8601 format) | Yes      | The start date and time of the event.                                             |
-| `ends_at`            | String (ISO 8601 format) | Yes      | The end date and time of the event.                                               |
+| `ends_at`            | String (ISO 8601 format) | No       | The end date and time of the event.                                               |
 | `ticket_sale_begins` | String (ISO 8601 format) | Yes      | The date and time when ticket sales begin.                                        |
 | `venue`              | Object                   | No       | An object representing the venue. It may be null or contain the venue `id` (Long) |
 
