@@ -33,7 +33,7 @@ The request body should be a JSON object representing the `Event`. It may includ
 #### Example Request
 
 ```json
-PUT /events/1
+PUT /events/2
 Content-Type: application/json
 
 {
