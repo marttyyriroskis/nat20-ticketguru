@@ -36,8 +36,14 @@ public class RestEventController {
 
     // Get event by id
     @GetMapping("/events/{id}")
-    <Optional> Event getEvent(@PathVariable("id") Long eventId) {
-        return eventRepository.findById(eventId).orElse(null);
+    public Event getEvent(@PathVariable("id") Long eventId) {
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        if (!optionalEvent.isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Event not found");
+        }
+        Event event = optionalEvent.get();
+        return event;
     }
 
     // Post a new event
