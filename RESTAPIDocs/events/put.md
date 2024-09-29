@@ -25,9 +25,9 @@ The request body should be a JSON object representing the `Event`. It may includ
 | `name`               | String                   | Yes      | The name of the event (1-100 char).                                               |
 | `description`        | String                   | No       | A description of the event (1-500 char).                                          |
 | `total_tickets`      | Integer                  | Yes      | The total number of tickets available for the event.                              |
-| `begins_at`          | String (ISO 8601 format) | Yes      | The start date and time of the event.                                             |
+| `begins_at`          | String (ISO 8601 format) | No       | The start date and time of the event.                                             |
 | `ends_at`            | String (ISO 8601 format) | No       | The end date and time of the event.                                               |
-| `ticket_sale_begins` | String (ISO 8601 format) | Yes      | The date and time when ticket sales begin.                                        |
+| `ticket_sale_begins` | String (ISO 8601 format) | No       | The date and time when ticket sales begin.                                        |
 | `venue`              | Object                   | No       | An object representing the venue. It may be null or contain the venue `id` (Long) |
 
 #### Example Request
@@ -109,8 +109,25 @@ Content-Type: application/json
 }
 ```
 
+**Condition**: If any of the given fields do not meet the validation constraints.
+
+**Code** : `400 BAD REQUEST`
+
+**Content example** :
+
+```json
+{
+  "total_tickets": "Total tickets must be positive",
+  "begins_at": "Begin date must be future or present",
+  "name": "Name must not be empty",
+  "description": "Description must be between 1 and 500 characters long",
+  "ends_at": "End date must be future or present",
+  "ticket_sale_begins": "Ticket sale begin date must be future or present"
+}
+```
+
 #### Notes
 
 - To remove the association with a venue, set the `venue` field to `null`.
 - This endpoint does not allow the creation of a new venue. Only existing venues can be assigned to the event.
-- Ensure that all date and time fields are in ISO 8601 format.
+- Ensure that all date and time fields are in ISO 8601 format, and set into the future or present.
