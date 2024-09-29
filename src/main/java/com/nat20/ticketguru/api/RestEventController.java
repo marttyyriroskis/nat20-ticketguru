@@ -126,4 +126,6 @@ public class RestEventController {
                 -> errors.put(error.getField(), error.getDefaultMessage()));
         return errors;
     }
+    // Source: https://dev.to/shujaat34/exception-handling-and-validation-in-spring-boot-3of9
+    // The source details a Global Exception handler, that we could implement later to handle all the endpoints
 }
