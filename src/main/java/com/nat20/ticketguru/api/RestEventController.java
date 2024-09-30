@@ -57,7 +57,7 @@ public class RestEventController {
 
     // Post a new event
     @PostMapping("")
-    public Event createEvent(@RequestBody Event event) {
+    public Event createEvent(@Valid @RequestBody Event event) {
 
         // checks if the venue id is null instead of entire venue being null
         if (event.getVenue() != null && event.getVenue().getId() == null) {

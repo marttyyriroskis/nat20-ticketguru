@@ -14,17 +14,17 @@ Create a new `Event` entity
 
 Provide all required parameters for the `Event`to be created.
 
-| Field                | Type                     | Required | Description                                                           |
-| -------------------- | ------------------------ | -------- | --------------------------------------------------------------------- |
-| `name`               | String                   | Yes      | The name of the event (1-100 char).                                   |
-| `description`        | String                   | No       | A description of the event (1-500 char).                              |
-| `total_tickets`      | Integer                  | Yes      | The total number of tickets available for the event.                  |
-| `begins_at`          | String (ISO 8601 format) | No       | The start date and time of the event.                                 |
-| `ends_at`            | String (ISO 8601 format) | No       | The end date and time of the event.                                   |
-| `ticket_sale_begins` | String (ISO 8601 format) | No       | The date and time when ticket sales begin.                            |
-| `venue`              | Object                   | No       | An object representing the venue. It may be null or an existing venue |
+| Field                | Type                     | Required | Description                                                                       |
+| -------------------- | ------------------------ | -------- | --------------------------------------------------------------------------------- |
+| `name`               | String                   | Yes      | The name of the event (1-100 char).                                               |
+| `description`        | String                   | No       | A description of the event (1-500 char).                                          |
+| `total_tickets`      | Integer                  | Yes      | The total number of tickets available for the event.                              |
+| `begins_at`          | String (ISO 8601 format) | No       | The start date and time of the event.                                             |
+| `ends_at`            | String (ISO 8601 format) | No       | The end date and time of the event.                                               |
+| `ticket_sale_begins` | String (ISO 8601 format) | No       | The date and time when ticket sales begin.                                        |
+| `venue`              | Object                   | No       | An object representing the venue. It may be null or contain the venue `id` (Long) |
 
-**Data example** All fields must be sent. `name` and `total_tickets` must not be null.
+**Data example** All required fields must be sent. `name` and `total_tickets` must not be null.
 
 ```json
 {
@@ -35,20 +35,14 @@ Provide all required parameters for the `Event`to be created.
   "ends_at": "2024-11-12T21:18:26.535823",
   "ticket_sale_begins": "2024-09-29T09:18:26.535823",
   "venue": {
-    "id": 2,
-    "name": "Helsingin jäähalli",
-    "address": "Nordenskiöldinkatu 11-13",
-    "zipcode": {
-      "zipcode": "00250",
-      "city": "Helsinki"
-    }
+    "id": 2
   }
 }
 ```
 
 ## Success Responses
 
-**Condition** : Data provided is valid and `name` and `total_tickets` must not be null.
+**Condition** : Data provided is valid and `name` and `total_tickets` must not be null. `Venue` `id` is valid.
 
 **Code** : `200 OK`
 
@@ -77,7 +71,21 @@ Provide all required parameters for the `Event`to be created.
 
 ## Error Response
 
-**Condition** : If fields are missed.
+**Condition** : If the provided `Venue` does not exist.
+
+**Code** : `400 BAD REQUEST`
+
+**Content example** :
+
+```json
+{
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Venue does not exist!"
+}
+```
+
+**Condition** : If required fields are missing.
 
 **Code** : `400 BAD REQUEST`
 
