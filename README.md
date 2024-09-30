@@ -296,8 +296,8 @@ venues-taulu sisältää tapahtumapaikat. Yksi tapahtumapaikka on aina yhdessä 
 | Kenttä  | Tyyppi        | Kuvaus                                                           |
 | ------- | ------------- | ---------------------------------------------------------------- |
 | id      | int PK        | tapahtumapaikan id                                               |
-| name    | varchar(20)   | tapahtumapaikan nimi                                             |
-| address | varchar(20)   | tapahtumapaikan osoite                                           |
+| name    | varchar(100)  | tapahtumapaikan nimi                                             |
+| address | varchar(100)  | tapahtumapaikan osoite                                           |
 | zipcode | varchar(5) FK | Viittaus tapahtumapaikan postiosoitteeseen [zipcodes](#zipcodes) |
 
 ### zipcodes
