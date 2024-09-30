@@ -11,7 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
@@ -24,7 +24,7 @@ public class Event {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
-    @NotEmpty(message = "Name must not be empty")
+    @NotBlank(message = "Name must not be empty")
     @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters long")
     @Column(name = "name", nullable = false)
     private String name;

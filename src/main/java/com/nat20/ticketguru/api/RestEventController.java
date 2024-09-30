@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +28,7 @@ import com.nat20.ticketguru.repository.VenueRepository;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/events/")
 @Validated
 public class RestEventController {
 
@@ -40,13 +39,13 @@ public class RestEventController {
     VenueRepository venueRepository;
 
     // Get events
-    @GetMapping("/events")
+    @GetMapping("")
     public Iterable<Event> getEvents() {
         return eventRepository.findAll();
     }
 
     // Get event by id
-    @GetMapping("/events/{id}")
+    @GetMapping("{id}")
     public Event getEvent(@PathVariable("id") Long eventId) {
         Optional<Event> optionalEvent = eventRepository.findById(eventId);
         if (!optionalEvent.isPresent()) {
@@ -58,8 +57,9 @@ public class RestEventController {
     }
 
     // Post a new event
-    @PostMapping("/events")
-    public Event createEvent(@RequestBody Event event) {
+    @PostMapping("")
+    public Event createEvent(@Valid @RequestBody Event event) {
+
         // checks if the venue id is null instead of entire venue being null
         if (event.getVenue() != null && event.getVenue().getId() == null) {
             event.setVenue(null);
@@ -81,7 +81,7 @@ public class RestEventController {
     }
 
     // Edit event with PUT request
-    @PutMapping("events/{id}")
+    @PutMapping("{id}")
     public Event editEvent(@Valid @RequestBody Event editedEvent, @PathVariable("id") Long eventId) {
         Optional<Event> optionalEvent = eventRepository.findById(eventId);
         if (!optionalEvent.isPresent()) {
