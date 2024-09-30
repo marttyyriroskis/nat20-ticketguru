@@ -21,7 +21,7 @@ Allow deleting `Event` details of the given `id`.
 ## Example Request
 
 ```json
-DELETE /events/2
+DELETE api/events/2
 Content-Type: application/json
 ```
 

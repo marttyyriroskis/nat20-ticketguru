@@ -115,7 +115,8 @@ public class RestEventController {
         return eventRepository.save(event);
     }
 
-    @DeleteMapping("/events/{id}")
+    // Delete event with DELETE Request
+    @DeleteMapping("{id}")
     public Iterable<Event> deleteEvent(@PathVariable("id") Long eventId) {
         // Finds the event with the mapped id from the repository; assings null if not
         // found
