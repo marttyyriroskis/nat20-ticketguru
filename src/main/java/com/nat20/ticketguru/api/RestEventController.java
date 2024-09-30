@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,7 +60,6 @@ public class RestEventController {
     // Post a new event
     @PostMapping("/events")
     public Event createEvent(@RequestBody Event event) {
-        
         // checks if the venue id is null instead of entire venue being null
         if (event.getVenue() != null && event.getVenue().getId() == null) {
             event.setVenue(null);
@@ -98,7 +98,8 @@ public class RestEventController {
         event.setEnds_at(editedEvent.getEnds_at());
         event.setTicket_sale_begins(editedEvent.getTicket_sale_begins());
 
-        // no changes to Venue fields allowed here: can set venue to null or to a different existing venue
+        // no changes to Venue fields allowed here: can set venue to null or to a
+        // different existing venue
         Venue editedVenue = editedEvent.getVenue();
         if (editedVenue != null) {
             Optional<Venue> existingVenue = venueRepository.findById(editedVenue.getId());
@@ -114,6 +115,24 @@ public class RestEventController {
         return eventRepository.save(event);
     }
 
+    @DeleteMapping("/events/{id}")
+    public Iterable<Event> deleteEvent(@PathVariable("id") Long eventId) {
+        // Finds the event with the mapped id from the repository; assings null if not
+        // found
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        // Checks if the event is null or not null
+        if (!optionalEvent.isPresent()) {
+            // If null (ie. not found), throws exception and error message
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Event not found");
+        }
+        // If not null (ie. found), deletes the event with the mapped id from the
+        // repository
+        eventRepository.deleteById(eventId);
+        // Returns all the remaining events (without the removed event)
+        return eventRepository.findAll();
+    }
+
     // Exception handler for validation errors
     // If validation fails, a MethodArgumentNotValidException is thrown,
     // which then returns the failed field(s) and the validation failure message(s)
@@ -122,10 +141,12 @@ public class RestEventController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error
-                -> errors.put(error.getField(), error.getDefaultMessage()));
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         return errors;
     }
-    // Source: https://dev.to/shujaat34/exception-handling-and-validation-in-spring-boot-3of9
-    // The source details a Global Exception handler, that we could implement later to handle all the endpoints
+    // Source:
+    // https://dev.to/shujaat34/exception-handling-and-validation-in-spring-boot-3of9
+    // The source details a Global Exception handler, that we could implement later
+    // to handle all the endpoints
 }
