@@ -28,7 +28,7 @@ import com.nat20.ticketguru.repository.VenueRepository;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/events/")
+@RequestMapping("/api/events")
 @Validated
 public class RestEventController {
 
@@ -45,7 +45,7 @@ public class RestEventController {
     }
 
     // Get event by id
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public Event getEvent(@PathVariable("id") Long eventId) {
         Optional<Event> optionalEvent = eventRepository.findById(eventId);
         if (!optionalEvent.isPresent()) {
@@ -81,7 +81,7 @@ public class RestEventController {
     }
 
     // Edit event with PUT request
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public Event editEvent(@Valid @RequestBody Event editedEvent, @PathVariable("id") Long eventId) {
         Optional<Event> optionalEvent = eventRepository.findById(eventId);
         if (!optionalEvent.isPresent()) {
@@ -116,7 +116,7 @@ public class RestEventController {
     }
 
     // Delete event with DELETE Request
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public Iterable<Event> deleteEvent(@PathVariable("id") Long eventId) {
         // Finds the event with the mapped id from the repository; assings null if not
         // found
