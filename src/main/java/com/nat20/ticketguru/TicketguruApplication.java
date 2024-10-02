@@ -13,18 +13,16 @@ import com.nat20.ticketguru.domain.Event;
 import com.nat20.ticketguru.domain.Role;
 import com.nat20.ticketguru.domain.Sale;
 import com.nat20.ticketguru.domain.Ticket;
-import com.nat20.ticketguru.domain.TicketSale;
 import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.domain.Venue;
 import com.nat20.ticketguru.domain.Zipcode;
+import com.nat20.ticketguru.repository.EventRepository;
 import com.nat20.ticketguru.repository.RoleRepository;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.TicketRepository;
-import com.nat20.ticketguru.repository.TicketSaleRepository;
 import com.nat20.ticketguru.repository.UserRepository;
 import com.nat20.ticketguru.repository.VenueRepository;
 import com.nat20.ticketguru.repository.ZipcodeRepository;
-import com.nat20.ticketguru.repository.EventRepository;
 
 @SpringBootApplication
 public class TicketguruApplication {
@@ -36,7 +34,7 @@ public class TicketguruApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(TicketRepository ticketRepository, UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository, SaleRepository saleRepository, TicketSaleRepository ticketSaleRepository, EventRepository eventRepository, VenueRepository venueRepository) {
+    public CommandLineRunner demo(TicketRepository ticketRepository, UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository, SaleRepository saleRepository, EventRepository eventRepository, VenueRepository venueRepository) {
         return (args) -> {
             log.info("Creating a few ticket test entries");
             ticketRepository.save(new Ticket());
@@ -81,10 +79,6 @@ public class TicketguruApplication {
             log.info("Creating a few sale test entries");
             saleRepository.save(new Sale(userRepository.findById(1L).get()));
             saleRepository.save(new Sale(userRepository.findById(2L).get()));
-
-            log.info("Creating a few ticket_sale test entries");
-            ticketSaleRepository.save(new TicketSale(19.99, saleRepository.findById(1L).get(), ticketRepository.findById(1L).get()));
-            ticketSaleRepository.save(new TicketSale(25.50, saleRepository.findById(1L).get(), ticketRepository.findById(2L).get()));
 
             log.info("Creating a few venue test entries");
             venueRepository.save(new Venue("Bunkkeri", "Bunkkeritie 1", zipcodeRepository.findById("00100").get()));
