@@ -10,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -33,15 +32,12 @@ public class Event {
     @Column(name = "total_tickets", nullable = false)
     private int total_tickets;
 
-    @FutureOrPresent(message = "Begin date must be future or present")
     @Column(name = "begins_at")
     private LocalDateTime begins_at;
 
-    @FutureOrPresent(message = "End date must be future or present")
     @Column(name = "ends_at")
     private LocalDateTime ends_at;
 
-    @FutureOrPresent(message = "Ticket sale begin date must be future or present")
     @Column(name = "ticket_sale_begins")
     private LocalDateTime ticket_sale_begins;
 
