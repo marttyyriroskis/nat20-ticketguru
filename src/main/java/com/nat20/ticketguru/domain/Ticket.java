@@ -20,10 +20,15 @@ public class Ticket {
 
     private String barcode;
     private LocalDateTime usedAt;
+    private double price;
 
     @ManyToOne
     @JoinColumn(name = "ticket_type_id")
     private TicketType ticketType;
+
+    @ManyToOne
+    @JoinColumn(name = "sale_id")
+    private Sale sale;
 
     public Ticket() {
         // Generate barcode from timestamp
@@ -59,8 +64,12 @@ public class Ticket {
         this.usedAt = usedAt;
     }
 
-    public void use() {
-        this.usedAt = LocalDateTime.now();
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public TicketType getTicketType() {
@@ -71,9 +80,18 @@ public class Ticket {
         this.ticketType = ticketType;
     }
 
+    public Sale getSale() {
+        return sale;
+    }
+
+    public void setSale(Sale sale) {
+        this.sale = sale;
+    }
+
     @Override
     public String toString() {
-        return "Ticket [barcode=" + barcode + ", id=" + id + ", usedAt=" + usedAt + "]";
+        return "Ticket [id=" + id + ", barcode=" + barcode + ", usedAt=" + usedAt + ", price=" + price + ", ticketType="
+                + ticketType + ", sale=" + sale + "]";
     }
 
 }
