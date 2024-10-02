@@ -31,9 +31,9 @@ Provide all required parameters for the `Event`to be created.
   "name": "Vuoden harmain päivä",
   "description": "Vedetään märkää niin että ikenet turpoo.",
   "total_tickets": 10000,
-  "begins_at": "2024-11-12T09:18:26.535823",
-  "ends_at": "2024-11-12T21:18:26.535823",
-  "ticket_sale_begins": "2024-09-29T09:18:26.535823",
+  "begins_at": "2025-11-12T09:18:26.535823",
+  "ends_at": "2025-11-12T21:18:26.535823",
+  "ticket_sale_begins": "2025-09-29T09:18:26.535823",
   "venue": {
     "id": 2
   }
