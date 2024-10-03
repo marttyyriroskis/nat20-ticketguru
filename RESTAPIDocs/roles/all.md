@@ -305,3 +305,73 @@ Content-Type: application/json
   ]
 }
 ```
+
+## Remove Permission from Role
+
+Allow removing a permission (by its ID) from a specific role.
+
+**URL**: `/api/roles/{roleId}/permission/{permissionId}`
+
+**Method**: `DELETE`
+
+**Auth required**: NO
+
+**Permissions required**: None
+
+### URL Parameters
+
+| Parameter      | Type | Description                                                   |
+| -------------- | ---- | ------------------------------------------------------------- |
+| `roleId`       | Long | The ID of the role from which the permission will be removed. |
+| `permissionId` | Long | The ID of the permission to remove from the role.             |
+
+### Example Request
+
+```json
+DELETE /api/roles/1/permission/2
+```
+
+### Success Responses
+
+**Condition**: The role and permission exist, and the permission is successfully removed from the role.
+
+**Code**: `200 OK`
+
+**Content example**: Returns the updated `Role` object with the remaining permissions (if any).
+
+```json
+{
+  "id": 1,
+  "title": "Admin",
+  "permissions": [
+    {
+      "id": 3,
+      "title": "Read"
+    }
+  ]
+}
+```
+
+### Error Responses
+
+#### 404 Not Found
+
+**Condition**: If the role with the specified `roleId` or the permission with `permissionId` does not exist.
+
+**Code**: `404 NOT FOUND`
+
+**Content example**:
+
+```json
+{
+  "message": "Role not found"
+}
+```
+
+or
+
+```json
+{
+  "message": "Permission not found"
+}
+```

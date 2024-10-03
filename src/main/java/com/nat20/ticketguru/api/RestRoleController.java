@@ -110,7 +110,30 @@ public class RestRoleController {
         Permission permission = optionalPermission.get();
 
         role.addPermission(permission);
-        
+
+        roleRepository.save(role);
+
+        return ResponseEntity.ok(role);
+    }
+
+    // Remove a permission from a role
+    @DeleteMapping("/{id}/permissions/{permissionId}")
+    public ResponseEntity<Role> removePermissionFromRole(@PathVariable Long id, @PathVariable Long permissionId) {
+        Optional<Role> optionalRole = roleRepository.findById(id);
+        if (!optionalRole.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Optional<Permission> optionalPermission = permissionRepository.findById(permissionId);
+        if (!optionalPermission.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Role role = optionalRole.get();
+        Permission permission = optionalPermission.get();
+
+        role.removePermission(permission);
+
         roleRepository.save(role);
 
         return ResponseEntity.ok(role);
