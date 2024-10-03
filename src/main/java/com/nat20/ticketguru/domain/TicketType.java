@@ -44,7 +44,7 @@ public class TicketType {
     @JoinColumn(name = "event_id")
     private Event event;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticket_type")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketType")
     @JsonIgnore
     private List<Ticket> tickets;
 
