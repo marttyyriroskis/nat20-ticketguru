@@ -2,6 +2,11 @@ package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -48,6 +54,10 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "venue_id", nullable = true)
     private Venue venue;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    @JsonIgnore
+    private List<TicketType> ticketType;
 
     public Event() {
     }
