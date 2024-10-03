@@ -255,3 +255,53 @@ DELETE /api/roles/1
   "message": "Role not found"
 }
 ```
+
+## Add Permission to a Role
+
+Allow associating a permission with a specific role.
+
+**URL** : `/api/roles/{roleId}/permissions`
+
+**Method** : `POST`
+
+**Auth required** : NO
+
+**Permissions required** : None
+
+### Request Body:
+
+| Field | Type | Description                                   |
+| ----- | ---- | --------------------------------------------- |
+| `id`  | Long | The permission id to associate with the role. |
+
+### Example Request
+
+```json
+POST /api/roles/1/permissions
+Content-Type: application/json
+
+{
+  "id": "2"
+}
+```
+
+## Success Responses
+
+**Condition** : The role exists, and the permission is added successfully.
+
+**Code** : `200 OK`
+
+**Content example** : Returns the updated `Role` object with the added permission.
+
+```json
+{
+  "id": 1,
+  "title": "Admin",
+  "permissions": [
+    {
+      "id": 2,
+      "title": "write"
+    }
+  ]
+}
+```

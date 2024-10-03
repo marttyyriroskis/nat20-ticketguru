@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.nat20.ticketguru.domain.Permission;
 import com.nat20.ticketguru.domain.Role;
 import com.nat20.ticketguru.repository.RoleRepository;
+import com.nat20.ticketguru.repository.PermissionRepository;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +31,12 @@ public class RestRoleController {
     @Autowired
     private final RoleRepository roleRepository;
 
-    public RestRoleController(RoleRepository roleRepository) {
+    @Autowired
+    private final PermissionRepository permissionRepository;
+
+    public RestRoleController(RoleRepository roleRepository, PermissionRepository permissionRepository) {
         this.roleRepository = roleRepository;
+        this.permissionRepository = permissionRepository;
     }
 
     // Get all roles
@@ -84,5 +90,23 @@ public class RestRoleController {
         roleRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    // Add a permission to a role
+    @PostMapping("/{roleId}/permissions")
+        public ResponseEntity<Role> addPermissionToRole(@PathVariable Long roleId, @RequestBody Permission permission) {
+        Optional<Role> optionalRole = roleRepository.findById(roleId);
+        if (!optionalRole.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        
+        Role role = optionalRole.get();
+
+        permission = permissionRepository.save(permission);
+        role.addPermission(permission);
+        roleRepository.save(role);
+
+        return ResponseEntity.ok(role);
+    }
+
     
 }

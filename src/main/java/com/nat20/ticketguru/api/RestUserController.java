@@ -60,7 +60,12 @@ public class RestUserController {
     // Add a new user
     @PostMapping
     public ResponseEntity<User> addUser(@RequestBody User user) {
-        
+
+
+        if (user.getRole() != null && user.getRole().getId() == null) {
+            user.setRole(null);
+        }
+
         if (user.getRole() != null) {
             Optional<Role> existingRole = roleRepository.findById(user.getRole().getId());
 
