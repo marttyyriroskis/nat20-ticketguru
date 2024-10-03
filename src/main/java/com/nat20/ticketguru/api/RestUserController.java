@@ -1,5 +1,7 @@
 package com.nat20.ticketguru.api;
 
+import org.apache.catalina.connector.Response;
+
 // import org.springframework.security.crypto.bcrypt.BCrypt; // Uncomment when spring security is added
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Role;
 import com.nat20.ticketguru.domain.User;
-import com.nat20.ticketguru.domain.Venue;
 import com.nat20.ticketguru.repository.RoleRepository;
 import com.nat20.ticketguru.repository.UserRepository;
 
@@ -28,12 +29,12 @@ import java.util.Optional;
 public class RestUserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
-    RestUserController(UserRepository userRepository, RoleRepository roleRepository) {
+    public RestUserController(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
@@ -58,7 +59,7 @@ public class RestUserController {
     
     // Add a new user
     @PostMapping
-    public User addUser(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@RequestBody User user) {
         
         if (user.getRole() != null) {
             Optional<Role> existingRole = roleRepository.findById(user.getRole().getId());
@@ -76,7 +77,8 @@ public class RestUserController {
         // Uncomment the following when spring security is added
         // String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         // user.setPassword(hashedPassword);
-        return userRepository.save(user);
+        User response = userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
     // Update a user
