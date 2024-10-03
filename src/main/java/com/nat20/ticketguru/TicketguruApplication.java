@@ -9,20 +9,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.nat20.ticketguru.domain.Event;
-import com.nat20.ticketguru.domain.Role;
-import com.nat20.ticketguru.domain.Sale;
-import com.nat20.ticketguru.domain.Ticket;
-import com.nat20.ticketguru.domain.User;
-import com.nat20.ticketguru.domain.Venue;
-import com.nat20.ticketguru.domain.Zipcode;
-import com.nat20.ticketguru.repository.EventRepository;
-import com.nat20.ticketguru.repository.RoleRepository;
-import com.nat20.ticketguru.repository.SaleRepository;
-import com.nat20.ticketguru.repository.TicketRepository;
-import com.nat20.ticketguru.repository.UserRepository;
-import com.nat20.ticketguru.repository.VenueRepository;
-import com.nat20.ticketguru.repository.ZipcodeRepository;
+import com.nat20.ticketguru.domain.*;
+import com.nat20.ticketguru.repository.*;
+
 
 @SpringBootApplication
 public class TicketguruApplication {
@@ -34,7 +23,7 @@ public class TicketguruApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(TicketRepository ticketRepository, UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository, SaleRepository saleRepository, EventRepository eventRepository, VenueRepository venueRepository) {
+    public CommandLineRunner demo(PermissionRepository permissionRepository, TicketRepository ticketRepository, UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository, SaleRepository saleRepository, EventRepository eventRepository, VenueRepository venueRepository) {
         return (args) -> {
             log.info("Creating a few ticket test entries");
             ticketRepository.save(new Ticket());
@@ -43,6 +32,10 @@ public class TicketguruApplication {
             log.info("Creating a few role test entries");
             roleRepository.save(new Role("cashier"));
             roleRepository.save(new Role("event organizer"));
+
+            log.info("Creating a few permission test entries");
+            permissionRepository.save(new Permission("read"));
+            permissionRepository.save(new Permission("write"));
 
             log.info("Creating a few user test entries");
             userRepository.save(new User("test1@test.com", "User1", "Cashier", "VerySecureHash1", roleRepository.findByTitle("cashier").get()));
