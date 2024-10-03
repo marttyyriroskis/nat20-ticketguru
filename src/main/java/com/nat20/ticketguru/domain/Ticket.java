@@ -2,6 +2,7 @@ package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,17 +10,27 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
 @Table(name = "tickets")
 public class Ticket {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
+    @NotBlank(message = "Barcode must not be empty")
+    //Size annotation if the barcode should always be the same length
+    @Column(name = "barcode")
     private String barcode;
+
+    @Column(name = "usedAt")
     private LocalDateTime usedAt;
+
+    @PositiveOrZero(message = "Price must be positive or zero")
+    @Column(name = "price", nullable = false)
     private double price;
 
     @ManyToOne
@@ -37,6 +48,7 @@ public class Ticket {
 
     public Ticket(String eventCode) { // TODO: Figure out how the barcode should be generated
         // Generate barcode from timestamp and event code
+        // Event code = event id?
         this.barcode = eventCode + "-" + System.currentTimeMillis();
     }
 
