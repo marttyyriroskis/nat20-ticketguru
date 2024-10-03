@@ -4,6 +4,7 @@ package com.nat20.ticketguru.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.nat20.ticketguru.domain.Role;
 import com.nat20.ticketguru.domain.User;
+import com.nat20.ticketguru.domain.Venue;
+import com.nat20.ticketguru.repository.RoleRepository;
 import com.nat20.ticketguru.repository.UserRepository;
 
 import java.util.Optional;
@@ -26,8 +30,12 @@ public class RestUserController {
     @Autowired
     private UserRepository userRepository;
 
-    RestUserController(UserRepository userRepository) {
+    @Autowired
+    private RoleRepository roleRepository;
+
+    RestUserController(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
     
     // Get all users
@@ -51,6 +59,20 @@ public class RestUserController {
     // Add a new user
     @PostMapping
     public User addUser(@RequestBody User user) {
+        
+        if (user.getRole() != null) {
+            Optional<Role> existingRole = roleRepository.findById(user.getRole().getId());
+
+            if (!existingRole.isPresent()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Role not found");
+            }
+
+            user.setRole(existingRole.get());
+        } else {
+            user.setRole(null);
+        }
+
         // Uncomment the following when spring security is added
         // String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         // user.setPassword(hashedPassword);
@@ -69,6 +91,7 @@ public class RestUserController {
         user.setEmail(editedUser.getEmail());
         user.setFirstName(editedUser.getFirstName());
         user.setLastName(editedUser.getLastName());
+        user.setRole(editedUser.getRole()); // Validate?
         // Uncomment the following when spring security is added
         // String hashedPassword = BCrypt.hashpw(editedUser.getPassword(), BCrypt.gensalt());
         // user.setPassword(hashedPassword);
@@ -77,14 +100,14 @@ public class RestUserController {
     
     // Delete a user
     @DeleteMapping("/{id}")
-    public Iterable<User> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<User> deleteUser(@PathVariable Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (!optionalUser.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "User not found");
         }
         userRepository.deleteById(id);
-        return userRepository.findAll();
+        return ResponseEntity.status(204).build();
     }
     
 }
