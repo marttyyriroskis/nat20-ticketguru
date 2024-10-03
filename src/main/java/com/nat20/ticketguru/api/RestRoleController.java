@@ -132,6 +132,10 @@ public class RestRoleController {
         Role role = optionalRole.get();
         Permission permission = optionalPermission.get();
 
+        if (!role.hasPermission(permission)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
         role.removePermission(permission);
 
         roleRepository.save(role);

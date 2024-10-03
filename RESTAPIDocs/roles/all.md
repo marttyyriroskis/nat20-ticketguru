@@ -356,7 +356,7 @@ DELETE /api/roles/1/permission/2
 
 #### 404 Not Found
 
-**Condition**: If the role with the specified `roleId` or the permission with `permissionId` does not exist.
+**Condition**: If the role with the specified `roleId` or the permission with `permissionId` does not exist, or the role doesn't have requested permission.
 
 **Code**: `404 NOT FOUND`
 
@@ -373,5 +373,13 @@ or
 ```json
 {
   "message": "Permission not found"
+}
+```
+
+or
+
+```json
+{
+  "message": "Permission not found in Role"
 }
 ```

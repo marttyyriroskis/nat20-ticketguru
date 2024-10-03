@@ -111,6 +111,10 @@ public class User {
         this.role = role;
     }
 
+    public boolean hasPermission(Permission permission) {
+        return role.hasPermission(permission);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

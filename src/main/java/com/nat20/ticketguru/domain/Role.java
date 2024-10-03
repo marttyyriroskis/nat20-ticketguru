@@ -92,6 +92,10 @@ public class Role {
         this.permissions.remove(permission);
     }
 
+    public boolean hasPermission(Permission permission) {
+        return this.permissions.contains(permission);
+    }
+
     @Override
     public String toString() {
         return "Role [id=" + id + ", title=" + title + "]";
