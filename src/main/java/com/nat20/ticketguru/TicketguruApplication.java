@@ -16,13 +16,13 @@ import com.nat20.ticketguru.domain.Ticket;
 import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.domain.Venue;
 import com.nat20.ticketguru.domain.Zipcode;
+import com.nat20.ticketguru.repository.EventRepository;
 import com.nat20.ticketguru.repository.RoleRepository;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.repository.UserRepository;
 import com.nat20.ticketguru.repository.VenueRepository;
 import com.nat20.ticketguru.repository.ZipcodeRepository;
-import com.nat20.ticketguru.repository.EventRepository;
 
 @SpringBootApplication
 public class TicketguruApplication {
