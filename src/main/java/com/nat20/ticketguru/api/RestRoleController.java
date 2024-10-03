@@ -92,17 +92,25 @@ public class RestRoleController {
     }
 
     // Add a permission to a role
-    @PostMapping("/{roleId}/permissions")
-        public ResponseEntity<Role> addPermissionToRole(@PathVariable Long roleId, @RequestBody Permission permission) {
-        Optional<Role> optionalRole = roleRepository.findById(roleId);
+    @PostMapping("/{id}/permissions")
+        public ResponseEntity<Role> addPermissionToRole(@PathVariable Long id, @RequestBody Permission permissionRequest) {
+        Long permissionId = permissionRequest.getId();
+        
+        Optional<Role> optionalRole = roleRepository.findById(id);
         if (!optionalRole.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Optional<Permission> optionalPermission = permissionRepository.findById(permissionId);
+        if (!optionalPermission.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         
         Role role = optionalRole.get();
+        Permission permission = optionalPermission.get();
 
-        permission = permissionRepository.save(permission);
         role.addPermission(permission);
+        
         roleRepository.save(role);
 
         return ResponseEntity.ok(role);
