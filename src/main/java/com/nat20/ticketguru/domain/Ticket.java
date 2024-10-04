@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 
@@ -42,7 +43,7 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "sale_id")
-    @JsonIgnore
+    @JsonIgnore // prevent infinite loops
     private Sale sale;
 
     public Ticket() {
@@ -104,10 +105,19 @@ public class Ticket {
         this.sale = sale;
     }
 
+    // saleId is not persistent
+    @Transient
+    private Long saleId;
+
+    public Long getSaleId() {
+        return sale != null ? sale.getId() : null; // Return the sale ID if sale is not null
+    }
+
+    // omit sale from toString to prevent infinite loops, use saleId instead
     @Override
     public String toString() {
         return "Ticket [id=" + id + ", barcode=" + barcode + ", usedAt=" + usedAt + ", price=" + price + ", ticketType="
-                + ticketType + "]";
+                + ticketType + ", saleId=" + saleId + "]";
     }
 
 }
