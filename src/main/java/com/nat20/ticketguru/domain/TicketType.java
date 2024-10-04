@@ -36,8 +36,8 @@ public class TicketType {
     @Column(name = "retail_price", nullable = false)
     private double retail_price;
 
-    @PositiveOrZero(message = "Total available must be positive or zero")
-    @Column(name = "total_available", nullable = false)
+    @Positive(message = "Total available must be positive or null")
+    @Column(name = "total_available", nullable = true)
     private Integer total_available;
 
     @ManyToOne
