@@ -7,11 +7,13 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -83,6 +85,16 @@ public class RestSaleController {
         newSale.setPaidAt(LocalDateTime.now());
 
         return saleRepository.save(newSale);
+    }
+
+    // Skipping PUT method for now. Not sure if we should allow changing a sale event after the sale has happened at all.
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteSale(@PathVariable("id") Long id) {
+        if (!saleRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found with id: " + id);
+        }
+        saleRepository.deleteById(id);
     }
 
 }
