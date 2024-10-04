@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,11 +31,13 @@ import jakarta.validation.Valid;
 @Validated
 public class RestEventController {
 
-    @Autowired
-    EventRepository eventRepository;
+    private final EventRepository eventRepository;
+    private final VenueRepository venueRepository;
 
-    @Autowired
-    VenueRepository venueRepository;
+    public RestEventController(EventRepository eventRepository, VenueRepository venueRepository) {
+        this.eventRepository = eventRepository;
+        this.venueRepository = venueRepository;
+    }
 
     // Get events
     @GetMapping("")
