@@ -132,7 +132,7 @@ public class TicketguruApplication {
                 ticketTypeRepository.save(new TicketType("pensioner", 14.99, null, eventRepository.findById(1L).get()));
                 ticketTypeRepository.save(new TicketType("vip", 79.99, 20, eventRepository.findById(1L).get()));
             }
-        ;
+        };
     }
 
 }
