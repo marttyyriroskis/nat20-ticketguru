@@ -64,8 +64,8 @@ public class RestTicketTypeController {
 
     // Update a ticket type
     @PutMapping("/{id}")
-    public TicketType editTicketType(@Valid @PathVariable("id") Long ticketTypeId,
-            @RequestBody TicketType ticketTypeBody) {
+    public TicketType editTicketType(@PathVariable("id") Long ticketTypeId,
+            @Valid @RequestBody TicketType ticketTypeBody) {
         Optional<TicketType> optionalTicketType = ticketTypeRepository.findById(ticketTypeId);
         // Check if the ticket type specified in the PathVariable actually exists
         if (!optionalTicketType.isPresent()) {
