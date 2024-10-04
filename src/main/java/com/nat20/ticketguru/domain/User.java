@@ -1,12 +1,22 @@
 package com.nat20.ticketguru.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import java.util.List;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "users")
@@ -16,30 +26,38 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String email;
+    
     private String firstName;
     private String lastName;
-    private String passwordHash;
+
+    @JsonIgnore
+    private String hashedPassword;
 
     @ManyToOne
     @JoinColumn(name = "roleid")
     private Role role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Sale> sales;
+
     public User() {
     }
 
-        public User(String email, String firstName, String lastName, String passwordHash) {
+        public User(String email, String firstName, String lastName, String hashedPassword) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.passwordHash = passwordHash;
+        this.hashedPassword = hashedPassword;
     }
 
-    public User(String email, String firstName, String lastName, String passwordHash, Role role) {
+    public User(String email, String firstName, String lastName, String hashedPassword, Role role) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.passwordHash = passwordHash;
+        this.hashedPassword = hashedPassword;
         this.role = role;
     }
 
@@ -76,12 +94,13 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    @JsonIgnore
+    public String gethashedPassword() {
+        return hashedPassword;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void sethashedPassword(String hashedPassword) {
+        this.hashedPassword = hashedPassword;
     }
 
     public Role getRole() {
@@ -92,6 +111,10 @@ public class User {
         this.role = role;
     }
 
+    public boolean hasPermission(Permission permission) {
+        return role.hasPermission(permission);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -100,7 +123,7 @@ public class User {
         sb.append(", email=").append(email);
         sb.append(", firstName=").append(firstName);
         sb.append(", lastName=").append(lastName);
-        sb.append(", passwordHash=").append(passwordHash);
+        sb.append(", hashedPassword=").append(hashedPassword);
         sb.append(", role=").append(role);
         sb.append('}');
         return sb.toString();
