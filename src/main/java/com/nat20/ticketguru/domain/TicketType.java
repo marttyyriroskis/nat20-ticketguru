@@ -12,9 +12,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -33,6 +32,7 @@ public class TicketType {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotNull(message = "Price must not be null")
     @Positive(message = "Price must be positive")
     @Column(name = "retail_price", nullable = false)
     private double retail_price;
@@ -41,6 +41,7 @@ public class TicketType {
     @Column(name = "total_available", nullable = true)
     private Integer total_available;
 
+    @NotNull(message = "Event must not be null")
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
