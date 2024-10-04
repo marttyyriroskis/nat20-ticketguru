@@ -1,7 +1,6 @@
 package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
-
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -26,7 +25,7 @@ public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "id")
     private Long id;
 
     @NotBlank(message = "Name must not be empty")
