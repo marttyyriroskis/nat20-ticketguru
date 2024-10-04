@@ -2,6 +2,8 @@ package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,9 +18,10 @@ import jakarta.validation.constraints.PositiveOrZero;
 @Entity
 @Table(name = "tickets")
 public class Ticket {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "id")
     private Long id;
 
     @NotBlank(message = "Barcode must not be empty")
@@ -39,6 +42,7 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "sale_id")
+    @JsonIgnore
     private Sale sale;
 
     public Ticket() {
@@ -103,7 +107,7 @@ public class Ticket {
     @Override
     public String toString() {
         return "Ticket [id=" + id + ", barcode=" + barcode + ", usedAt=" + usedAt + ", price=" + price + ", ticketType="
-                + ticketType + ", sale=" + sale + "]";
+                + ticketType + "]";
     }
 
 }

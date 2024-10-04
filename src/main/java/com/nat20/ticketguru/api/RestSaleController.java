@@ -48,11 +48,8 @@ public class RestSaleController {
 
     @GetMapping("/{id}")
     public Sale getSale(@PathVariable("id") Long id) {
-        Optional<Sale> optionalSale = saleRepository.findById(id);
-        if (!optionalSale.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found with id: " + id);
-        }
-        Sale sale = optionalSale.get();
+        Sale sale = saleRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found with id: " + id));
         return sale;
     }
 
@@ -66,7 +63,7 @@ public class RestSaleController {
         if (!existingUser.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
-
+        Sale newSale = new Sale();
         // check Tickets
         List<Ticket> validTickets = new ArrayList<>();
         List<Ticket> requestTickets = sale.getTickets();
@@ -77,9 +74,10 @@ public class RestSaleController {
             }
             // TODO maybe need to add more validation here? 
             validTickets.add(ticket.get());
+            // set ticket association with sale in ticket
+            ticket.get().setSale(newSale);
         }
 
-        Sale newSale = new Sale();
         newSale.setUser(existingUser.get());
         newSale.setTickets(validTickets);
         newSale.setPaidAt(LocalDateTime.now());
@@ -88,11 +86,16 @@ public class RestSaleController {
     }
 
     // Skipping PUT method for now. Not sure if we should allow changing a sale event after the sale has happened at all.
+    // PUT
+    //
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSale(@PathVariable("id") Long id) {
-        if (!saleRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found with id: " + id);
+        Sale sale = saleRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found with id: " + id));
+        // remove sale association from tickets before delete (we want to preserve the tickets in the database)
+        for (Ticket ticket : sale.getTickets()) {
+            ticket.setSale(null);
         }
         saleRepository.deleteById(id);
     }
