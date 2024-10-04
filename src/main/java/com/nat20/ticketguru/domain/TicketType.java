@@ -38,7 +38,7 @@ public class TicketType {
 
     @PositiveOrZero(message = "Total available must be positive or zero")
     @Column(name = "total_available", nullable = false)
-    private int total_available;
+    private Integer total_available;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
@@ -51,7 +51,7 @@ public class TicketType {
     public TicketType() {
     }
 
-    public TicketType(String name, double retail_price, int total_available, Event event) {
+    public TicketType(String name, double retail_price, Integer total_available, Event event) {
         this.name = name;
         this.retail_price = retail_price;
         this.total_available = total_available;
@@ -82,11 +82,11 @@ public class TicketType {
         this.retail_price = retail_price;
     }
 
-    public int getTotal_available() {
+    public Integer getTotal_available() {
         return total_available;
     }
 
-    public void setTotal_available(int total_available) {
+    public void setTotal_available(Integer total_available) {
         this.total_available = total_available;
     }
 
