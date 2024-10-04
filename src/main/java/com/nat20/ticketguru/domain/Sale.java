@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "sales")
@@ -30,7 +33,16 @@ public class Sale {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Only allow deserialization, not serialization
     private User user;
+
+    // userId is not persistent
+    @Transient
+    private Long userId;
+
+    public Long getUserId() {
+        return user != null ? user.getId() : null; // Return the user ID if user is not null
+    }
 
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Ticket> tickets = new ArrayList<>();
@@ -82,14 +94,7 @@ public class Sale {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Sale{");
-        sb.append("id=").append(id);
-        sb.append(", paidAt=").append(paidAt);
-        sb.append(", user=").append(user);
-        sb.append(", tickets=").append(tickets);
-        sb.append('}');
-        return sb.toString();
+        return "Sale [id=" + id + ", paidAt=" + paidAt + ", tickets=" + tickets + ", userId=" + userId + "]";
     }
 
 }
