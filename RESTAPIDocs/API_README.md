@@ -27,6 +27,14 @@ Below you can find a table of contents to the REST API request calls. Please not
 - [ticketsPost](tickets/ticketsPost.md)
 - [ticketsPut](tickets/ticketsPut.md)
 
+### Users (/api/users)
+
+- [usersDelete](users/usersDelete.md)
+- [usersGetAll](users/usersGetAll.md)
+- [usersGetById](users/usersGetById.md)
+- [usersPost](users/usersPost.md)
+- [usersPut](users/usersPut.md)
+
 ## ThunderClient API requests
 
 For ThunderClient VS Code extension users, we offer JSON files to import API requests directly into the extension. See the ThunderClient requests folder for the API request collections.
