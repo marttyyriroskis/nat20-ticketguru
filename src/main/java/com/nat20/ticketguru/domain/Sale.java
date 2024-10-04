@@ -27,8 +27,8 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // @CreatedDate
-    @Column(name = "paid_at", updatable = false)
+    //@CreatedDate //needs JPA auditing to work. lets set the time manually for now
+    @Column(name = "paid_at", updatable = false, nullable = false)
     private LocalDateTime paidAt;
 
     @ManyToOne
@@ -48,14 +48,11 @@ public class Sale {
     private List<Ticket> tickets = new ArrayList<>();
 
     public Sale() {
-    }
-
-    public Sale(User user) {
-        this.user = user;
+        this.paidAt = LocalDateTime.now();
     }
 
     public Sale(LocalDateTime paidAt, List<Ticket> tickets, User user) {
-        this.paidAt = paidAt;
+        this.paidAt = paidAt; // allows manually setting the time
         this.tickets = tickets;
         this.user = user;
     }
