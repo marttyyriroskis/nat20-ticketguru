@@ -1,12 +1,16 @@
 package com.nat20.ticketguru.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,7 +54,7 @@ public class RestSaleController {
     @GetMapping("/{id}")
     public Sale getSale(@PathVariable("id") Long id) {
         Sale sale = saleRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found with id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
         return sale;
     }
 
@@ -77,6 +81,9 @@ public class RestSaleController {
             validTickets.add(ticket.get());
             // set ticket association with sale in ticket
             ticket.get().setSale(newSale);
+        }
+        if (validTickets.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No valid tickets in Sale");
         }
 
         newSale.setUser(existingUser.get());
@@ -123,7 +130,7 @@ public class RestSaleController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSale(@PathVariable("id") Long id) {
         Sale sale = saleRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found with id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
         // remove sale association from tickets before delete (we want to preserve the tickets in the database)
         for (Ticket ticket : sale.getTickets()) {
             ticket.setSale(null);
@@ -131,4 +138,20 @@ public class RestSaleController {
         saleRepository.deleteById(id);
     }
 
+    // Exception handler for validation errors
+    // If validation fails, a MethodArgumentNotValidException is thrown,
+    // which then returns the failed field(s) and the validation failure message(s)
+    // as a BAD_REQUEST response
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        return errors;
+    }
+    // Source:
+    // https://dev.to/shujaat34/exception-handling-and-validation-in-spring-boot-3of9
+    // The source details a Global Exception handler, that we could implement later
+    // to handle all the endpoints
 }
