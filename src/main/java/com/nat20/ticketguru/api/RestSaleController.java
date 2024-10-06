@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -85,9 +87,38 @@ public class RestSaleController {
         return saleRepository.save(newSale);
     }
 
-    // Skipping PUT method for now. Not sure if we should allow changing a sale event after the sale has happened at all.
-    // PUT
-    //
+    @PutMapping("/{id}")
+    public Sale editSale(@Valid @RequestBody Sale editedSale, @PathVariable("id") Long id, @RequestParam Long userId) {
+        // check Id
+        Sale sale = saleRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
+        // check User
+        if (userId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No userId in query parameter");
+        }
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+
+        // check Tickets
+        List<Ticket> validTickets = new ArrayList<>();
+        for (Ticket requestTicket : editedSale.getTickets()) {
+            Optional<Ticket> ticket = ticketRepository.findById(requestTicket.getId());
+            if (!ticket.isPresent()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket");
+            }
+            // TODO maybe need to add more validation here? 
+            validTickets.add(ticket.get());
+            // set ticket association with sale in ticket
+            ticket.get().setSale(sale);
+        }
+        sale.setUser(existingUser);
+        sale.setTickets(validTickets);
+        if (editedSale.getPaidAt() != null) {
+            sale.setPaidAt(editedSale.getPaidAt());
+        }
+        return saleRepository.save(sale);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSale(@PathVariable("id") Long id) {

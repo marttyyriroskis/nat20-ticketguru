@@ -10,8 +10,24 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.nat20.ticketguru.domain.*;
-import com.nat20.ticketguru.repository.*;
+import com.nat20.ticketguru.domain.Event;
+import com.nat20.ticketguru.domain.Permission;
+import com.nat20.ticketguru.domain.Role;
+import com.nat20.ticketguru.domain.Sale;
+import com.nat20.ticketguru.domain.Ticket;
+import com.nat20.ticketguru.domain.TicketType;
+import com.nat20.ticketguru.domain.User;
+import com.nat20.ticketguru.domain.Venue;
+import com.nat20.ticketguru.domain.Zipcode;
+import com.nat20.ticketguru.repository.EventRepository;
+import com.nat20.ticketguru.repository.PermissionRepository;
+import com.nat20.ticketguru.repository.RoleRepository;
+import com.nat20.ticketguru.repository.SaleRepository;
+import com.nat20.ticketguru.repository.TicketRepository;
+import com.nat20.ticketguru.repository.TicketTypeRepository;
+import com.nat20.ticketguru.repository.UserRepository;
+import com.nat20.ticketguru.repository.VenueRepository;
+import com.nat20.ticketguru.repository.ZipcodeRepository;
 
 @SpringBootApplication
 public class TicketguruApplication {
@@ -30,11 +46,6 @@ public class TicketguruApplication {
         return new CommandLineRunner() {
             @Override
             public void run(String[] args) throws Exception {
-                log.info("Creating a few ticket test entries");
-                ticketRepository.save(new Ticket());
-                ticketRepository.save(new Ticket());
-                ticketRepository.save(new Ticket());
-                ticketRepository.save(new Ticket());
 
                 log.info("Creating a few role test entries");
                 roleRepository.save(new Role("cashier"));
@@ -78,10 +89,43 @@ public class TicketguruApplication {
                 zipcodeRepository.save(new Zipcode("80100", "Joensuu"));
                 zipcodeRepository.save(new Zipcode("90140", "Oulu"));
 
+                log.info("Creating a few venue test entries");
+                venueRepository.save(new Venue("Bunkkeri", "Bunkkeritie 1", zipcodeRepository.findById("00100").get()));
+                venueRepository.save(new Venue("Helsingin jäähalli", "Nordenskiöldinkatu 11-13",
+                        zipcodeRepository.findById("00250").get()));
+                venueRepository.save(new Venue("National Museum", "Museokatu 1", zipcodeRepository.findByZipcode("00100")));
+
+                log.info("Creating a few event test entries");
+                eventRepository.save(new Event("Death metal karaoke", "Öriöriöriöriörirprir!!!!!", 10,
+                        LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
+                        LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get()));
+                eventRepository.save(new Event("Disney On Ice", "Mikki-hiiret jäällä. Suih suih vaan!", 10000,
+                        LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
+                        LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(2L).get()));
+                eventRepository.save(new Event("A Night at the Museum", "Night-show at the National Museum", 500,
+                        LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
+                        LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get()));
+
+                log.info("Creating a few ticket type test entries");
+                ticketTypeRepository.save(new TicketType("adult", 29.99, null, eventRepository.findById(1L).get()));
+                ticketTypeRepository.save(new TicketType("student", 14.99, null, eventRepository.findById(1L).get()));
+                ticketTypeRepository.save(new TicketType("pensioner", 14.99, null, eventRepository.findById(1L).get()));
+                ticketTypeRepository.save(new TicketType("vip", 79.99, 20, eventRepository.findById(1L).get()));
+
+                log.info("Creating a few ticket test entries");
+                ticketRepository.save(new Ticket());
+                ticketRepository.save(new Ticket());
+                ticketRepository.save(new Ticket());
+                ticketRepository.save(new Ticket());
+
                 log.info("Creating a few sale test entries");
                 Ticket ticket1 = ticketRepository.findById(1L).get();
                 Ticket ticket2 = ticketRepository.findById(2L).get();
                 Ticket ticket3 = ticketRepository.findById(3L).get();
+
+                ticket1.setTicketType(ticketTypeRepository.findById(1L).get());
+                ticket2.setTicketType(ticketTypeRepository.findById(2L).get());
+                ticket3.setTicketType(ticketTypeRepository.findById(2L).get());
 
                 Sale sale1 = new Sale(LocalDateTime.now(), new ArrayList<>(), userRepository.findById(1L).get());
                 Sale sale2 = new Sale(LocalDateTime.now(), new ArrayList<>(), userRepository.findById(2L).get());
@@ -108,29 +152,6 @@ public class TicketguruApplication {
                 log.info("\n\nSales:\n");
                 log.info(savedSale2.toString());
                 log.info("\n\n\n");
-
-                log.info("Creating a few venue test entries");
-                venueRepository.save(new Venue("Bunkkeri", "Bunkkeritie 1", zipcodeRepository.findById("00100").get()));
-                venueRepository.save(new Venue("Helsingin jäähalli", "Nordenskiöldinkatu 11-13",
-                        zipcodeRepository.findById("00250").get()));
-                venueRepository.save(new Venue("National Museum", "Museokatu 1", zipcodeRepository.findByZipcode("00100")));
-
-                log.info("Creating a few event test entries");
-                eventRepository.save(new Event("Death metal karaoke", "Öriöriöriöriörirprir!!!!!", 10,
-                        LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
-                        LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get()));
-                eventRepository.save(new Event("Disney On Ice", "Mikki-hiiret jäällä. Suih suih vaan!", 10000,
-                        LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
-                        LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(2L).get()));
-                eventRepository.save(new Event("A Night at the Museum", "Night-show at the National Museum", 500,
-                        LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
-                        LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get()));
-
-                log.info("Creating a few ticket type test entries");
-                ticketTypeRepository.save(new TicketType("adult", 29.99, null, eventRepository.findById(1L).get()));
-                ticketTypeRepository.save(new TicketType("student", 14.99, null, eventRepository.findById(1L).get()));
-                ticketTypeRepository.save(new TicketType("pensioner", 14.99, null, eventRepository.findById(1L).get()));
-                ticketTypeRepository.save(new TicketType("vip", 79.99, 20, eventRepository.findById(1L).get()));
             }
         };
     }
