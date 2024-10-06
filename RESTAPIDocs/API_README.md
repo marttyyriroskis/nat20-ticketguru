@@ -27,6 +27,14 @@ Below you can find a table of contents to the REST API request calls. Please not
 - [ticketsPost](tickets/ticketsPost.md)
 - [ticketsPut](tickets/ticketsPut.md)
 
+### Ticket types (/api/tickettypes)
+
+- [ticketTypesDelete](ticketTypes/ticketTypesDelete.md)
+- [ticketTypesGetAll](ticketTypes/ticketTypesGetAll.md)
+- [ticketTypesGetById](ticketTys/ticketTypesGetById.md)
+- [ticketTypesPost](ticketTypes/ticketTypesPost.md)
+- [ticketTypesPut](ticketTypes/ticketTypesPut.md)
+
 ### Users (/api/users)
 
 - [usersDelete](users/usersDelete.md)
