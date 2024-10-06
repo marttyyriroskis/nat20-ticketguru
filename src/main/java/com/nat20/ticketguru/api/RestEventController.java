@@ -126,7 +126,7 @@ public class RestEventController {
         if (!optionalEvent.isPresent()) {
             // If null (ie. not found), throws exception and error message
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Event not found");
+                    HttpStatus.NOT_FOUND, "Event not found");
         }
         // If not null (ie. found), deletes the event with the mapped id from the
         // repository
