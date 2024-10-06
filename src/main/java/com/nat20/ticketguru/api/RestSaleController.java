@@ -1,6 +1,5 @@
 package com.nat20.ticketguru.api;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,8 +79,9 @@ public class RestSaleController {
 
         newSale.setUser(existingUser.get());
         newSale.setTickets(validTickets);
-        newSale.setPaidAt(LocalDateTime.now());
-
+        if (sale.getPaidAt() != null) {
+            newSale.setPaidAt(sale.getPaidAt());
+        }
         return saleRepository.save(newSale);
     }
 

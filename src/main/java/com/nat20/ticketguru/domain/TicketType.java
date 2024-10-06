@@ -24,8 +24,8 @@ import jakarta.persistence.OneToMany;
 public class TicketType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
-    private long id;
+    @Column(name = "id")
+    private Long id;
 
     @NotBlank(message = "Name must not be empty")
     @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters long")
@@ -60,11 +60,11 @@ public class TicketType {
         this.event = event;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

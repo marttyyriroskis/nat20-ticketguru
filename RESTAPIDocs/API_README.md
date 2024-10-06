@@ -27,6 +27,14 @@ Below you can find a table of contents to the REST API request calls. Please not
 - [ticketsPost](tickets/ticketsPost.md)
 - [ticketsPut](tickets/ticketsPut.md)
 
+### Ticket types (/api/tickettypes)
+
+- [ticketTypesDelete](ticketTypes/ticketTypesDelete.md)
+- [ticketTypesGetAll](ticketTypes/ticketTypesGetAll.md)
+- [ticketTypesGetById](ticketTys/ticketTypesGetById.md)
+- [ticketTypesPost](ticketTypes/ticketTypesPost.md)
+- [ticketTypesPut](ticketTypes/ticketTypesPut.md)
+
 ### Users (/api/users)
 
 - [usersDelete](users/usersDelete.md)
@@ -34,6 +42,14 @@ Below you can find a table of contents to the REST API request calls. Please not
 - [usersGetById](users/usersGetById.md)
 - [usersPost](users/usersPost.md)
 - [usersPut](users/usersPut.md)
+
+### Venues (/api/venues)
+
+- [venuesDelete](venues/venuesDelete.md)
+- [venuesGetAll](venues/venuesGetAll.md)
+- [venuesGetById](venues/venuesGetById.md)
+- [venuesPost](venues/venuesPost.md)
+- [venuesPut](venues/venuesPut.md)
 
 ## ThunderClient API requests
 
