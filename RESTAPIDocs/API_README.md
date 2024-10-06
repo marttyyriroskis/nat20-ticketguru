@@ -43,6 +43,14 @@ Below you can find a table of contents to the REST API request calls. Please not
 - [usersPost](users/usersPost.md)
 - [usersPut](users/usersPut.md)
 
+### Venues (/api/venues)
+
+- [venuesDelete](venues/venuesDelete.md)
+- [venuesGetAll](venues/venuesGetAll.md)
+- [venuesGetById](venues/venuesGetById.md)
+- [venuesPost](venues/venuesPost.md)
+- [venuesPut](venues/venuesPut.md)
+
 ## ThunderClient API requests
 
 For ThunderClient VS Code extension users, we offer JSON files to import API requests directly into the extension. See the ThunderClient requests folder for the API request collections.
