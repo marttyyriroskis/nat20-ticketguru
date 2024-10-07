@@ -31,7 +31,7 @@ Content-Type: application/json
 
 **Code** : `200 OK`
 
-**Content example** : Returns remaining `Event` objects.
+**Content example** : Returns remaining `Ticket` objects.
 
 ```json
 [
