@@ -55,23 +55,26 @@ public class RestTicketController {
     
     // Post a new ticket
     @PostMapping("")
-    public Ticket createTicket(@Valid @RequestBody Ticket ticket) {
-        // Check if TicketType.id is null
-        if (ticket.getTicketType() != null && ticket.getTicketType().getId() == null) {
-            ticket.setTicketType(null);
+    public Ticket createTicket(@Valid @RequestBody Ticket ticket, @RequestParam Long ticketTypeId, @RequestParam Long saleId) {
+        // Find TicketType by ticketTypeId
+        if (ticketTypeId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No ticketTypeId in query parameter");
         }
 
-        // Check if TicketType already exists
-        if (ticket.getTicketType() != null) {
-            Optional<TicketType> existingTicketType = ticketTypeRepository.findById(ticket.getTicketType().getId());
+        TicketType existingTicketType = ticketTypeRepository.findById(ticketTypeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ticket type not found"));
+        
+        ticket.setTicketType(existingTicketType);
 
-            if (!existingTicketType.isPresent()) {
-                throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Ticket type does not exist!");
-            }
-
-            ticket.setTicketType(existingTicketType.get());
+        // Find Sale by saleId
+        if (saleId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No saleId in query parameter");
         }
+
+        Sale existingSale = saleRepository.findById(saleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sale not found"));
+        
+        ticket.setSale(existingSale);
 
         Ticket savedTicket = ticketRepository.save(ticket);
         return savedTicket;
