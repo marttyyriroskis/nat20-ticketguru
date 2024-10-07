@@ -1,0 +1,116 @@
+{
+    "info": {
+        "_postman_id": "7c59f258-2507-4edd-8a1c-b9a4dd04730f",
+        "name": "RestTicketTypeRequests",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "localhost:8080/api/tickettypes/1",
+            "request": {
+                "method": "DELETE",
+                "url": {
+                    "raw": "localhost:8080/api/tickettypes/5",
+                    "path": [
+                        "api",
+                        "tickettypes",
+                        "5"
+                    ],
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080"
+                }
+            }
+        },
+        {
+            "name": "localhost:8080/api/tickettypes",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "localhost:8080/api/tickettypes",
+                    "path": [
+                        "api",
+                        "tickettypes"
+                    ],
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080"
+                }
+            }
+        },
+        {
+            "name": "localhost:8080/api/tickettypes",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "localhost:8080/api/tickettypes",
+                    "path": [
+                        "api",
+                        "tickettypes"
+                    ],
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n    \"name\": \"superVIP\",\n    \"retail_price\": 14.99,\n    \"total_available\": 10,\n    \"event\": {\"id\": 1}\n}"
+                }
+            }
+        },
+        {
+            "name": "localhost:8080/api/tickettypes/1",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "localhost:8080/api/tickettypes/1",
+                    "path": [
+                        "api",
+                        "tickettypes",
+                        "1"
+                    ],
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n    \"name\": \"adult\",\n    \"retail_price\": 39.99,\n    \"total_available\": null,\n    \"event\": {\"id\": 1}\n}"
+                }
+            }
+        },
+        {
+            "name": "localhost:8080/api/tickettypes/1",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "localhost:8080/api/tickettypes/1",
+                    "path": [
+                        "api",
+                        "tickettypes",
+                        "1"
+                    ],
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080"
+                }
+            }
+        }
+    ]
+}
