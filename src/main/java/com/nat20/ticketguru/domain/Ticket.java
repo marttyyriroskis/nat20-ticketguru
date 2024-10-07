@@ -27,7 +27,7 @@ public class Ticket {
 
     @NotBlank(message = "Barcode must not be empty")
     //Size annotation if the barcode should always be the same length
-    @Column(name = "barcode")
+    @Column(name = "barcode", updatable = false)
     private String barcode;
 
     @Column(name = "usedAt")
@@ -72,6 +72,12 @@ public class Ticket {
     public void setBarcode(String barcode) {
         this.barcode = barcode;
     }
+
+    /* TODO: Implement markAsUsed() method, e.g.:
+        public void markAsUsed() {
+        this.usedAt = LocalDateTime.now();
+        }
+        */
 
     public LocalDateTime getUsedAt() {
         return usedAt;
