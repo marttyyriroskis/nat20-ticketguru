@@ -1,8 +1,6 @@
 package com.nat20.ticketguru.api;
 
-import org.apache.catalina.connector.Response;
-
-// import org.springframework.security.crypto.bcrypt.BCrypt; // Uncomment when spring security is added
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +20,6 @@ import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.repository.RoleRepository;
 import com.nat20.ticketguru.repository.UserRepository;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/users")
 public class RestUserController {
@@ -38,13 +34,13 @@ public class RestUserController {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
-    
+
     // Get all users
     @GetMapping
     public Iterable<User> getUsers() {
         return userRepository.findAll();
     }
-    
+
     // Get user by id
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) {
@@ -56,11 +52,10 @@ public class RestUserController {
         User user = optionalUser.get();
         return user;
     }
-    
+
     // Add a new user
     @PostMapping
     public ResponseEntity<User> addUser(@RequestBody User user) {
-
 
         if (user.getRole() != null && user.getRole().getId() == null) {
             user.setRole(null);
@@ -85,7 +80,7 @@ public class RestUserController {
         User response = userRepository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    
+
     // Update a user
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User editedUser) {
@@ -104,7 +99,7 @@ public class RestUserController {
         // user.setPassword(hashedPassword);
         return userRepository.save(user);
     }
-    
+
     // Delete a user
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
@@ -116,5 +111,5 @@ public class RestUserController {
         userRepository.deleteById(id);
         return ResponseEntity.status(204).build();
     }
-    
+
 }

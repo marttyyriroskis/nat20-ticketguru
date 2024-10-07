@@ -23,7 +23,7 @@ GET /sales/2
 Accept: application/json
 ```
 
-## Success Responses
+## Success Response
 
 **Condition** : Provided Sale `id` is valid.
 

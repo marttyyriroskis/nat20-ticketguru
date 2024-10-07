@@ -25,7 +25,7 @@ DELETE api/sales/2
 Content-Type: application/json
 ```
 
-## Success Responses
+## Success Response
 
 **Condition** : `Id` provided belongs to a Sale in the database
 
