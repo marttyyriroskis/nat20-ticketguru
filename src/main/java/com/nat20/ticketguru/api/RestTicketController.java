@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -78,7 +79,7 @@ public class RestTicketController {
     
     // Edit ticket
     @PutMapping("/{id}")
-    public Ticket editTicket(@Valid @RequestBody Ticket editedTicket, @PathVariable("id") Long ticketId) {
+    public Ticket editTicket(@Valid @RequestBody Ticket editedTicket, @PathVariable("id") Long ticketId, @RequestParam Long ticketTypeId, @RequestParam Long saleId) {
         // Check if Ticket exists
         Optional<Ticket> optionalTicket = ticketRepository.findById(ticketId);
         if (!optionalTicket.isPresent()) {
@@ -88,43 +89,37 @@ public class RestTicketController {
         Ticket ticket = optionalTicket.get();
 
         // Update fields
+        ticket.setPrice(editedTicket.getPrice());
+
+        if (editedTicket.getUsedAt() != null) {
+            ticket.setUsedAt(editedTicket.getUsedAt());
+        }
+
         /* TODO: Implement markAsUsed() method, e.g.:
         Ticket ticket = new Ticket();
         ticket.markAsUsed();
         LocalDateTime usedAtTime = ticket.getUsedAt();
         */
-        ticket.setUsedAt(editedTicket.getUsedAt());
-        ticket.setPrice(editedTicket.getPrice());
 
-        // TicketType can be set to existing TicketType OR null
-        TicketType editedTicketType = editedTicket.getTicketType();
-        if (editedTicketType != null) {
-            Optional<TicketType> existingTicketType = ticketTypeRepository.findById(editedTicketType.getId());
-            
-            if (!existingTicketType.isPresent()) {
-                throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Invalid ticket type");
-            }
-
-            ticket.setTicketType(existingTicketType.get());
-        } else {
-            ticket.setTicketType(null);
+        // Find TicketType by ticketTypeId
+        if (ticketTypeId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No ticketTypeId in query parameter");
         }
 
-        // Sale can be set to existing Sale OR null
-        Sale editedSale = editedTicket.getSaleId();
-        if (editedSale != null) {
-            Optional<Sale> existingSale = saleRepository.findById(editedSale.getId());
+        TicketType existingTicketType = ticketTypeRepository.findById(ticketTypeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ticket type not found"));
+        
+        ticket.setTicketType(existingTicketType);
 
-            if (!existingSale.isPresent()) {
-                throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Invalid sale");
-            }
-
-            ticket.setSale(existingSale.get());
-        } else {
-            ticket.setSale(null);
+        // Find Sale by saleId
+        if (saleId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No saleId in query parameter");
         }
+
+        Sale existingSale = saleRepository.findById(saleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sale not found"));
+        
+        ticket.setSale(existingSale);
 
         return ticketRepository.save(ticket);
     }
