@@ -2,7 +2,7 @@
 
 Show all Events the active User can access and with what permission level.
 
-**URL** : `/api/events/`
+**URL** : `/api/events`
 
 **Method** : `GET`
 

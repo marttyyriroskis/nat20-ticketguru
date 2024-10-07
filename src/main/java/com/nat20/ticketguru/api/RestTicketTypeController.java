@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -105,4 +106,18 @@ public class RestTicketTypeController {
     }
 
     // Delete a ticket type
+    @DeleteMapping("/{id}")
+    public Iterable<TicketType> deleteTicketType(@PathVariable("id") Long ticketTypeId) {
+        Optional<TicketType> optionalTicketType = ticketTypeRepository.findById(ticketTypeId);
+        if (!optionalTicketType.isPresent()) {
+            // If null (ie. not found), throws exception and error message
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Ticket type not found");
+        }
+        // If not null (ie. found), deletes the event with the mapped id from the
+        // repository
+        ticketTypeRepository.deleteById(ticketTypeId);
+        // Returns all the remaining events (without the removed event)
+        return ticketTypeRepository.findAll();
+    }
 }

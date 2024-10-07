@@ -39,6 +39,7 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "ticket_type_id")
+    @JsonIgnore
     private TicketType ticketType;
 
     @ManyToOne
@@ -111,6 +112,14 @@ public class Ticket {
         this.sale = sale;
     }
 
+    // ticketTypeId is not persistent
+    @Transient
+    private Long ticketTypeId;
+
+    public Long getTicketTypeId() {
+        return ticketType != null ? ticketType.getId() : null; // Return the ticketType ID if ticketType is not null
+    }
+
     // saleId is not persistent
     @Transient
     private Long saleId;
@@ -119,11 +128,11 @@ public class Ticket {
         return sale != null ? sale.getId() : null; // Return the sale ID if sale is not null
     }
 
-    // omit sale from toString to prevent infinite loops, use saleId instead
+    // omit sale and ticketType from toString to prevent infinite loops, use saleId and ticketTypeId instead
     @Override
     public String toString() {
-        return "Ticket [id=" + id + ", barcode=" + barcode + ", usedAt=" + usedAt + ", price=" + price + ", ticketType="
-                + ticketType + ", saleId=" + saleId + "]";
+        return "Ticket [id=" + id + ", barcode=" + barcode + ", usedAt=" + usedAt + ", price=" + price + ", ticketTypeId="
+                + ticketTypeId + ", saleId=" + saleId + "]";
     }
 
 }
