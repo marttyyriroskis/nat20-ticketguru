@@ -21,11 +21,11 @@ Below you can find a table of contents to the REST API request calls. Please not
 
 ### Permissions (/api/permissions)
 
-- [all](all.md)
+- [all](permissions/all.md)
 
 ### Roles (/api/roles)
 
-- [all](all.md)
+- [all](permissions/all.md)
 
 ### Sales (/api/sales)
 
