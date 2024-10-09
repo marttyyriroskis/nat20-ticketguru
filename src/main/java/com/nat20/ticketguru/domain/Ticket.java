@@ -58,6 +58,15 @@ public class Ticket {
         this.barcode = eventCode + "-" + System.currentTimeMillis();
     }
 
+    public Ticket(LocalDateTime usedAt, @PositiveOrZero(message = "Price must be positive or zero") double price, TicketType ticketType,
+            Sale sale) {
+        this.barcode = String.valueOf(System.currentTimeMillis());
+        this.usedAt = usedAt;
+        this.price = price;
+        this.ticketType = ticketType;
+        this.sale = sale;
+    }
+
     public Long getId() {
         return id;
     }

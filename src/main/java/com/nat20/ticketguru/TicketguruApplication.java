@@ -113,10 +113,15 @@ public class TicketguruApplication {
                 ticketTypeRepository.save(new TicketType("vip", 79.99, 20, eventRepository.findById(1L).get()));
 
                 log.info("Creating a few ticket test entries");
-                ticketRepository.save(new Ticket());
-                ticketRepository.save(new Ticket());
-                ticketRepository.save(new Ticket());
-                ticketRepository.save(new Ticket());
+                Sale sale1 = new Sale(LocalDateTime.now(), new ArrayList<>(), userRepository.findById(1L).get());
+                Sale sale2 = new Sale(LocalDateTime.now(), new ArrayList<>(), userRepository.findById(2L).get());
+                saleRepository.save(sale1);
+                saleRepository.save(sale2);
+                
+                ticketRepository.save(new Ticket(null, 10.0, ticketTypeRepository.findById(1L).get(), saleRepository.findById(2L).get()));
+                ticketRepository.save(new Ticket(null, 20.0, ticketTypeRepository.findById(2L).get(), saleRepository.findById(1L).get()));
+                ticketRepository.save(new Ticket(null, 30.0, ticketTypeRepository.findById(3L).get(), saleRepository.findById(2L).get()));
+                ticketRepository.save(new Ticket(null, 40.0, ticketTypeRepository.findById(4L).get(), saleRepository.findById(1L).get()));
 
                 log.info("Creating a few sale test entries");
                 Ticket ticket1 = ticketRepository.findById(1L).get();
@@ -127,10 +132,6 @@ public class TicketguruApplication {
                 ticket2.setTicketType(ticketTypeRepository.findById(2L).get());
                 ticket3.setTicketType(ticketTypeRepository.findById(2L).get());
 
-                Sale sale1 = new Sale(LocalDateTime.now(), new ArrayList<>(), userRepository.findById(1L).get());
-                Sale sale2 = new Sale(LocalDateTime.now(), new ArrayList<>(), userRepository.findById(2L).get());
-                saleRepository.save(sale1);
-                saleRepository.save(sale2);
                 ticket1.setSale(sale1);
                 ticket2.setSale(sale1);
                 ticket3.setSale(sale2);

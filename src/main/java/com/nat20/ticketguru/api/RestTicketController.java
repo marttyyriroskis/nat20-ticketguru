@@ -54,6 +54,7 @@ public class RestTicketController {
     }
     
     // Post a new ticket
+    // TODO: Redo with ResponseEntity
     @PostMapping("")
     public Ticket createTicket(@Valid @RequestBody Ticket ticket, @RequestParam Long ticketTypeId, @RequestParam Long saleId) {
         // Find TicketType by ticketTypeId
