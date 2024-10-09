@@ -14,7 +14,7 @@ Allow deleting `Event` details of the given `id`.
 
 | Parameter | Type | Description                               |
 | --------- | ---- | ----------------------------------------- |
-| `id`      | Long | Unique identifier for the event to update |
+| `id`      | Long | Unique identifier for the event to delete |
 
 **Data constraints** : `{}`
 

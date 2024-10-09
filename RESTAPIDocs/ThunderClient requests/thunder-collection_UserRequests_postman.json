@@ -1,0 +1,362 @@
+{
+    "info": {
+        "_postman_id": "38d23f7d-160a-4621-a9b6-45e9594e1f23",
+        "name": "TicketGuru",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "User",
+            "item": [
+                {
+                    "name": "Get Users",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/api/users",
+                            "path": [
+                                "users"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get User by Id",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/api/users/2",
+                            "path": [
+                                "users",
+                                "2"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Post User",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/api/users",
+                            "path": [
+                                "users"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"email\": \"tes11t13311@test.com\",\n  \"firstName\": \"User1\",\n  \"lastName\": \"Cashier\",\n  \"hashedPassword\": \"password\",\n  \"role\": {\n    \"title\": \"JOOOO\"\n  }\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Put User",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "/api/users/2",
+                            "path": [
+                                "users",
+                                "2"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"email\": \"updated_user@test.com\",\n  \"firstName\": \"UpdatedUser1\",\n  \"lastName\": \"Cashier\",\n  \"role\": null\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Delete User",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "/api/users/1",
+                            "path": [
+                                "users",
+                                "1"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Role",
+            "item": [
+                {
+                    "name": "Get Roles",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/api/roles",
+                            "path": [
+                                "roles"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Role By Id",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/api/roles/2",
+                            "path": [
+                                "roles",
+                                "2"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Role",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/api/roles",
+                            "path": [
+                                "roles"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"title\": \"admin\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Update Role",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "/api/roles/1",
+                            "path": [
+                                "roles",
+                                "1"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"id\": 1,\n  \"title\": \"user\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Role",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "/api/roles/1",
+                            "path": [
+                                "roles",
+                                "1"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Permissions",
+            "item": [
+                {
+                    "name": "Get Permissions",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/api/permissions",
+                            "path": [
+                                "permissions"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Permission by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "/api/permissions/1",
+                            "path": [
+                                "permissions",
+                                "1"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Permission",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/api/permissions",
+                            "path": [
+                                "permissions"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"title\": \"delete\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Update Permission",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "/api/permissions/1",
+                            "path": [
+                                "permissions",
+                                "1"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"id\": 1,\n  \"title\": \"update\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Permission",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "/api/permissions/1",
+                            "path": [
+                                "permissions",
+                                "1"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "RolePermissions",
+            "item": [
+                {
+                    "name": "add permission to role",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "/api/roles/1/permissions",
+                            "path": [
+                                "roles",
+                                "1",
+                                "permissions"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"id\": 1\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "delete permission from role",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "/api/roles/1/permissions/1",
+                            "path": [
+                                "roles",
+                                "1",
+                                "permissions",
+                                "1"
+                            ],
+                            "host": [
+                                "api"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

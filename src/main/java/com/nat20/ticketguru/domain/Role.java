@@ -9,8 +9,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -19,7 +25,16 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "role_permissions",
+        joinColumns = @JoinColumn(name = "role_id"),
+        inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    private Set<Permission> permissions = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
     @JsonIgnore
@@ -37,7 +52,7 @@ public class Role {
         this.users = users;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -53,17 +68,37 @@ public class Role {
         this.title = title;
     }
 
-    @Override
-    public String toString() {
-        return "Role [id=" + id + ", title=" + title + "]";
-    }
-
     public List<User> getUsers() {
         return users;
     }
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public Set<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<Permission> permissions) {
+        this.permissions = permissions;
+    }
+
+    public void addPermission(Permission permission) {
+        this.permissions.add(permission);
+    }
+
+    public void removePermission(Permission permission) {
+        this.permissions.remove(permission);
+    }
+
+    public boolean hasPermission(Permission permission) {
+        return this.permissions.contains(permission);
+    }
+
+    @Override
+    public String toString() {
+        return "Role [id=" + id + ", title=" + title + "]";
     }
 
 }

@@ -1,7 +1,11 @@
 package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,8 +13,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -21,7 +25,7 @@ public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "id")
     private Long id;
 
     @NotBlank(message = "Name must not be empty")
@@ -33,15 +37,12 @@ public class Event {
     @Column(name = "total_tickets", nullable = false)
     private int total_tickets;
 
-    @FutureOrPresent(message = "Begin date must be future or present")
     @Column(name = "begins_at")
     private LocalDateTime begins_at;
 
-    @FutureOrPresent(message = "End date must be future or present")
     @Column(name = "ends_at")
     private LocalDateTime ends_at;
 
-    @FutureOrPresent(message = "Ticket sale begin date must be future or present")
     @Column(name = "ticket_sale_begins")
     private LocalDateTime ticket_sale_begins;
 
@@ -52,6 +53,10 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "venue_id", nullable = true)
     private Venue venue;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    @JsonIgnore
+    private List<TicketType> ticketType;
 
     public Event() {
     }

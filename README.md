@@ -167,7 +167,7 @@ _"Ylläpitäjänä haluan nähdä järjestelmäraportit ja lokit ongelmatilantei
 
 ## Käyttöliittymä
 
-![GUI Diagram](https://hellmanstudios.fi/nat20-ticketguru-gui.png)
+![GUI Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-gui-diagram.png)
 
 Yllä oleva kuva esittää TicketGuru-ohjelman käyttöliittymää ja sen eri näkymien välisiä siirtymiä
 
@@ -186,7 +186,7 @@ Lisäksi lisätään mahdollisesti hallintaosio tapahtumapaikoille.
 
 Alla mallikuva tietokannasta, josta käy ilmi tietokannan sisältämät tiedot, taulujen väliset suhteet ja avainten määritykset.
 
-![Database Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/IMG_0327.png)
+![Database Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-db-diagram.png)
 
 Lisäksi jokainen tietokannan taulu ja niiden attribuutit kuvataan tässä tietohakemistossa.
 
@@ -234,33 +234,24 @@ users-taulu sisältää käyttäjät. Yhdellä käyttäjällä on vain yksi rool
 
 sales-taulu kuvaa yhtä myyntitapahtumaa. Jokaisella myyntitapahtumalla on yksi myynnin hoitanut käyttäjä.
 
-| Kenttä  | Tyyppi   | Kuvaus                                       |
-| ------- | -------- | -------------------------------------------- |
-| id      | int PK   | Myyntitapahtuman id                          |
-| paid_at | datetime | Myyntihetki                                  |
-| user_id | int FK   | Viittaus käyttäjään [users](#users)-taulussa |
-
-### sales_tickets
-
-sales_tickets -taulu yhdistää lipun ja sen myyntitapahtuman (sales) toisiinsa. Tauluun listataan kaikki yhdessä myyntitapahtumassa myydyt liput ja niiden myyntihinnat. Yhdessä myyntitapahtumassa voi olla monta lippua, mutta jokainen yksittäinen lippu voidaan myydä vain kerran.
-
-| Kenttä    | Tyyppi | Kuvaus                                                |
-| --------- | ------ | ----------------------------------------------------- |
-| id        | int PK | Myyntirivin id                                        |
-| ticket_id | int FK | Viittaus myytyyn lippuun [tickets](#tickets)-taulussa |
-| sale_id   | int FK | Viittaus myyjään [users](#users)-taulussa             |
-| price     | double | Lipusta maksettu hinta                                |
+| Kenttä  | Tyyppi   | Kuvaus                                    |
+| ------- | -------- | ----------------------------------------- |
+| id      | int PK   | Myyntitapahtuman id                       |
+| paid_at | datetime | Myyntihetki                               |
+| user_id | int FK   | Viittaus myyjään [users](#users)-taulussa |
 
 ### tickets
 
-tickets-taulu sisältää yksittäisiä lippuja eri tapahtumiin. Lipuilla voi olla monta eri lipputyyppiä, ja yksi lippu voidaan myydä vain kerran.
+tickets-taulu sisältää yksittäisiä lippuja eri tapahtumiin. Lippu toimii myös välitaulunta [sales](#sales) ja [ticket_types](#ticket_types) taulujen välillä.
 
 | Kenttä         | Tyyppi      | Kuvaus                                                         |
 | -------------- | ----------- | -------------------------------------------------------------- |
 | id             | int PK      | Lipun id                                                       |
 | ticket_type_id | int FK      | Viittaus lipun tyyppiin [ticket_types](#ticket_types)-taulussa |
+| sale_id        | int FK      | Viittaus myyntiin [sales](#sales)-taulussa                     |
 | barcode        | varchar(50) | Viivakoodi, jolla voidaan skannata lippu                       |
 | used_at        | datetime    | Päivämäärä ja aika, jolloin lippu on merkitty käytetyksi       |
+| price          | double      | Lipusta maksettu hinta                                         |
 
 ### ticket_types
 

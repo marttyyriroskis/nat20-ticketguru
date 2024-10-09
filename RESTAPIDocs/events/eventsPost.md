@@ -2,7 +2,7 @@
 
 Create a new `Event` entity
 
-**URL** : `/api/events/`
+**URL** : `/api/events`
 
 **Method** : `POST`
 

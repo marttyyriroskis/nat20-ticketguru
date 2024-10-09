@@ -1,0 +1,219 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "RestSaleRequests",
+    "collectionId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+    "dateExported": "2024-10-07T13:22:40.375Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "7586df99-5170-48d7-aff8-94249aaf6392",
+            "colId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+            "containerId": "",
+            "name": "GET all",
+            "url": "",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-10-04T07:59:07.148Z",
+            "modified": "2024-10-04T08:32:28.868Z",
+            "headers": []
+        },
+        {
+            "_id": "1da99fdb-fb93-476b-aeda-204ae96f8570",
+            "colId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+            "containerId": "",
+            "name": "GET id",
+            "url": "/2",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2024-10-04T08:33:14.461Z",
+            "modified": "2024-10-04T12:12:51.834Z",
+            "headers": []
+        },
+        {
+            "_id": "01fca8be-43c8-4aca-9113-0bf098d87736",
+            "colId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+            "containerId": "",
+            "name": "DELETE",
+            "url": "/1",
+            "method": "DELETE",
+            "sortNum": 22500,
+            "created": "2024-10-04T10:00:46.074Z",
+            "modified": "2024-10-06T16:05:19.235Z",
+            "headers": []
+        },
+        {
+            "_id": "f4287a92-3f43-4e71-bb38-1daf6fc31743",
+            "colId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+            "containerId": "",
+            "name": "POST",
+            "url": "",
+            "method": "POST",
+            "sortNum": 25000,
+            "created": "2024-10-06T17:14:10.996Z",
+            "modified": "2024-10-06T17:14:10.996Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"paidAt\": \"2024-10-04T12:58:29.580761\",\n    \"user\": {\n      \"id\": 1\n    },\n    \"tickets\": [\n      {\n        \"id\": 4\n      }\n      ]\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "16dc40c2-852c-46f4-bc78-5e9493276058",
+            "colId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+            "containerId": "",
+            "name": "empty",
+            "url": "",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2024-10-04T08:33:33.577Z",
+            "modified": "2024-10-06T17:14:22.198Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "2b4c0bfd-2d93-42ea-a2ac-3257f0dcc015",
+            "colId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+            "containerId": "",
+            "name": "POST wrong user id",
+            "url": "",
+            "method": "POST",
+            "sortNum": 35000,
+            "created": "2024-10-06T17:17:20.964Z",
+            "modified": "2024-10-06T17:17:49.316Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"paidAt\": \"2024-10-04T12:58:29.580761\",\n    \"user\": {\n      \"id\": 100\n    },\n    \"tickets\": [\n      {\n        \"id\": 4\n      }\n      ]\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "c6c90173-dda9-4298-ac4b-48944dc2f921",
+            "colId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+            "containerId": "",
+            "name": "POST no paidAt",
+            "url": "",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2024-10-04T14:08:02.558Z",
+            "modified": "2024-10-04T14:08:18.717Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"user\": {\n      \"id\": 1\n    },\n    \"tickets\": [\n      {\n        \"id\": 4\n      }\n      ]\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "4d43e400-b1ee-4e10-9953-f62864042ebe",
+            "colId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+            "containerId": "",
+            "name": "POST no user",
+            "url": "",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2024-10-06T17:13:18.916Z",
+            "modified": "2024-10-06T17:13:34.871Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"paidAt\": \"2024-10-04T12:58:29.580761\",\n    \"tickets\": [\n      {\n        \"id\": 4\n      }\n      ]\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "a5faf427-d95c-442d-95a8-f895a3f3251c",
+            "colId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+            "containerId": "",
+            "name": "POST no tickets",
+            "url": "",
+            "method": "POST",
+            "sortNum": 42500,
+            "created": "2024-10-06T17:01:00.450Z",
+            "modified": "2024-10-06T17:14:43.849Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"user\": {\n      \"id\": 1\n    }\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "65e1954b-e262-4373-bece-f0a74ba94d19",
+            "colId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+            "containerId": "",
+            "name": "PUT",
+            "url": "/1?userId=2",
+            "method": "PUT",
+            "sortNum": 50000,
+            "created": "2024-10-06T15:39:32.376Z",
+            "modified": "2024-10-07T13:17:31.276Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "userId",
+                    "value": "2",
+                    "isPath": false
+                }
+            ],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"paidAt\": \"2055-10-06T18:38:31.578603\",\n  \"tickets\": [\n    {\n      \"id\": 4\n    }\n  ]\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "ca69a905-7315-4b90-b4ca-c8d8440f3dd5",
+            "colId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+            "containerId": "",
+            "name": "PUT no userId",
+            "url": "/1",
+            "method": "PUT",
+            "sortNum": 60000,
+            "created": "2024-10-07T13:20:18.390Z",
+            "modified": "2024-10-07T13:20:35.116Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"paidAt\": \"2055-10-06T18:38:31.578603\",\n  \"tickets\": [\n    {\n      \"id\": 4\n    }\n  ]\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "0befb531-9ed2-4e36-81a3-f24bac8c6287",
+            "colId": "75f1b347-3e85-43d8-9f10-ea510e2de656",
+            "containerId": "",
+            "name": "PUT wrong user id",
+            "url": "/1?userId=200",
+            "method": "PUT",
+            "sortNum": 60000,
+            "created": "2024-10-07T13:21:32.402Z",
+            "modified": "2024-10-07T13:21:48.165Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "userId",
+                    "value": "200",
+                    "isPath": false
+                }
+            ],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"paidAt\": \"2055-10-06T18:38:31.578603\",\n  \"tickets\": [\n    {\n      \"id\": 4\n    }\n  ]\n}",
+                "form": []
+            }
+        }
+    ],
+    "settings": {
+        "options": {
+            "baseUrl": "http://localhost:8080/api/sales"
+        }
+    },
+    "ref": "RXosv_IEy0Tb-xUPPRGi2G2geikij4b5_PeAvLpMza9zbwpf-hEDAZ1Kif5hWkT_hZ2PVrpQQ8n0l1VieZ0MKQ"
+}

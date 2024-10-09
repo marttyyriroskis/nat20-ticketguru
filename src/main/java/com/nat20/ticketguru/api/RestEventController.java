@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,15 +27,17 @@ import com.nat20.ticketguru.repository.VenueRepository;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/events/")
+@RequestMapping("/api/events")
 @Validated
 public class RestEventController {
 
-    @Autowired
-    EventRepository eventRepository;
+    private final EventRepository eventRepository;
+    private final VenueRepository venueRepository;
 
-    @Autowired
-    VenueRepository venueRepository;
+    public RestEventController(EventRepository eventRepository, VenueRepository venueRepository) {
+        this.eventRepository = eventRepository;
+        this.venueRepository = venueRepository;
+    }
 
     // Get events
     @GetMapping("")
@@ -45,7 +46,7 @@ public class RestEventController {
     }
 
     // Get event by id
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public Event getEvent(@PathVariable("id") Long eventId) {
         Optional<Event> optionalEvent = eventRepository.findById(eventId);
         if (!optionalEvent.isPresent()) {
@@ -81,7 +82,7 @@ public class RestEventController {
     }
 
     // Edit event with PUT request
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public Event editEvent(@Valid @RequestBody Event editedEvent, @PathVariable("id") Long eventId) {
         Optional<Event> optionalEvent = eventRepository.findById(eventId);
         if (!optionalEvent.isPresent()) {
@@ -116,7 +117,7 @@ public class RestEventController {
     }
 
     // Delete event with DELETE Request
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public Iterable<Event> deleteEvent(@PathVariable("id") Long eventId) {
         // Finds the event with the mapped id from the repository; assings null if not
         // found
@@ -125,7 +126,7 @@ public class RestEventController {
         if (!optionalEvent.isPresent()) {
             // If null (ie. not found), throws exception and error message
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Event not found");
+                    HttpStatus.NOT_FOUND, "Event not found");
         }
         // If not null (ie. found), deletes the event with the mapped id from the
         // repository
