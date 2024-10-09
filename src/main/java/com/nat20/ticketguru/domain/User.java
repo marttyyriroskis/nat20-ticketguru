@@ -1,5 +1,10 @@
 package com.nat20.ticketguru.domain;
 
+import java.util.List;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -13,11 +18,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-import java.util.List;
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 @Entity
 @Table(name = "users")
 public class User {
@@ -28,7 +28,7 @@ public class User {
 
     @Column(unique = true)
     private String email;
-    
+
     private String firstName;
     private String lastName;
 
@@ -46,7 +46,7 @@ public class User {
     public User() {
     }
 
-        public User(String email, String firstName, String lastName, String hashedPassword) {
+    public User(String email, String firstName, String lastName, String hashedPassword) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -60,7 +60,6 @@ public class User {
         this.hashedPassword = hashedPassword;
         this.role = role;
     }
-
 
     public long getId() {
         return id;
@@ -127,6 +126,14 @@ public class User {
         sb.append(", role=").append(role);
         sb.append('}');
         return sb.toString();
+    }
+
+    public List<Sale> getSales() {
+        return sales;
+    }
+
+    public void setSales(List<Sale> sales) {
+        this.sales = sales;
     }
 
 }

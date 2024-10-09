@@ -19,6 +19,22 @@ Below you can find a table of contents to the REST API request calls. Please not
 - [eventsPost](events/eventsPost.md)
 - [eventsPut](events/eventsPut.md)
 
+### Permissions (/api/permissions)
+
+- [all](permissions/all.md)
+
+### Roles (/api/roles)
+
+- [all](permissions/all.md)
+
+### Sales (/api/sales)
+
+- [salesDelete](sales/salesDelete.md)
+- [salesGetAll](sales/salesGetAll.md)
+- [salesGetById](sales/salesGetById.md)
+- [salesPost](sales/salesPost.md)
+- [salesPut](sales/salesPut.md)
+
 ### Tickets (/api/tickets)
 
 - [ticketsDelete](tickets/ticketsDelete.md)

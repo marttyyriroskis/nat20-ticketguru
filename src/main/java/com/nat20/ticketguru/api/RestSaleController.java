@@ -135,6 +135,12 @@ public class RestSaleController {
         for (Ticket ticket : sale.getTickets()) {
             ticket.setSale(null);
         }
+        // remove sale association from user before delete (we want to preserve the users in the database)
+        User user = sale.getUser();
+        if (user != null) {
+            user.getSales().remove(sale);
+            userRepository.save(user);
+        }
         saleRepository.deleteById(id);
     }
 
