@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.nat20.ticketguru.domain.Sale;
 import com.nat20.ticketguru.domain.Ticket;
 import com.nat20.ticketguru.domain.User;
+import com.nat20.ticketguru.dto.SaleDTO;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.repository.UserRepository;
@@ -59,21 +62,18 @@ public class RestSaleController {
     }
 
     @PostMapping("")
-    public Sale createSale(@Valid @RequestBody Sale sale) {
+    public ResponseEntity<SaleDTO> createSale(@Valid @RequestBody SaleDTO saleDTO) {
         // check User
-        if (sale.getUser() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No user in request body");
-        }
-        Optional<User> existingUser = userRepository.findById(sale.getUser().getId());
+        Optional<User> existingUser = userRepository.findById(saleDTO.userId());
         if (!existingUser.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         Sale newSale = new Sale();
         // check Tickets
         List<Ticket> validTickets = new ArrayList<>();
-        List<Ticket> requestTickets = sale.getTickets();
-        for (Ticket requestTicket : requestTickets) {
-            Optional<Ticket> ticket = ticketRepository.findById(requestTicket.getId());
+        List<Long> requestTickets = saleDTO.ticketIds();
+        for (Long ticketId : requestTickets) {
+            Optional<Ticket> ticket = ticketRepository.findById(ticketId);
             if (!ticket.isPresent()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket");
             }
@@ -88,10 +88,23 @@ public class RestSaleController {
 
         newSale.setUser(existingUser.get());
         newSale.setTickets(validTickets);
-        if (sale.getPaidAt() != null) {
-            newSale.setPaidAt(sale.getPaidAt());
+        if (saleDTO.paidAt() != null) {
+            newSale.setPaidAt(saleDTO.paidAt());
         }
-        return saleRepository.save(newSale);
+        // save the new Sale entity
+        Sale savedSale = saleRepository.save(newSale);
+
+        // package it again into saleDTO for the response body
+        SaleDTO responseDTO = new SaleDTO(
+                savedSale.getId(),
+                savedSale.getPaidAt(),
+                savedSale.getUserId(),
+                savedSale.getTickets().stream()
+                        .map(Ticket::getId)
+                        .collect(Collectors.toList())
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
     @PutMapping("/{id}")
