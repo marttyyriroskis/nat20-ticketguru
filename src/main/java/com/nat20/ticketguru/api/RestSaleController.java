@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -50,15 +49,30 @@ public class RestSaleController {
     }
 
     @GetMapping("")
-    public Iterable<Sale> getSales() {
-        return saleRepository.findAll();
+    public ResponseEntity<List<SaleDTO>> getAllSales() {
+        List<Sale> sales = new ArrayList<>();
+        saleRepository.findAll().forEach(sales::add);
+
+        List<SaleDTO> saleDTOs = sales.stream()
+                .map(sale -> new SaleDTO(sale.getId(),
+                sale.getPaidAt(),
+                sale.getUser().getId(),
+                sale.getTickets().stream()
+                        .map(Ticket::getId).collect(Collectors.toList())))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(saleDTOs);
     }
 
     @GetMapping("/{id}")
-    public Sale getSale(@PathVariable("id") Long id) {
+    public ResponseEntity<SaleDTO> getSale(@PathVariable("id") Long id) {
         Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
-        return sale;
+        SaleDTO saleDTO = new SaleDTO(sale.getId(),
+                sale.getPaidAt(),
+                sale.getUser().getId(),
+                sale.getTickets().stream()
+                        .map(Ticket::getId).collect(Collectors.toList()));
+        return ResponseEntity.ok(saleDTO);
     }
 
     @PostMapping("")
@@ -101,28 +115,23 @@ public class RestSaleController {
                 savedSale.getUserId(),
                 savedSale.getTickets().stream()
                         .map(Ticket::getId)
-                        .collect(Collectors.toList())
-        );
+                        .collect(Collectors.toList()));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
     @PutMapping("/{id}")
-    public Sale editSale(@Valid @RequestBody Sale editedSale, @PathVariable("id") Long id, @RequestParam Long userId) {
-        // check Id
+    public ResponseEntity<SaleDTO> editSale(@Valid @RequestBody SaleDTO editedSaleDTO, @PathVariable("id") Long id) {
+        // check that Id exists
         Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
-        // check User
-        if (userId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No userId in query parameter");
-        }
-        User existingUser = userRepository.findById(userId)
+        User existingUser = userRepository.findById(editedSaleDTO.userId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
 
         // check Tickets
         List<Ticket> validTickets = new ArrayList<>();
-        for (Ticket requestTicket : editedSale.getTickets()) {
-            Optional<Ticket> ticket = ticketRepository.findById(requestTicket.getId());
+        for (Long ticketId : editedSaleDTO.ticketIds()) {
+            Optional<Ticket> ticket = ticketRepository.findById(ticketId);
             if (!ticket.isPresent()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket");
             }
@@ -133,10 +142,20 @@ public class RestSaleController {
         }
         sale.setUser(existingUser);
         sale.setTickets(validTickets);
-        if (editedSale.getPaidAt() != null) {
-            sale.setPaidAt(editedSale.getPaidAt());
+        if (editedSaleDTO.paidAt() != null) {
+            sale.setPaidAt(editedSaleDTO.paidAt());
         }
-        return saleRepository.save(sale);
+        // save the edited Sale entity
+        Sale savedSale = saleRepository.save(sale);
+        // package it again into saleDTO for the response body
+        SaleDTO responseDTO = new SaleDTO(
+                savedSale.getId(),
+                savedSale.getPaidAt(),
+                savedSale.getUserId(),
+                savedSale.getTickets().stream()
+                        .map(Ticket::getId)
+                        .collect(Collectors.toList()));
+        return ResponseEntity.ok(responseDTO);
     }
 
     @DeleteMapping("/{id}")
