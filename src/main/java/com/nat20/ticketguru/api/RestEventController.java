@@ -157,21 +157,16 @@ public class RestEventController {
 
     // Delete event with DELETE Request
     @DeleteMapping("/{id}")
-    public Iterable<Event> deleteEvent(@PathVariable("id") Long eventId) {
-        // Finds the event with the mapped id from the repository; assings null if not
-        // found
-        Optional<Event> optionalEvent = eventRepository.findById(eventId);
-        // Checks if the event is null or not null
-        if (!optionalEvent.isPresent()) {
-            // If null (ie. not found), throws exception and error message
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Event not found");
+    public ResponseEntity<String> deleteEvent(@PathVariable("id") Long eventId) {
+
+        Optional<Event> existingEvent = eventRepository.findById(eventId);
+        if (!existingEvent.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
+        } else {
+            eventRepository.deleteById(eventId);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Event removed succesfully");
+            // Not printed in response?
         }
-        // If not null (ie. found), deletes the event with the mapped id from the
-        // repository
-        eventRepository.deleteById(eventId);
-        // Returns all the remaining events (without the removed event)
-        return eventRepository.findAll();
     }
 
     // Exception handler for validation errors
