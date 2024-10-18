@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotNull;
 
-public record TicketDTO (
+public record TicketDTO(
     @NotNull(message = "Barcode must not be null") String barcode,
 
     LocalDateTime usedAt,
