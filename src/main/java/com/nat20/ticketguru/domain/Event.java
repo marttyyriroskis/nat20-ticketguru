@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -37,9 +38,11 @@ public class Event {
     @Column(name = "total_tickets", nullable = false)
     private int total_tickets;
 
+    @Future(message = "The event start date must be in the future")
     @Column(name = "begins_at")
     private LocalDateTime begins_at;
 
+    @Future(message = "The event end date must be in the future")
     @Column(name = "ends_at")
     private LocalDateTime ends_at;
 
