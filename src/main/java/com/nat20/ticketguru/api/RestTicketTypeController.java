@@ -134,17 +134,14 @@ public class RestTicketTypeController {
 
     // Delete a ticket type
     @DeleteMapping("/{id}")
-    public Iterable<TicketType> deleteTicketType(@PathVariable("id") Long ticketTypeId) {
-        Optional<TicketType> optionalTicketType = ticketTypeRepository.findById(ticketTypeId);
-        if (!optionalTicketType.isPresent()) {
-            // If null (ie. not found), throws exception and error message
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Ticket type not found");
+    public ResponseEntity<String> deleteTicketType(@PathVariable("id") Long id) {
+        Optional<TicketType> existingTicketType = ticketTypeRepository.findById(id);
+        if (!existingTicketType.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found");
+        } else {
+            ticketTypeRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Ticket type removed succesfully");
+            // Not printed in response?
         }
-        // If not null (ie. found), deletes the event with the mapped id from the
-        // repository
-        ticketTypeRepository.deleteById(ticketTypeId);
-        // Returns all the remaining events (without the removed event)
-        return ticketTypeRepository.findAll();
     }
 }
