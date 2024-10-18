@@ -81,6 +81,7 @@ public class RestTicketController {
         Sale sale = saleRepository.findById(ticketDTO.saleId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Sale not found"));
 
+        // TODO: Autogenerate barcode
         Ticket newTicket = new Ticket();
         newTicket.setBarcode(ticketDTO.barcode());
         newTicket.setUsedAt(ticketDTO.usedAt());
@@ -112,7 +113,6 @@ public class RestTicketController {
 
         Ticket ticketToUpdate = existingTicket.get();
 
-        ticketToUpdate.setBarcode(ticketDTO.barcode());
         ticketToUpdate.setUsedAt(ticketDTO.usedAt());
         ticketToUpdate.setPrice(ticketDTO.price());
 

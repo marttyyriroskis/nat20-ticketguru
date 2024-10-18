@@ -30,7 +30,7 @@ public class Ticket {
     @Column(name = "barcode", updatable = false)
     private String barcode;
 
-    @Column(name = "used_at", updatable = false)
+    @Column(name = "used_at")
     private LocalDateTime usedAt;
 
     @PositiveOrZero(message = "Price must be positive or zero")
