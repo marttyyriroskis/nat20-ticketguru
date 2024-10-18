@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -33,22 +34,24 @@ public class Event {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Size(min = 1, max = 500, message = "Description must be between 1 and 500 characters long")
+    @Column(name = "description")
+    private String description;
+
     @Positive(message = "Total tickets must be positive")
     @Column(name = "total_tickets", nullable = false)
     private int total_tickets;
 
+    @Future(message = "The event start date must be in the future")
     @Column(name = "begins_at")
     private LocalDateTime begins_at;
 
+    @Future(message = "The event end date must be in the future")
     @Column(name = "ends_at")
     private LocalDateTime ends_at;
 
     @Column(name = "ticket_sale_begins")
     private LocalDateTime ticket_sale_begins;
-
-    @Size(min = 1, max = 500, message = "Description must be between 1 and 500 characters long")
-    @Column(name = "description")
-    private String description;
 
     @ManyToOne
     @JoinColumn(name = "venue_id", nullable = true)

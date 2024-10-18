@@ -25,14 +25,18 @@ Provide all required parameters for the `Ticket` to be created.
 #### Example Request
 
 ````json
-POST /tickets?ticketTypeId=1&saleId=1
+POST /tickets
 Content-Type: application/json
 
 All required fields must be sent. `ticket_type_id` and `sale_id` must be specified in the query, not the request body. `price` must not be null.
 
 ```json
 {
-  "price": 20.5
+    "barcode": "sth",
+    "usedAt": null,
+    "price": 20.5,
+    "ticketTypeId": 1,
+    "saleId": 1
 }
 ````
 
@@ -46,8 +50,7 @@ All required fields must be sent. `ticket_type_id` and `sale_id` must be specifi
 
 ```json
 {
-  "id": 5,
-  "barcode": "1728297078315",
+  "barcode": "sth",
   "usedAt": null,
   "price": 20.5,
   "ticketTypeId": 1,

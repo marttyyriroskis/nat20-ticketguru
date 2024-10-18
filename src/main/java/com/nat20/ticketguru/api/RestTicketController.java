@@ -1,8 +1,12 @@
 package com.nat20.ticketguru.api;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,6 +23,7 @@ import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.domain.Ticket;
 import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.domain.TicketType;
+import com.nat20.ticketguru.dto.TicketDTO;
 import com.nat20.ticketguru.repository.TicketTypeRepository;
 
 import jakarta.validation.Valid;
@@ -39,107 +43,112 @@ public class RestTicketController {
     }
 
     // Get tickets
-    @GetMapping("")
-    public Iterable<Ticket> getTickets() {
-        return ticketRepository.findAll();
+    @GetMapping
+    public ResponseEntity<List<TicketDTO>> getTickets() {
+        Iterable<Ticket> iterableTickets = ticketRepository.findAll();
+        List<Ticket> ticketList = new ArrayList<>();
+        iterableTickets.forEach(ticketList::add);
+
+        return ResponseEntity.ok(ticketList.stream()
+                .map(ticket -> new TicketDTO(
+                    ticket.getBarcode(),
+                    ticket.getUsedAt(),
+                    ticket.getPrice(),
+                    ticket.getTicketType().getId(),
+                    ticket.getSale().getId()))
+                .collect(Collectors.toList()));
     }
     
     // Get ticket by id
     @GetMapping("/{id}")
-    public Ticket getTicket(@PathVariable("id") Long ticketId) {
-        // Check if Ticket exists
-        Ticket ticket = ticketRepository.findById(ticketId)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
-        return ticket;
+    public ResponseEntity<TicketDTO> getTicket(@PathVariable Long id) {
+        Ticket ticket = ticketRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+
+        return ResponseEntity.ok(new TicketDTO(
+                    ticket.getBarcode(),
+                    ticket.getUsedAt(),
+                    ticket.getPrice(),
+                    ticket.getTicketType().getId(),
+                    ticket.getSale().getId()));
     }
     
     // Post a new ticket
-    // TODO: Redo with ResponseEntity
-    @PostMapping("")
-    public Ticket createTicket(@Valid @RequestBody Ticket ticket, @RequestParam Long ticketTypeId, @RequestParam Long saleId) {
-        // Find TicketType by ticketTypeId
-        if (ticketTypeId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No ticketTypeId in query parameter");
-        }
+    @PostMapping
+    public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
+        TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Ticket Type not found"));
+        Sale sale = saleRepository.findById(ticketDTO.saleId())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Sale not found"));
 
-        TicketType existingTicketType = ticketTypeRepository.findById(ticketTypeId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ticket type not found"));
-        
-        ticket.setTicketType(existingTicketType);
+        // TODO: Autogenerate barcode
+        Ticket newTicket = new Ticket();
+        newTicket.setBarcode(ticketDTO.barcode());
+        newTicket.setUsedAt(ticketDTO.usedAt());
+        newTicket.setPrice(ticketDTO.price());
+        newTicket.setTicketType(ticketType);
+        newTicket.setSale(sale);
 
-        // Find Sale by saleId
-        if (saleId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No saleId in query parameter");
-        }
+        ticketRepository.save(newTicket);
 
-        Sale existingSale = saleRepository.findById(saleId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sale not found"));
-        
-        ticket.setSale(existingSale);
+        TicketDTO newTicketDTO = new TicketDTO(
+                newTicket.getBarcode(),
+                newTicket.getUsedAt(),
+                newTicket.getPrice(),
+                newTicket.getTicketType().getId(),
+                newTicket.getSale().getId()
+        );
 
-        Ticket savedTicket = ticketRepository.save(ticket);
-        return savedTicket;
+        return ResponseEntity.status(HttpStatus.CREATED).body(newTicketDTO);
     }
-    
+
     // Edit ticket
     @PutMapping("/{id}")
-    public Ticket editTicket(@Valid @RequestBody Ticket editedTicket, @PathVariable("id") Long ticketId, @RequestParam Long ticketTypeId, @RequestParam Long saleId) {
-        // Check if Ticket exists
-        Optional<Ticket> optionalTicket = ticketRepository.findById(ticketId);
-        if (!optionalTicket.isPresent()) {
-            throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Ticket not found");
-        }
-        Ticket ticket = optionalTicket.get();
-
-        // Update fields
-        ticket.setPrice(editedTicket.getPrice());
-
-        if (editedTicket.getUsedAt() != null) {
-            ticket.setUsedAt(editedTicket.getUsedAt());
-        }
-
-        /* TODO: Implement markAsUsed() method, e.g.:
-        Ticket ticket = new Ticket();
-        ticket.markAsUsed();
-        LocalDateTime usedAtTime = ticket.getUsedAt();
-        */
-
-        // Find TicketType by ticketTypeId
-        if (ticketTypeId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No ticketTypeId in query parameter");
-        }
-
-        TicketType existingTicketType = ticketTypeRepository.findById(ticketTypeId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ticket type not found"));
+    public ResponseEntity<TicketDTO> updateTicket(@PathVariable Long id, @RequestBody TicketDTO ticketDTO) {
+        Optional<Ticket> existingTicket = ticketRepository.findById(id);
         
-        ticket.setTicketType(existingTicketType);
-
-        // Find Sale by saleId
-        if (saleId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No saleId in query parameter");
+        if (!existingTicket.isPresent()) {
+            return ResponseEntity.notFound().build();
         }
 
-        Sale existingSale = saleRepository.findById(saleId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sale not found"));
-        
-        ticket.setSale(existingSale);
+        Ticket ticketToUpdate = existingTicket.get();
 
-        return ticketRepository.save(ticket);
+        ticketToUpdate.setUsedAt(ticketDTO.usedAt());
+        ticketToUpdate.setPrice(ticketDTO.price());
+
+        TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid TicketType ID"));
+        Sale sale = saleRepository.findById(ticketDTO.saleId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Sale ID"));
+
+        ticketToUpdate.setTicketType(ticketType);
+        ticketToUpdate.setSale(sale);
+
+        Ticket updatedTicket = ticketRepository.save(ticketToUpdate);
+
+        TicketDTO updatedTicketDTO = new TicketDTO(
+                updatedTicket.getBarcode(),
+                updatedTicket.getUsedAt(),
+                updatedTicket.getPrice(),
+                updatedTicket.getTicketType().getId(),
+                updatedTicket.getSale().getId()
+        );
+
+        return ResponseEntity.ok(updatedTicketDTO);
     }
 
     // Delete ticket
     @DeleteMapping("/{id}")
-    public Iterable<Ticket> deleteTicket(@PathVariable("id") Long ticketId) {
-        // Check if Ticket exists
-        Optional<Ticket> optionalTicket = ticketRepository.findById(ticketId);
-        if (!optionalTicket.isPresent()) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Ticket not found");
+    public ResponseEntity<String> deleteTicket(@PathVariable Long id) {
+        Optional<Ticket> ticketOptional = ticketRepository.findById(id);
+
+        if (!ticketOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ticket not found");
         }
 
-        ticketRepository.deleteById(ticketId);
-        return ticketRepository.findAll();
+        ticketRepository.deleteById(id);
+
+        return ResponseEntity.ok().build();
     }
 
 }
