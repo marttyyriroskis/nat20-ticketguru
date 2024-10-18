@@ -78,9 +78,9 @@ public class RestPermissionController {
         permission.setTitle(permissionDTO.title());
 
         Iterable<Role> iterableRoles = roleRepository.findAll();
-        Set<Role> roleList = new HashSet<>();
-        iterableRoles.forEach(roleList::add);
-        permission.setRoles(roleList);
+        Set<Role> roleSet = new HashSet<>();
+        iterableRoles.forEach(roleSet::add);
+        permission.setRoles(roleSet);
 
         Permission newPermission = permissionRepository.save(permission);
 
@@ -107,9 +107,9 @@ public class RestPermissionController {
         permissionToUpdate.setTitle(permissionDTO.title());
 
         Iterable<Role> iterableRoles = roleRepository.findAll();
-        Set<Role> roleList = new HashSet<>();
-        iterableRoles.forEach(roleList::add);
-        permissionToUpdate.setRoles(roleList);
+        Set<Role> roleSet = new HashSet<>();
+        iterableRoles.forEach(roleSet::add);
+        permissionToUpdate.setRoles(roleSet);
 
         Permission updatedPermission = permissionRepository.save(permissionToUpdate);
 
