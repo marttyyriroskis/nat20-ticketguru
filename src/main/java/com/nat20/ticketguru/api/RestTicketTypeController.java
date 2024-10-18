@@ -1,8 +1,12 @@
 package com.nat20.ticketguru.api;
 
 import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import com.nat20.ticketguru.domain.TicketType;
+import com.nat20.ticketguru.dto.TicketTypeDTO;
 import com.nat20.ticketguru.domain.Event;
 import com.nat20.ticketguru.repository.TicketTypeRepository;
 import com.nat20.ticketguru.repository.EventRepository;
@@ -35,15 +40,37 @@ public class RestTicketTypeController {
     }
 
     // Get all ticket types
-    @GetMapping
-    public Iterable<TicketType> getTicketTypes() {
-        return ticketTypeRepository.findAll();
+    @GetMapping("")
+    public ResponseEntity<List<TicketTypeDTO>> getAllTicketTypes() {
+        List<TicketType> ticketTypes = new ArrayList<TicketType>();
+        ticketTypeRepository.findAll().forEach(ticketTypes::add);
+
+        List<TicketTypeDTO> ticketTypeDTOs = ticketTypes.stream()
+                .map(ticketType -> new TicketTypeDTO(
+                        ticketType.getId(),
+                        ticketType.getName(),
+                        ticketType.getRetail_price(),
+                        ticketType.getTotal_available(),
+                        ticketType.getEvent().getId()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ticketTypeDTOs);
     }
 
     // Get ticket type by id
     @GetMapping("/{id}")
-    public Optional<TicketType> getTicketType(@PathVariable("id") Long id) {
-        return ticketTypeRepository.findById(id);
+    public ResponseEntity<TicketTypeDTO> getTicketTypeById(@PathVariable("id") Long id) {
+        TicketType ticketType = ticketTypeRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found"));
+
+        TicketTypeDTO ticketTypeDTO = new TicketTypeDTO(
+                ticketType.getId(),
+                ticketType.getName(),
+                ticketType.getRetail_price(),
+                ticketType.getTotal_available(),
+                ticketType.getEvent().getId());
+
+        return ResponseEntity.ok(ticketTypeDTO);
     }
 
     // Add a new ticket type
