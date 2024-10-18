@@ -43,7 +43,7 @@ public class RestTicketController {
     }
 
     // Get tickets
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<List<TicketDTO>> getTickets() {
         Iterable<Ticket> iterableTickets = ticketRepository.findAll();
         List<Ticket> ticketList = new ArrayList<>();
@@ -61,8 +61,8 @@ public class RestTicketController {
     
     // Get ticket by id
     @GetMapping("/{id}")
-    public ResponseEntity<TicketDTO> getTicket(@PathVariable("id") TicketDTO ticketDTO) {
-        Ticket ticket = ticketRepository.findById(ticketDTO.ticketTypeId())
+    public ResponseEntity<TicketDTO> getTicket(@PathVariable Long id) {
+        Ticket ticket = ticketRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
         return ResponseEntity.ok(new TicketDTO(
@@ -74,7 +74,7 @@ public class RestTicketController {
     }
     
     // Post a new ticket
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
         TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Ticket Type not found"));
