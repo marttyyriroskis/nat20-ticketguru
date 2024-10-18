@@ -1,10 +1,14 @@
 package com.nat20.ticketguru.api;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Event;
 import com.nat20.ticketguru.domain.Venue;
+import com.nat20.ticketguru.dto.EventDTO;
 import com.nat20.ticketguru.repository.EventRepository;
 import com.nat20.ticketguru.repository.VenueRepository;
 
@@ -41,20 +46,40 @@ public class RestEventController {
 
     // Get events
     @GetMapping("")
-    public Iterable<Event> getEvents() {
-        return eventRepository.findAll();
+    public ResponseEntity<List<EventDTO>> getAllEvents() {
+        List<Event> events = new ArrayList<Event>();
+        eventRepository.findAll().forEach(events::add);
+
+        List<EventDTO> eventDTOs = events.stream()
+                .map(event -> new EventDTO(event.getId(),
+                        event.getName(),
+                        event.getTotal_tickets(),
+                        event.getBegins_at(),
+                        event.getEnds_at(),
+                        event.getTicket_sale_begins(),
+                        event.getDescription(),
+                        event.getVenue().getId()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(eventDTOs);
     }
 
     // Get event by id
     @GetMapping("/{id}")
-    public Event getEvent(@PathVariable("id") Long eventId) {
-        Optional<Event> optionalEvent = eventRepository.findById(eventId);
-        if (!optionalEvent.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Event not found");
-        }
-        Event event = optionalEvent.get();
-        return event;
+    public ResponseEntity<EventDTO> getEventById(@PathVariable("id") Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+        EventDTO eventDTO = new EventDTO(event.getId(),
+                event.getName(),
+                event.getTotal_tickets(),
+                event.getBegins_at(),
+                event.getEnds_at(),
+                event.getTicket_sale_begins(),
+                event.getDescription(),
+                event.getVenue().getId());
+
+        return ResponseEntity.ok(eventDTO);
     }
 
     // Post a new event
