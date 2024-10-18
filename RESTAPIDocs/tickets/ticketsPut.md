@@ -35,8 +35,10 @@ PUT /tickets/1?ticketTypeId=1&saleId=2
 Content-Type: application/json
 
 {
-  "price": 200.5
-
+    "usedAt": null,
+    "price": 200.5,
+    "ticketTypeId": 1,
+    "saleId": 1
 }
 ```
 
@@ -50,12 +52,11 @@ Content-Type: application/json
 
 ```json
 {
-  "id": 1,
-  "barcode": "1728296528349",
+  "barcode": "1729253182164",
   "usedAt": null,
   "price": 200.5,
   "ticketTypeId": 1,
-  "saleId": 2
+  "saleId": 1
 }
 ```
 

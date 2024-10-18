@@ -43,7 +43,7 @@ public class RestTicketController {
     }
 
     // Get tickets
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<List<TicketDTO>> getTickets() {
         Iterable<Ticket> iterableTickets = ticketRepository.findAll();
         List<Ticket> ticketList = new ArrayList<>();
@@ -61,8 +61,8 @@ public class RestTicketController {
     
     // Get ticket by id
     @GetMapping("/{id}")
-    public ResponseEntity<TicketDTO> getTicket(@PathVariable("id") TicketDTO ticketDTO) {
-        Ticket ticket = ticketRepository.findById(ticketDTO.ticketTypeId())
+    public ResponseEntity<TicketDTO> getTicket(@PathVariable Long id) {
+        Ticket ticket = ticketRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
         return ResponseEntity.ok(new TicketDTO(
@@ -74,13 +74,14 @@ public class RestTicketController {
     }
     
     // Post a new ticket
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
         TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Ticket Type not found"));
         Sale sale = saleRepository.findById(ticketDTO.saleId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Sale not found"));
 
+        // TODO: Autogenerate barcode
         Ticket newTicket = new Ticket();
         newTicket.setBarcode(ticketDTO.barcode());
         newTicket.setUsedAt(ticketDTO.usedAt());
@@ -112,7 +113,6 @@ public class RestTicketController {
 
         Ticket ticketToUpdate = existingTicket.get();
 
-        ticketToUpdate.setBarcode(ticketDTO.barcode());
         ticketToUpdate.setUsedAt(ticketDTO.usedAt());
         ticketToUpdate.setPrice(ticketDTO.price());
 
