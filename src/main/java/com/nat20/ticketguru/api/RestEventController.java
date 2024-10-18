@@ -119,37 +119,40 @@ public class RestEventController {
 
     // Edit event with PUT request
     @PutMapping("/{id}")
-    public Event editEvent(@Valid @RequestBody Event editedEvent, @PathVariable("id") Long eventId) {
-        Optional<Event> optionalEvent = eventRepository.findById(eventId);
-        if (!optionalEvent.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Event not found");
-        }
-        Event event = optionalEvent.get();
+    public ResponseEntity<EventDTO> editEvent(@Valid @RequestBody EventDTO eventDTO, @PathVariable("id") Long eventId) {
 
-        // update fields from editedEvent in a way that respects field validation rules
-        event.setName(editedEvent.getName());
-        event.setDescription(editedEvent.getDescription());
-        event.setTotal_tickets(editedEvent.getTotal_tickets());
-        event.setBegins_at(editedEvent.getBegins_at());
-        event.setEnds_at(editedEvent.getEnds_at());
-        event.setTicket_sale_begins(editedEvent.getTicket_sale_begins());
-
-        // no changes to Venue fields allowed here: can set venue to null or to a
-        // different existing venue
-        Venue editedVenue = editedEvent.getVenue();
-        if (editedVenue != null) {
-            Optional<Venue> existingVenue = venueRepository.findById(editedVenue.getId());
-            if (!existingVenue.isPresent()) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Invalid venue");
-            }
-            event.setVenue(existingVenue.get());
+        Optional<Event> existingEvent = eventRepository.findById(eventId);
+        if (!existingEvent.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
         } else {
-            event.setVenue(null);
-        }
+            Optional<Venue> existingVenue = venueRepository.findById(eventDTO.venueId());
+            if (!existingVenue.isPresent()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found");
+            } else {
+                Event editedEvent = existingEvent.get();
+                editedEvent.setName(eventDTO.name());
+                editedEvent.setDescription(eventDTO.description());
+                editedEvent.setTotal_tickets(eventDTO.total_tickets());
+                editedEvent.setBegins_at(eventDTO.begins_at());
+                editedEvent.setEnds_at(eventDTO.ends_at());
+                editedEvent.setTicket_sale_begins(eventDTO.ticket_sale_begins());
+                editedEvent.setVenue(existingVenue.get());
 
-        return eventRepository.save(event);
+                Event savedEvent = eventRepository.save(editedEvent);
+
+                EventDTO responseDTO = new EventDTO(
+                        savedEvent.getId(),
+                        savedEvent.getName(),
+                        savedEvent.getDescription(),
+                        savedEvent.getTotal_tickets(),
+                        savedEvent.getBegins_at(),
+                        savedEvent.getEnds_at(),
+                        savedEvent.getTicket_sale_begins(),
+                        savedEvent.getVenue().getId());
+
+                return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+            }
+        }
     }
 
     // Delete event with DELETE Request
