@@ -1,6 +1,9 @@
 package com.nat20.ticketguru.api;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,21 +44,38 @@ public class RestTicketController {
 
     // Get tickets
     @GetMapping("")
-    public Iterable<Ticket> getTickets() {
-        return ticketRepository.findAll();
+    public ResponseEntity<List<TicketDTO>> getTickets() {
+        Iterable<Ticket> iterableTickets = ticketRepository.findAll();
+        List<Ticket> ticketList = new ArrayList<>();
+        iterableTickets.forEach(ticketList::add);
+
+        return ResponseEntity.ok(ticketList.stream()
+                .map(ticket -> new TicketDTO(
+                    ticket.getBarcode(),
+                    ticket.getUsedAt(),
+                    ticket.getPrice(),
+                    ticket.getTicketType().getId(),
+                    ticket.getSale().getId()))
+                .collect(Collectors.toList()));
     }
     
     // Get ticket by id
     @GetMapping("/{id}")
-    public Ticket getTicket(@PathVariable("id") TicketDTO ticketDTO) {
+    public ResponseEntity<TicketDTO> getTicket(@PathVariable("id") TicketDTO ticketDTO) {
         Ticket ticket = ticketRepository.findById(ticketDTO.ticketTypeId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
-        return ticket;
+
+        return ResponseEntity.ok(new TicketDTO(
+                    ticket.getBarcode(),
+                    ticket.getUsedAt(),
+                    ticket.getPrice(),
+                    ticket.getTicketType().getId(),
+                    ticket.getSale().getId()));
     }
     
     // Post a new ticket
     @PostMapping("")
-    public ResponseEntity<String> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
+    public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
         TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Ticket Type not found"));
         Sale sale = saleRepository.findById(ticketDTO.saleId())
@@ -70,7 +90,15 @@ public class RestTicketController {
 
         ticketRepository.save(newTicket);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        TicketDTO newTicketDTO = new TicketDTO(
+                newTicket.getBarcode(),
+                newTicket.getUsedAt(),
+                newTicket.getPrice(),
+                newTicket.getTicketType().getId(),
+                newTicket.getSale().getId()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(newTicketDTO);
     }
 
     // Edit ticket
