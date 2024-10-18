@@ -75,19 +75,29 @@ public class RestTicketTypeController {
 
     // Add a new ticket type
     @PostMapping
-    public TicketType createTicketType(@Valid @RequestBody TicketType newTicketType) {
-        if (newTicketType.getEvent() != null) {
-            Optional<Event> event = eventRepository.findById(newTicketType.getEvent().getId());
+    public ResponseEntity<TicketTypeDTO> createTicketType(@Valid @RequestBody TicketTypeDTO ticketTypeDTO) {
+        Optional<Event> existingEvent = eventRepository.findById(ticketTypeDTO.eventId());
 
-            if (!event.isPresent()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event does not exist!");
-            }
+        if (!existingEvent.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event does not exist!");
+        } else {
+            TicketType ticketType = new TicketType(
+                    ticketTypeDTO.name(),
+                    ticketTypeDTO.retail_price(),
+                    ticketTypeDTO.total_available(),
+                    existingEvent.get());
 
-            newTicketType.setEvent(event.get());
+            TicketType savedTicketType = ticketTypeRepository.save(ticketType);
+
+            TicketTypeDTO responseDTO = new TicketTypeDTO(
+                    savedTicketType.getId(),
+                    savedTicketType.getName(),
+                    savedTicketType.getRetail_price(),
+                    savedTicketType.getTotal_available(),
+                    savedTicketType.getEvent().getId());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
         }
-        ;
-        ticketTypeRepository.save(newTicketType);
-        return newTicketType;
     }
 
     // Update a ticket type
