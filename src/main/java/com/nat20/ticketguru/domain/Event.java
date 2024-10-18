@@ -34,6 +34,10 @@ public class Event {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Size(min = 1, max = 500, message = "Description must be between 1 and 500 characters long")
+    @Column(name = "description")
+    private String description;
+
     @Positive(message = "Total tickets must be positive")
     @Column(name = "total_tickets", nullable = false)
     private int total_tickets;
@@ -48,10 +52,6 @@ public class Event {
 
     @Column(name = "ticket_sale_begins")
     private LocalDateTime ticket_sale_begins;
-
-    @Size(min = 1, max = 500, message = "Description must be between 1 and 500 characters long")
-    @Column(name = "description")
-    private String description;
 
     @ManyToOne
     @JoinColumn(name = "venue_id", nullable = true)
