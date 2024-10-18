@@ -51,13 +51,14 @@ public class RestEventController {
         eventRepository.findAll().forEach(events::add);
 
         List<EventDTO> eventDTOs = events.stream()
-                .map(event -> new EventDTO(event.getId(),
+                .map(event -> new EventDTO(
+                        event.getId(),
                         event.getName(),
+                        event.getDescription(),
                         event.getTotal_tickets(),
                         event.getBegins_at(),
                         event.getEnds_at(),
                         event.getTicket_sale_begins(),
-                        event.getDescription(),
                         event.getVenue().getId()))
                 .collect(Collectors.toList());
 
@@ -70,13 +71,14 @@ public class RestEventController {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-        EventDTO eventDTO = new EventDTO(event.getId(),
+        EventDTO eventDTO = new EventDTO(
+                event.getId(),
                 event.getName(),
+                event.getDescription(),
                 event.getTotal_tickets(),
                 event.getBegins_at(),
                 event.getEnds_at(),
                 event.getTicket_sale_begins(),
-                event.getDescription(),
                 event.getVenue().getId());
 
         return ResponseEntity.ok(eventDTO);
@@ -84,26 +86,35 @@ public class RestEventController {
 
     // Post a new event
     @PostMapping("")
-    public Event createEvent(@Valid @RequestBody Event event) {
+    public ResponseEntity<EventDTO> createEvent(@Valid @RequestBody EventDTO eventDTO) {
 
-        // checks if the venue id is null instead of entire venue being null
-        if (event.getVenue() != null && event.getVenue().getId() == null) {
-            event.setVenue(null);
+        Optional<Venue> existingVenue = venueRepository.findById(eventDTO.venueId());
+        if (!existingVenue.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue does not exist!");
+        } else {
+            Event event = new Event(
+                    eventDTO.name(),
+                    eventDTO.description(),
+                    eventDTO.total_tickets(),
+                    eventDTO.begins_at(),
+                    eventDTO.ends_at(),
+                    eventDTO.ticket_sale_begins(),
+                    existingVenue.get());
+
+            Event savedEvent = eventRepository.save(event);
+
+            EventDTO responseDTO = new EventDTO(
+                    savedEvent.getId(),
+                    savedEvent.getName(),
+                    savedEvent.getDescription(),
+                    savedEvent.getTotal_tickets(),
+                    savedEvent.getBegins_at(),
+                    savedEvent.getEnds_at(),
+                    savedEvent.getTicket_sale_begins(),
+                    savedEvent.getVenue().getId());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
         }
-        // if venue is not null, check if it is already exists
-        if (event.getVenue() != null) {
-            Optional<Venue> existingVenue = venueRepository.findById(event.getVenue().getId());
-
-            if (!existingVenue.isPresent()) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Venue does not exist!");
-            }
-
-            event.setVenue(existingVenue.get());
-
-        }
-        Event savedEvent = eventRepository.save(event);
-        return savedEvent;
     }
 
     // Edit event with PUT request
