@@ -1,7 +1,5 @@
 package com.nat20.ticketguru.domain;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat20.ticketguru.dto.RoleDTO;
 

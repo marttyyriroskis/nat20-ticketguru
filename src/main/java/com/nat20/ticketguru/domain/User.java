@@ -169,7 +169,7 @@ public class User {
     }
 
     public UserDTO toDTO() {
-        return new UserDTO(id, email, firstName, lastName, role);
+        return new UserDTO(id, email, firstName, lastName, role.toDTO());
     }
 
 }

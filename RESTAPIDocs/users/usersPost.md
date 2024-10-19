@@ -18,6 +18,7 @@ Allow adding a new user to the system.
 | `firstName`      | String | The user's first name                      |
 | `lastName`       | String | The user's last name                       |
 | `hashedPassword` | String | The user's password (will be hashed later) |
+| `roleId`         | Long   | The role id to be assigned for the user    |
 
 #### Example Request
 
@@ -30,9 +31,7 @@ Content-Type: application/json
   "firstName": "New",
   "lastName": "User",
   "hashedPassword": "password",
-  "role" : {
-    "id": 1
-  }
+  "roleId" : 1
 }
 ```
 
@@ -51,8 +50,25 @@ Content-Type: application/json
   "firstName": "New",
   "lastName": "User",
   "role": {
-    "id": 1,
-    "title": "cashier"
+    "title": "cashier",
+    "permissionIds": [1],
+    "userIds": [1, 3]
   }
+}
+```
+
+## Error Response
+
+**Condition** : If the email is already in the database
+
+**Code** : `409 CONFLICT`
+
+**Content example** :
+
+```json
+{
+  "status": 409,
+  "error": "Conflict",
+  "message": "Email is already in use."
 }
 ```
