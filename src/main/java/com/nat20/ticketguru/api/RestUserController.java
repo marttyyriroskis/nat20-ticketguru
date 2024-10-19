@@ -64,7 +64,7 @@ public class RestUserController {
 
         if (userDTOs.isEmpty()) {
             throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "No users found");
+                HttpStatus.NO_CONTENT, "No users available");
         }
 
         return userDTOs;
@@ -79,7 +79,7 @@ public class RestUserController {
      */
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
+        Optional<User> optionalUser = userRepository.findByIdActive(id);
         if (!optionalUser.isPresent()) {
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "User not found");
@@ -106,7 +106,7 @@ public class RestUserController {
 
         if (ucDTO.getRoleId() != null) {
 
-            Role existingRole = roleRepository.findById(
+            Role existingRole = roleRepository.findByIdActive(
                 ucDTO.getRoleId()).orElseThrow(
                     () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Role not found"));
 

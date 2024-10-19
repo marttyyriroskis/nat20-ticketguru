@@ -17,6 +17,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,6 +33,9 @@ public class Role {
     @Column(unique = true)
     private String title;
 
+    @Column(name="deleted_at")
+    private LocalDateTime deletedAt;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "role_permissions",
@@ -42,7 +46,7 @@ public class Role {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
     @JsonIgnore
-    private List<User> users;
+    private Set<User> users = new HashSet<>();
 
     public Role() {
     }
@@ -51,7 +55,7 @@ public class Role {
         this.title = title;
     }
 
-    public Role(String title, List<User> users) {
+    public Role(String title, Set<User> users) {
         this.title = title;
         this.users = users;
     }
@@ -72,11 +76,31 @@ public class Role {
         this.title = title;
     }
 
-    public List<User> getUsers() {
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void restore() {
+        this.deletedAt = null;
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
+
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 
@@ -108,12 +132,15 @@ public class Role {
     public RoleDTO toDTO() {
         return new RoleDTO(
             this.title,
+
             this.permissions.stream()
                 .map(Permission::getId)
                 .collect(Collectors.toSet()),
+
             this.users.stream()
                 .map(User::getId)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()) 
+        );
     }
 
 }

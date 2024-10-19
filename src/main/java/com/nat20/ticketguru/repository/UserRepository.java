@@ -13,13 +13,13 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    @Query("SELECT u FROM User u WHERE u.deletedAt IS NULL")
+    @Query(value = "SELECT * FROM users WHERE deleted_at IS NULL", nativeQuery = true)
     List<User> findAllActive();
 
-    @Query("SELECT u FROM User u WHERE u.deletedAt IS NULL AND u.id = :id")
+    @Query(value = "SELECT * FROM users WHERE id = :id AND deleted_at IS NULL", nativeQuery = true)
     Optional<User> findByIdActive(@Param("id") Long id);
 
-    @Query("SELECT u FROM User u WHERE u.deletedAt IS NULL AND u.email = :email")
+    @Query(value = "SELECT * FROM users WHERE email = :email AND deleted_at IS NULL", nativeQuery = true)
     Optional<User> findByEmailActive(@Param("email") String email);
 
 }
