@@ -31,6 +31,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+/**
+ * REST controller for roles
+ * 
+ * @author Jesse Hellman
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/roles")
 public class RestRoleController {
@@ -44,7 +50,11 @@ public class RestRoleController {
         this.userRepository = userRepository;
     }
 
-    // Get all roles
+    /**
+     * Get all roles
+     * 
+     * @return all roles
+     */
     @GetMapping
     public ResponseEntity<List<RoleDTO>> getRoles() {
         Iterable<Role> iterableRoles = roleRepository.findAll();
@@ -63,7 +73,12 @@ public class RestRoleController {
             .collect(Collectors.toList()));
     }
 
-    // Get role by id
+    /**
+     * Get a role by id
+     * 
+     * @param id the id of the role
+     * @return the role
+     */
     @GetMapping("/{id}")
     public ResponseEntity<RoleDTO> getRole(@PathVariable Long id) {
         Role role = roleRepository.findById(id)
@@ -79,7 +94,12 @@ public class RestRoleController {
                     .collect(Collectors.toList())));
     }
 
-    // Add a new role
+    /**
+     * Add a role
+     * 
+     * @param roleDTO the role to add
+     * @return the added role
+     */
     @PostMapping
     public ResponseEntity<RoleDTO> addRole(@Valid @RequestBody RoleDTO roleDTO) {
         // TODO: Validation
@@ -98,19 +118,16 @@ public class RestRoleController {
 
         Role newRole = roleRepository.save(role);
 
-        RoleDTO newRoleDTO = new RoleDTO(
-                newRole.getTitle(),
-                newRole.getPermissions().stream()
-                    .map(Permission::getId)
-                    .collect(Collectors.toSet()),
-                newRole.getUsers().stream()
-                    .map(User::getId)
-                    .collect(Collectors.toList()));
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(newRoleDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newRole.toDTO());
     }
     
-    // Update a role
+    /**
+     * Update a role
+     * 
+     * @param id the id of the role to be updated
+     * @param roleDTO the updated role
+     * @return the updated role
+     */
     @PutMapping("/{id}")
     public ResponseEntity<RoleDTO> updateRole(@PathVariable Long id, @RequestBody RoleDTO roleDTO) {
         Optional<Role> existingRole = roleRepository.findById(id);
@@ -146,7 +163,12 @@ public class RestRoleController {
         return ResponseEntity.ok(updatedRoleDTO);
     }
 
-    // Delete a role
+    /**
+     * Delete a role
+     * 
+     * @param id the id of the role to delete
+     * @return no content
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
         Optional<Role> optionalRole = roleRepository.findById(id);
@@ -158,7 +180,13 @@ public class RestRoleController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    // Add a permission to a role
+    /**
+     * Add a permission to a role
+     * 
+     * @param id
+     * @param permissionRequest the permission to add
+     * @return the role with the added permission
+     */
     @PostMapping("/{id}/permissions")
         public ResponseEntity<Role> addPermissionToRole(@PathVariable Long id, @RequestBody Permission permissionRequest) {
         Long permissionId = permissionRequest.getId();
@@ -183,7 +211,13 @@ public class RestRoleController {
         return ResponseEntity.ok(role);
     }
 
-    // Remove a permission from a role
+    /**
+     * Remove a permission from a role
+     * 
+     * @param id
+     * @param permissionId the id of the permission to be removed
+     * @return the role with the removed permission
+     */
     @DeleteMapping("/{id}/permissions/{permissionId}")
     public ResponseEntity<Role> removePermissionFromRole(@PathVariable Long id, @PathVariable Long permissionId) {
         Optional<Role> optionalRole = roleRepository.findById(id);

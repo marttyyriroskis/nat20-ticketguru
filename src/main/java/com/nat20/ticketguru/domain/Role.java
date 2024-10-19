@@ -3,8 +3,10 @@ package com.nat20.ticketguru.domain;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nat20.ticketguru.dto.RoleDTO;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +19,7 @@ import jakarta.persistence.Table;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "roles")
@@ -26,6 +29,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String title;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -99,6 +103,17 @@ public class Role {
     @Override
     public String toString() {
         return "Role [id=" + id + ", title=" + title + "]";
+    }
+
+    public RoleDTO toDTO() {
+        return new RoleDTO(
+            this.title,
+            this.permissions.stream()
+                .map(Permission::getId)
+                .collect(Collectors.toSet()),
+            this.users.stream()
+                .map(User::getId)
+                .collect(Collectors.toList()));
     }
 
 }
