@@ -38,8 +38,9 @@ Accept: application/json
   "firstName": "User1",
   "lastName": "Cashier",
   "role": {
-    "id": 1,
-    "title": "cashier"
+    "title": "cashier",
+    "permissionIds": [1, 2],
+    "userIds": [1]
   }
 }
 ```

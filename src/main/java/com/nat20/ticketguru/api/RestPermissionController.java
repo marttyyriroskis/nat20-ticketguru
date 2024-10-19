@@ -108,6 +108,12 @@ public class RestPermissionController {
         Permission existingPermission = permissionRepository.findByIdActive(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Permission not found"));
 
+        Permission titledPermision = permissionRepository.findByTitle(permissionDTO.title()).orElse(null);
+
+        if (titledPermision != null && titledPermision.getId() != id) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Permission already exists");
+        }
+        
         existingPermission.setTitle(permissionDTO.title());
 
         Permission updatedPermission = permissionRepository.save(existingPermission);

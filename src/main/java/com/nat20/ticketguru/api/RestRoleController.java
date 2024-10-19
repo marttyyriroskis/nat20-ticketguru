@@ -1,10 +1,8 @@
 package com.nat20.ticketguru.api;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -14,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Permission;
 import com.nat20.ticketguru.domain.Role;
+import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.dto.RoleDTO;
 import com.nat20.ticketguru.repository.RoleRepository;
 
@@ -57,7 +56,7 @@ public class RestRoleController {
         Iterable<Role> iterableRoles = roleRepository.findAllActive();
 
         if (!iterableRoles.iterator().hasNext()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No roles found");
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No roles available");
         }
 
         List<Role> roleList = new ArrayList<>();
@@ -119,6 +118,12 @@ public class RestRoleController {
         Role existingRole = roleRepository.findByIdActive(id).orElseThrow(
             () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
 
+        Role titledRole = roleRepository.findByTitle(roleDTO.title()).orElse(null);
+
+        if (titledRole != null && titledRole.getId() != id) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Role already exists");
+        }
+
         existingRole.setTitle(roleDTO.title());
 
         Role updatedRole = roleRepository.save(existingRole);
@@ -153,7 +158,7 @@ public class RestRoleController {
      * @throws ResponseStatusException if the role or permission is not found, or if the role already has the permission
      */
     @PostMapping("/{id}/permissions")
-    public ResponseEntity<Role> addPermissionToRole(@PathVariable Long id, @RequestBody Permission permissionRequest) {
+    public ResponseEntity<RoleDTO> addPermissionToRole(@PathVariable Long id, @RequestBody Permission permissionRequest) {
         Long permissionId = permissionRequest.getId();
         
         Optional<Role> optionalRole = roleRepository.findById(id);
@@ -180,7 +185,7 @@ public class RestRoleController {
 
         roleRepository.save(role);
 
-        return ResponseEntity.ok(role);
+        return ResponseEntity.ok(role.toDTO());
     }
 
     /**
@@ -192,7 +197,7 @@ public class RestRoleController {
      * @throws ResponseStatusException if the role or permission is not found, or if the role does not have the permission
      */
     @DeleteMapping("/{id}/permissions/{permissionId}")
-    public ResponseEntity<Role> removePermissionFromRole(@PathVariable Long id, @PathVariable Long permissionId) {
+    public ResponseEntity<RoleDTO> removePermissionFromRole(@PathVariable Long id, @PathVariable Long permissionId) {
         Optional<Role> optionalRole = roleRepository.findById(id);
         if (!optionalRole.isPresent()) {
             throw new ResponseStatusException(
@@ -217,7 +222,7 @@ public class RestRoleController {
 
         roleRepository.save(role);
 
-        return ResponseEntity.ok(role);
+        return ResponseEntity.ok(role.toDTO());
     }
 
     

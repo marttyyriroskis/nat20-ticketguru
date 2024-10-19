@@ -55,19 +55,17 @@ public class RestUserController {
      * @return all users
      */
     @GetMapping
-    public Iterable<UserDTO> getUsers() {
-        Iterable<User> users = userRepository.findAllActive();
-        List<UserDTO> userDTOs = new ArrayList<>();
-        for (User user : users) {
-            userDTOs.add(user.toDTO());
-        }
+    public ResponseEntity<Iterable<UserDTO>> getUsers() {
+        List<User> users = userRepository.findAllActive();
 
-        if (userDTOs.isEmpty()) {
+        if (users.isEmpty()) {
             throw new ResponseStatusException(
                 HttpStatus.NO_CONTENT, "No users available");
         }
 
-        return userDTOs;
+        return ResponseEntity.ok(users.stream()
+            .map(User::toDTO)
+            .toList());
     }
 
     /**
@@ -133,8 +131,16 @@ public class RestUserController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserCreateDTO editedUser) {
+        
         User user = userRepository.findById(id).orElseThrow(
             () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        if (editedUser.getEmail() != null) {
+            User existingUser = userRepository.findByEmail(editedUser.getEmail()).orElse(null);
+            if (existingUser != null && existingUser.getId() != id) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already in use");
+            }
+        }
 
         user.setEmail(editedUser.getEmail());
         user.setFirstName(editedUser.getFirstName());

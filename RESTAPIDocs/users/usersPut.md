@@ -37,9 +37,7 @@ Content-Type: application/json
   "email": "updated_user@test.com",
   "firstName": "UpdatedUser1",
   "lastName": "Cashier",
-  "role": {
-    "id": 1
-  }
+  "roleId": 1
 }
 ```
 
@@ -58,8 +56,9 @@ Content-Type: application/json
   "firstName": "UpdatedUser1",
   "lastName": "Cashier",
   "role": {
-    "id": 1,
-    "title": "cashier"
+    "title": "cashier",
+    "permissionIds": [],
+    "userIds": [1]
   }
 }
 ```
@@ -77,5 +76,19 @@ Content-Type: application/json
   "status": 404,
   "error": "Not Found",
   "message": "User not found"
+}
+```
+
+**Condition** : If the email is already in the database
+
+**Code** : `409 CONFLICT`
+
+**Content example** :
+
+```json
+{
+  "status": 409,
+  "error": "Conflict",
+  "message": "Email is already in use."
 }
 ```
