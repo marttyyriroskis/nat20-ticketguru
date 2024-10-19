@@ -11,6 +11,8 @@ public record TicketDTO(
 
     @NotNull(message = "Price must not be null") double price,
 
+    LocalDateTime deletedAt,
+
     @NotNull(message = "Ticket ID must not be null") Long ticketTypeId,
 
     Long saleId

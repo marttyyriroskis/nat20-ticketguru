@@ -1,5 +1,7 @@
 package com.nat20.ticketguru.api;
 
+import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -54,8 +56,10 @@ public class RestTicketController {
                     ticket.getBarcode(),
                     ticket.getUsedAt(),
                     ticket.getPrice(),
+                    ticket.getDeletedAt(),
                     ticket.getTicketType().getId(),
                     ticket.getSale().getId()))
+                .filter(t -> t.deletedAt() == null)
                 .collect(Collectors.toList()));
     }
     
@@ -69,6 +73,7 @@ public class RestTicketController {
                     ticket.getBarcode(),
                     ticket.getUsedAt(),
                     ticket.getPrice(),
+                    ticket.getDeletedAt(),
                     ticket.getTicketType().getId(),
                     ticket.getSale().getId()));
     }
@@ -95,6 +100,7 @@ public class RestTicketController {
                 newTicket.getBarcode(),
                 newTicket.getUsedAt(),
                 newTicket.getPrice(),
+                newTicket.getDeletedAt(),
                 newTicket.getTicketType().getId(),
                 newTicket.getSale().getId()
         );
@@ -130,6 +136,7 @@ public class RestTicketController {
                 updatedTicket.getBarcode(),
                 updatedTicket.getUsedAt(),
                 updatedTicket.getPrice(),
+                updatedTicket.getDeletedAt(),
                 updatedTicket.getTicketType().getId(),
                 updatedTicket.getSale().getId()
         );
@@ -139,16 +146,28 @@ public class RestTicketController {
 
     // Delete ticket
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTicket(@PathVariable Long id) {
-        Optional<Ticket> ticketOptional = ticketRepository.findById(id);
+    public ResponseEntity<TicketDTO> deleteTicket(@PathVariable Long id) {
+        Optional<Ticket> existingTicket = ticketRepository.findById(id);
 
-        if (!ticketOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ticket not found");
+        if (!existingTicket.isPresent()) {
+            return ResponseEntity.notFound().build();
         }
 
-        ticketRepository.deleteById(id);
+        Ticket ticketToDelete = existingTicket.get();
+        ticketToDelete.setDeletedAt(LocalDateTime.now());
 
-        return ResponseEntity.ok().build();
+        Ticket deletedTicket = ticketRepository.save(ticketToDelete);
+
+        TicketDTO deletedTicketDTO = new TicketDTO(
+                deletedTicket.getBarcode(),
+                deletedTicket.getUsedAt(),
+                deletedTicket.getPrice(),
+                deletedTicket.getDeletedAt(),
+                deletedTicket.getTicketType().getId(),
+                deletedTicket.getSale().getId()
+        );
+
+        return ResponseEntity.ok(deletedTicketDTO);
     }
 
 }

@@ -12,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 
@@ -37,6 +36,9 @@ public class Ticket {
     @Column(name = "price", nullable = false)
     private double price;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @ManyToOne
     @JoinColumn(name = "ticket_type_id")
     @JsonIgnore
@@ -58,11 +60,12 @@ public class Ticket {
         this.barcode = eventCode + "-" + System.currentTimeMillis();
     }
 
-    public Ticket(LocalDateTime usedAt, @PositiveOrZero(message = "Price must be positive or zero") double price, TicketType ticketType,
-            Sale sale) {
+    public Ticket(LocalDateTime usedAt, @PositiveOrZero(message = "Price must be positive or zero") double price, LocalDateTime deletedAt,
+            TicketType ticketType, Sale sale) {
         this.barcode = String.valueOf(System.currentTimeMillis());
         this.usedAt = usedAt;
         this.price = price;
+        this.deletedAt = deletedAt;
         this.ticketType = ticketType;
         this.sale = sale;
     }
@@ -105,6 +108,14 @@ public class Ticket {
         this.price = price;
     }
 
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
     public TicketType getTicketType() {
         return ticketType;
     }
@@ -121,27 +132,10 @@ public class Ticket {
         this.sale = sale;
     }
 
-    // ticketTypeId is not persistent
-    @Transient
-    private Long ticketTypeId;
-
-    public Long getTicketTypeId() {
-        return ticketType != null ? ticketType.getId() : null; // Return the ticketType ID if ticketType is not null
-    }
-
-    // saleId is not persistent
-    @Transient
-    private Long saleId;
-
-    public Long getSaleId() {
-        return sale != null ? sale.getId() : null; // Return the sale ID if sale is not null
-    }
-
-    // omit sale and ticketType from toString to prevent infinite loops, use saleId and ticketTypeId instead
     @Override
     public String toString() {
-        return "Ticket [id=" + id + ", barcode=" + barcode + ", usedAt=" + usedAt + ", price=" + price + ", ticketTypeId="
-                + ticketTypeId + ", saleId=" + saleId + "]";
+        return "Ticket [id=" + id + ", barcode=" + barcode + ", usedAt=" + usedAt + ", price=" + price + ", deletedAt="
+                + deletedAt + "]";
     }
 
 }
