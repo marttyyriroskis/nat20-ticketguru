@@ -169,7 +169,7 @@ public class RestUserController {
         User user = userRepository.findByIdActive(id).orElseThrow(
             () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         
-        user.delete();
+        user.delete(); // Mark as deleted (soft delete)
         userRepository.save(user);
 
         return ResponseEntity.status(204).build();

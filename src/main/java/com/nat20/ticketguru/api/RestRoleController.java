@@ -116,16 +116,12 @@ public class RestRoleController {
     @PutMapping("/{id}")
     public ResponseEntity<RoleDTO> updateRole(@PathVariable Long id, @RequestBody RoleDTO roleDTO) {
 
-        Optional<Role> optionalRole = roleRepository.findByIdActive(id);
-        if (!optionalRole.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Role not found");
-        }
+        Role existingRole = roleRepository.findByIdActive(id).orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
 
-        Role role = optionalRole.get();
-        role.setTitle(roleDTO.title());
+        existingRole.setTitle(roleDTO.title());
 
-        Role updatedRole = roleRepository.save(role);
+        Role updatedRole = roleRepository.save(existingRole);
 
         return ResponseEntity.ok(updatedRole.toDTO());
     }
@@ -139,14 +135,12 @@ public class RestRoleController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
-        Optional<Role> optionalRole = roleRepository.findByIdActive(id);
-        if (!optionalRole.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Role not found");
-        }
-        Role deletedRole = optionalRole.get();
-        deletedRole.delete();
-        roleRepository.save(deletedRole);
+        Role role = roleRepository.findByIdActive(id).orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
+
+        role.delete(); // Mark as deleted (soft delete)
+        roleRepository.save(role);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -159,7 +153,7 @@ public class RestRoleController {
      * @throws ResponseStatusException if the role or permission is not found, or if the role already has the permission
      */
     @PostMapping("/{id}/permissions")
-        public ResponseEntity<Role> addPermissionToRole(@PathVariable Long id, @RequestBody Permission permissionRequest) {
+    public ResponseEntity<Role> addPermissionToRole(@PathVariable Long id, @RequestBody Permission permissionRequest) {
         Long permissionId = permissionRequest.getId();
         
         Optional<Role> optionalRole = roleRepository.findById(id);
