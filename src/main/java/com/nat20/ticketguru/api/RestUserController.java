@@ -20,6 +20,20 @@ import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.repository.RoleRepository;
 import com.nat20.ticketguru.repository.UserRepository;
 
+import com.nat20.ticketguru.dto.UserDTO;
+import com.nat20.ticketguru.dto.UserCreateDTO;
+
+import jakarta.validation.Valid;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * REST controller for users
+ * 
+ * @author Jesse Hellman
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/users")
 public class RestUserController {
@@ -35,80 +49,129 @@ public class RestUserController {
         this.roleRepository = roleRepository;
     }
 
-    // Get all users
+    /**
+     * Get all users
+     * 
+     * @return all users
+     */
     @GetMapping
-    public Iterable<User> getUsers() {
-        return userRepository.findAll();
+    public Iterable<UserDTO> getUsers() {
+        Iterable<User> users = userRepository.findAllActive();
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            userDTOs.add(user.toDTO());
+        }
+
+        if (userDTOs.isEmpty()) {
+            throw new ResponseStatusException(
+                HttpStatus.NO_CONTENT, "No users available");
+        }
+
+        return userDTOs;
     }
 
-    // Get user by id
+    /**
+     * Get a user by id
+     * 
+     * @param id the id of the user requested
+     * @return the user requested
+     * @exception ResponseStatusException if user not found
+     */
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
+    public UserDTO getUser(@PathVariable Long id) {
+        Optional<User> optionalUser = userRepository.findByIdActive(id);
         if (!optionalUser.isPresent()) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "User not found");
+                HttpStatus.NOT_FOUND, "User not found");
         }
-        User user = optionalUser.get();
+        UserDTO user = optionalUser.get().toDTO();
         return user;
     }
 
-    // Add a new user
+    /**
+     * Add a user
+     * 
+     * @param user the user to add
+     * @return the user added
+     * @exception ResponseStatusException if role not found
+     */
     @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserCreateDTO ucDTO) {
 
-        if (user.getRole() != null && user.getRole().getId() == null) {
-            user.setRole(null);
+        if (userRepository.findByEmail(ucDTO.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already in use");
         }
 
-        if (user.getRole() != null) {
-            Optional<Role> existingRole = roleRepository.findById(user.getRole().getId());
+        User user = ucDTO.toUser();
 
-            if (!existingRole.isPresent()) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Role not found");
-            }
+        if (ucDTO.getRoleId() != null) {
 
-            user.setRole(existingRole.get());
-        } else {
-            user.setRole(null);
+            Role existingRole = roleRepository.findByIdActive(
+                ucDTO.getRoleId()).orElseThrow(
+                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Role not found"));
+
+            user.setRole(existingRole);
+
         }
 
         // Uncomment the following when spring security is added
-        // String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        // user.setPassword(hashedPassword);
-        User response = userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        // if (ucDTO.getPassword() != null) {
+        //     String hashedPassword = BCrypt.hashpw(ucDTO.getPassword(), BCrypt.gensalt());
+        //     user.sethashedPassword(hashedPassword);
+        // }
+
+        User savedUser = userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser.toDTO());
     }
 
-    // Update a user
+    /**
+     * Update a user
+     * 
+     * @param id the id of the user to be updated
+     * @param editedUser the requested updates for the user
+     * @return the updated user
+     */
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User editedUser) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (!optionalUser.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "User not found");
-        }
-        User user = optionalUser.get();
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserCreateDTO editedUser) {
+        User user = userRepository.findById(id).orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
         user.setEmail(editedUser.getEmail());
         user.setFirstName(editedUser.getFirstName());
         user.setLastName(editedUser.getLastName());
-        user.setRole(editedUser.getRole()); // Validate?
+
+        if (editedUser.getRoleId() != null) {
+            Role existingRole = roleRepository.findById(
+                editedUser.getRoleId()).orElseThrow(
+                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Role not found"));
+            user.setRole(existingRole);
+        }
+
         // Uncomment the following when spring security is added
-        // String hashedPassword = BCrypt.hashpw(editedUser.getPassword(), BCrypt.gensalt());
-        // user.setPassword(hashedPassword);
-        return userRepository.save(user);
+        // if (ucDTO.getPassword() != null) {
+        //     String hashedPassword = BCrypt.hashpw(ucDTO.getPassword(), BCrypt.gensalt());
+        //     user.sethashedPassword(hashedPassword);
+        // }
+
+        User updatedUser = userRepository.save(user);
+        return ResponseEntity.ok(updatedUser.toDTO());
     }
 
-    // Delete a user
+    /**
+     * Delete a user
+     * 
+     * @param id the id of the user to be deleted
+     * @return 204 No Content
+     * @exception ResponseStatusException if user not found
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (!optionalUser.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "User not found");
-        }
-        userRepository.deleteById(id);
+        User user = userRepository.findByIdActive(id).orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        
+        user.delete(); // Mark as deleted (soft delete)
+        userRepository.save(user);
+
         return ResponseEntity.status(204).build();
     }
 

@@ -14,10 +14,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Permission;
 import com.nat20.ticketguru.domain.Role;
-import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.dto.RoleDTO;
 import com.nat20.ticketguru.repository.RoleRepository;
-import com.nat20.ticketguru.repository.UserRepository;
 
 import jakarta.validation.Valid;
 
@@ -31,146 +29,148 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+/**
+ * REST controller for roles
+ * 
+ * @author Jesse Hellman
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/roles")
 public class RestRoleController {
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
-    private final UserRepository userRepository;
 
-    public RestRoleController(RoleRepository roleRepository, PermissionRepository permissionRepository, UserRepository userRepository) {
+    public RestRoleController(RoleRepository roleRepository, PermissionRepository permissionRepository) {
         this.roleRepository = roleRepository;
         this.permissionRepository = permissionRepository;
-        this.userRepository = userRepository;
     }
 
-    // Get all roles
+    /**
+     * Get all roles
+     * 
+     * @return all roles
+     * @throws ResponseStatusException if there are no roles
+     */
     @GetMapping
     public ResponseEntity<List<RoleDTO>> getRoles() {
-        Iterable<Role> iterableRoles = roleRepository.findAll();
+        Iterable<Role> iterableRoles = roleRepository.findAllActive();
+
+        if (!iterableRoles.iterator().hasNext()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No roles found");
+        }
+
         List<Role> roleList = new ArrayList<>();
         iterableRoles.forEach(roleList::add);
 
         return ResponseEntity.ok(roleList.stream()
-            .map(role -> new RoleDTO(
-                role.getTitle(),
-                role.getPermissions().stream()
-                    .map(Permission::getId)
-                    .collect(Collectors.toSet()),
-                role.getUsers().stream()
-                    .map(User::getId)
-                    .collect(Collectors.toList())))
+            .map(Role::toDTO)
             .collect(Collectors.toList()));
     }
 
-    // Get role by id
+    /**
+     * Get a role by id
+     * 
+     * @param id the id of the role
+     * @return the role
+     * @throws ResponseStatusException if the role is not found
+     */
     @GetMapping("/{id}")
     public ResponseEntity<RoleDTO> getRole(@PathVariable Long id) {
-        Role role = roleRepository.findById(id)
+        Role role = roleRepository.findByIdActive(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
         
-        return ResponseEntity.ok(new RoleDTO(
-                role.getTitle(),
-                role.getPermissions().stream()
-                    .map(Permission::getId)
-                    .collect(Collectors.toSet()),
-                role.getUsers().stream()
-                    .map(User::getId)
-                    .collect(Collectors.toList())));
+        return ResponseEntity.ok(role.toDTO());
     }
 
-    // Add a new role
+    /**
+     * Add a role
+     * 
+     * @param roleDTO the role to add
+     * @return the added role
+     * @throws ResponseStatusException if the role already exists
+     */
     @PostMapping
     public ResponseEntity<RoleDTO> addRole(@Valid @RequestBody RoleDTO roleDTO) {
-        // TODO: Validation
+        
+        if (roleRepository.findByTitle(roleDTO.title()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Role already exists");
+        }
+
         Role role = new Role();
         role.setTitle(roleDTO.title());
 
-        Iterable<Permission> iterablePermissions = permissionRepository.findAll();
-        Set<Permission> permissionSet = new HashSet<>();
-        iterablePermissions.forEach(permissionSet::add);
-        role.setPermissions(permissionSet);
-
-        Iterable<User> iterableUsers = userRepository.findAll();
-        List<User> userList = new ArrayList<>();
-        iterableUsers.forEach(userList::add);
-        role.setUsers(userList);
-
         Role newRole = roleRepository.save(role);
 
-        RoleDTO newRoleDTO = new RoleDTO(
-                newRole.getTitle(),
-                newRole.getPermissions().stream()
-                    .map(Permission::getId)
-                    .collect(Collectors.toSet()),
-                newRole.getUsers().stream()
-                    .map(User::getId)
-                    .collect(Collectors.toList()));
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(newRoleDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newRole.toDTO());
     }
     
-    // Update a role
+    /**
+     * Update a role
+     * 
+     * @param id the id of the role to be updated
+     * @param roleDTO the updated role
+     * @return the updated role
+     * @throws ResponseStatusException if the role is not found
+     */
     @PutMapping("/{id}")
     public ResponseEntity<RoleDTO> updateRole(@PathVariable Long id, @RequestBody RoleDTO roleDTO) {
-        Optional<Role> existingRole = roleRepository.findById(id);
-        if (!existingRole.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
 
-        Role roleToUpdate = existingRole.get();
+        Role existingRole = roleRepository.findByIdActive(id).orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
 
-        roleToUpdate.setTitle(roleDTO.title());
+        existingRole.setTitle(roleDTO.title());
 
-        Iterable<Permission> iterablePermissions = permissionRepository.findAll();
-        Set<Permission> permissionSet = new HashSet<>();
-        iterablePermissions.forEach(permissionSet::add);
-        roleToUpdate.setPermissions(permissionSet);
+        Role updatedRole = roleRepository.save(existingRole);
 
-        Iterable<User> iterableUsers = userRepository.findAll();
-        List<User> userList = new ArrayList<>();
-        iterableUsers.forEach(userList::add);
-        roleToUpdate.setUsers(userList);
-
-        Role updatedRole = roleRepository.save(roleToUpdate);
-
-        RoleDTO updatedRoleDTO = new RoleDTO(
-                updatedRole.getTitle(),
-                updatedRole.getPermissions().stream()
-                    .map(Permission::getId)
-                    .collect(Collectors.toSet()),
-                updatedRole.getUsers().stream()
-                    .map(User::getId)
-                    .collect(Collectors.toList()));
-
-        return ResponseEntity.ok(updatedRoleDTO);
+        return ResponseEntity.ok(updatedRole.toDTO());
     }
 
-    // Delete a role
+    /**
+     * Delete a role
+     * 
+     * @param id the id of the role to delete
+     * @return no content
+     * @throws ResponseStatusException if the role is not found
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
+        Role role = roleRepository.findByIdActive(id).orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
+
+        role.delete(); // Mark as deleted (soft delete)
+        roleRepository.save(role);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * Add a permission to a role
+     * 
+     * @param id
+     * @param permissionRequest the permission to add
+     * @return the role with the added permission
+     * @throws ResponseStatusException if the role or permission is not found, or if the role already has the permission
+     */
+    @PostMapping("/{id}/permissions")
+    public ResponseEntity<Role> addPermissionToRole(@PathVariable Long id, @RequestBody Permission permissionRequest) {
+        Long permissionId = permissionRequest.getId();
+        
         Optional<Role> optionalRole = roleRepository.findById(id);
         if (!optionalRole.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Role not found");
         }
-        roleRepository.deleteById(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    // Add a permission to a role
-    @PostMapping("/{id}/permissions")
-        public ResponseEntity<Role> addPermissionToRole(@PathVariable Long id, @RequestBody Permission permissionRequest) {
-        Long permissionId = permissionRequest.getId();
-        
-        Optional<Role> optionalRole = roleRepository.findById(id);
-        if (!optionalRole.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
 
         Optional<Permission> optionalPermission = permissionRepository.findById(permissionId);
         if (!optionalPermission.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Permission not found");
+        }
+
+        if (optionalRole.get().hasPermission(optionalPermission.get())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Role already has this permission");
         }
         
         Role role = optionalRole.get();
@@ -183,24 +183,34 @@ public class RestRoleController {
         return ResponseEntity.ok(role);
     }
 
-    // Remove a permission from a role
+    /**
+     * Remove a permission from a role
+     * 
+     * @param id
+     * @param permissionId the id of the permission to be removed
+     * @return the role with the removed permission
+     * @throws ResponseStatusException if the role or permission is not found, or if the role does not have the permission
+     */
     @DeleteMapping("/{id}/permissions/{permissionId}")
     public ResponseEntity<Role> removePermissionFromRole(@PathVariable Long id, @PathVariable Long permissionId) {
         Optional<Role> optionalRole = roleRepository.findById(id);
         if (!optionalRole.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Role not found");
         }
 
         Optional<Permission> optionalPermission = permissionRepository.findById(permissionId);
         if (!optionalPermission.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Permission not found");
         }
 
         Role role = optionalRole.get();
         Permission permission = optionalPermission.get();
 
         if (!role.hasPermission(permission)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Role does not have this permission");
         }
 
         role.removePermission(permission);

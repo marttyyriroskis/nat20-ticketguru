@@ -1,137 +1,135 @@
 package com.nat20.ticketguru.api;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Permission;
-import com.nat20.ticketguru.domain.Role;
 import com.nat20.ticketguru.dto.PermissionDTO;
 import com.nat20.ticketguru.repository.PermissionRepository;
-import com.nat20.ticketguru.repository.RoleRepository;
 
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
+/**
+ * REST controller for permissions
+ * 
+ * @author Jesse Hellman
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/permissions")
 @Validated
 public class RestPermissionController {
     private final PermissionRepository permissionRepository;
-    private final RoleRepository roleRepository;
 
-    public RestPermissionController(PermissionRepository permissionRepository, RoleRepository roleRepository) {
+    public RestPermissionController(PermissionRepository permissionRepository) {
         this.permissionRepository = permissionRepository;
-        this.roleRepository = roleRepository;
     }
 
-    // Get all Permissions
+    /**
+     * Get all permissions
+     * 
+     * @return all permissions
+     * @throws ResponseStatusException if there are no permissions
+     */
     @GetMapping
     public ResponseEntity<List<PermissionDTO>> getPermissions() {
-        Iterable<Permission> iterablePermissions = permissionRepository.findAll();
-        List<Permission> permissionList = new ArrayList<>();
-        iterablePermissions.forEach(permissionList::add);
+        List<Permission> permissions = permissionRepository.findAllActive();
 
-        return ResponseEntity.ok(permissionList.stream()
-            .map(permission -> new PermissionDTO(
-                permission.getTitle(),
-                permission.getRoles().stream()
-                    .map(Role::getId)
-                    .collect(Collectors.toSet())))
-            .collect(Collectors.toList()));
+        if (permissions.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No permissions found");
+        }
+
+        List<PermissionDTO> permissionDTOs = permissions.stream()
+            .map(Permission::toDTO)
+            .collect(Collectors.toList());
+
+        return ResponseEntity.ok(permissionDTOs);
     }
 
-    // Get Permission by id
+    /**
+     * Get a permission by id
+     * 
+     * @param id the id of the permission
+     * @return the permission
+     * @throws ResponseStatusException if the permission is not found
+     */
     @GetMapping("/{id}")
     public ResponseEntity<PermissionDTO> getPermission(@PathVariable Long id) {
-        Permission permission = permissionRepository.findById(id)
+        Permission permission = permissionRepository.findByIdActive(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Permission not found"));
-        
-        return ResponseEntity.ok(new PermissionDTO(
-                    permission.getTitle(),
-                    permission.getRoles().stream()
-                    .map(Role::getId)
-                    .collect(Collectors.toSet())));
+
+        return ResponseEntity.ok(permission.toDTO());
     }
 
-    // Add a new Permission
+    /**
+     * Add a new permission
+     * 
+     * @param permissionDTO the permission to add
+     * @return the added permission
+     * @throws ResponseStatusException if the permission title already exists
+     */
     @PostMapping
     public ResponseEntity<PermissionDTO> addPermission(@Valid @RequestBody PermissionDTO permissionDTO) {
-        // TODO: Validation
+        if (permissionRepository.findByTitle(permissionDTO.title()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Permission already exists");
+        }
+
         Permission permission = new Permission();
         permission.setTitle(permissionDTO.title());
 
-        Iterable<Role> iterableRoles = roleRepository.findAll();
-        Set<Role> roleSet = new HashSet<>();
-        iterableRoles.forEach(roleSet::add);
-        permission.setRoles(roleSet);
-
         Permission newPermission = permissionRepository.save(permission);
 
-        PermissionDTO newPermissionDTO = new PermissionDTO(
-                newPermission.getTitle(),
-                newPermission.getRoles().stream()
-                    .map(Role::getId)
-                    .collect(Collectors.toSet()));
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(newPermissionDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newPermission.toDTO());
     }
 
-    // Update a Permission
+    /**
+     * Update a permission
+     * 
+     * @param id the id of the permission to be updated
+     * @param permissionDTO the updated permission data
+     * @return the updated permission
+     * @throws ResponseStatusException if the permission is not found
+     */
     @PutMapping("/{id}")
-    public ResponseEntity<PermissionDTO> updatePermission(@PathVariable Long id, @RequestBody PermissionDTO permissionDTO) {
-        Optional<Permission> existingPermission = permissionRepository.findById(id);
+    public ResponseEntity<PermissionDTO> updatePermission(@PathVariable Long id, @Valid @RequestBody PermissionDTO permissionDTO) {
+        Permission existingPermission = permissionRepository.findByIdActive(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Permission not found"));
 
-        if (!existingPermission.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
+        existingPermission.setTitle(permissionDTO.title());
 
-        Permission permissionToUpdate = existingPermission.get();
+        Permission updatedPermission = permissionRepository.save(existingPermission);
 
-        permissionToUpdate.setTitle(permissionDTO.title());
-
-        Iterable<Role> iterableRoles = roleRepository.findAll();
-        Set<Role> roleSet = new HashSet<>();
-        iterableRoles.forEach(roleSet::add);
-        permissionToUpdate.setRoles(roleSet);
-
-        Permission updatedPermission = permissionRepository.save(permissionToUpdate);
-
-        PermissionDTO updatedPermissionDTO = new PermissionDTO(
-            updatedPermission.getTitle(),
-            updatedPermission.getRoles().stream()
-                    .map(Role::getId)
-                    .collect(Collectors.toSet()));
-
-        return ResponseEntity.ok(updatedPermissionDTO);
+        return ResponseEntity.ok(updatedPermission.toDTO());
     }
 
-    // Delete a Permission
+    /**
+     * Delete a permission
+     * 
+     * @param id the id of the permission to delete
+     * @return no content
+     * @throws ResponseStatusException if the permission is not found
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePermission(@PathVariable Long id) {
-        Optional<Permission> optionalPermission = permissionRepository.findById(id);
-        if (!optionalPermission.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Permission not found");
-        }
-        permissionRepository.deleteById(id);
+        Permission permission = permissionRepository.findByIdActive(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Permission not found"));
+
+        permission.delete(); // Mark as deleted (soft delete)
+        permissionRepository.save(permission);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    
 }
