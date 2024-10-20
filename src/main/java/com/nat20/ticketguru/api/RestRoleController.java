@@ -12,7 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Permission;
 import com.nat20.ticketguru.domain.Role;
-import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.dto.RoleDTO;
 import com.nat20.ticketguru.repository.RoleRepository;
 
