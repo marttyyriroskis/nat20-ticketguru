@@ -47,6 +47,8 @@ public class Sale {
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Ticket> tickets = new ArrayList<>();
 
+    private LocalDateTime deletedAt;
+
     public Sale() {
         this.paidAt = LocalDateTime.now();
     }
@@ -92,6 +94,14 @@ public class Sale {
     @Override
     public String toString() {
         return "Sale [id=" + id + ", paidAt=" + paidAt + ", tickets=" + tickets + ", userId=" + userId + "]";
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
 }
