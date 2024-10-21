@@ -33,8 +33,8 @@ Show all ticket types
   {
     "id": 1,
     "name": "adult",
-    "retail_price": 29.99,
-    "total_available": null,
+    "retailPrice": 29.99,
+    "totalAvailable": null,
     "event": {
       "id": 1,
       "name": "Death metal karaoke",
@@ -57,8 +57,8 @@ Show all ticket types
   {
     "id": 2,
     "name": "student",
-    "retail_price": 14.99,
-    "total_available": null,
+    "retailPrice": 14.99,
+    "totalAvailable": null,
     "event": {
       "id": 1,
       "name": "Death metal karaoke",
@@ -81,8 +81,8 @@ Show all ticket types
   {
     "id": 3,
     "name": "pensioner",
-    "retail_price": 14.99,
-    "total_available": null,
+    "retailPrice": 14.99,
+    "totalAvailable": null,
     "event": {
       "id": 1,
       "name": "Death metal karaoke",

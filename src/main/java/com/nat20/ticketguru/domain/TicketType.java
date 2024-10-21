@@ -35,11 +35,11 @@ public class TicketType {
     @NotNull(message = "Price must not be null")
     @Positive(message = "Price must be positive")
     @Column(name = "retail_price", nullable = false)
-    private double retail_price;
+    private double retailPrice;
 
     @Positive(message = "Total available must be positive or null")
     @Column(name = "total_available", nullable = true)
-    private Integer total_available;
+    private Integer totalAvailable;
 
     @NotNull(message = "Event must not be null")
     @ManyToOne
@@ -53,10 +53,10 @@ public class TicketType {
     public TicketType() {
     }
 
-    public TicketType(String name, double retail_price, Integer total_available, Event event) {
+    public TicketType(String name, double retailPrice, Integer totalAvailable, Event event) {
         this.name = name;
-        this.retail_price = retail_price;
-        this.total_available = total_available;
+        this.retailPrice = retailPrice;
+        this.totalAvailable = totalAvailable;
         this.event = event;
     }
 
@@ -76,20 +76,20 @@ public class TicketType {
         this.name = name;
     }
 
-    public double getRetail_price() {
-        return retail_price;
+    public double getRetailPrice() {
+        return retailPrice;
     }
 
-    public void setRetail_price(double retail_price) {
-        this.retail_price = retail_price;
+    public void setRetailPrice(double retailPrice) {
+        this.retailPrice = retailPrice;
     }
 
-    public Integer getTotal_available() {
-        return total_available;
+    public Integer getTotalAvailable() {
+        return totalAvailable;
     }
 
-    public void setTotal_available(Integer total_available) {
-        this.total_available = total_available;
+    public void setTotalAvailable(Integer totalAvailable) {
+        this.totalAvailable = totalAvailable;
     }
 
     public Event getEvent() {
@@ -102,8 +102,8 @@ public class TicketType {
 
     @Override
     public String toString() {
-        return "TicketType [id=" + id + ", name=" + name + ", retail_price=" + retail_price + ", total_available="
-                + total_available + ", event=" + event + "]";
+        return "TicketType [id=" + id + ", name=" + name + ", retailPrice=" + retailPrice + ", totalAvailable="
+                + totalAvailable + ", event=" + event + "]";
     }
 
 }

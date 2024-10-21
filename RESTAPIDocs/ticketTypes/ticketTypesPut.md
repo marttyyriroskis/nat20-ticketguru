@@ -20,12 +20,12 @@ Allow updating `TIcket type` details of the given `id`.
 
 The request body should be a JSON object representing the `TicketType`. It may include the following fields:
 
-| Field             | Type            | Required | Description                                                                    |
-| ----------------- | --------------- | -------- | ------------------------------------------------------------------------------ |
-| `name`            | String          | Yes      | The name of the ticket type (1-100 char).                                      |
-| `retail_price`    | Double          | Yes      | The price of the ticket type.                                                  |
-| `total_available` | Integer OR null | Yes      | The total amount of tickets available of this ticket type OR null if unlimited |
-| `eventId`         | Object          | Yes      | An object representing the event. Must contain the event `id` (Long).          |
+| Field            | Type            | Required | Description                                                                    |
+| ---------------- | --------------- | -------- | ------------------------------------------------------------------------------ |
+| `name`           | String          | Yes      | The name of the ticket type (1-100 char).                                      |
+| `retailPrice`    | Double          | Yes      | The price of the ticket type.                                                  |
+| `totalAvailable` | Integer OR null | Yes      | The total amount of tickets available of this ticket type OR null if unlimited |
+| `eventId`        | Object          | Yes      | An object representing the event. Must contain the event `id` (Long).          |
 
 #### Example Request
 
@@ -35,8 +35,8 @@ Content-Type: application/json
 
 {
   "name": "adult",
-  "retail_price": 39.99,
-  "total_available": null,
+  "retailPrice": 39.99,
+  "totalAvailable": null,
   "event": { "id": 1}
 }
 ```
@@ -53,8 +53,8 @@ Content-Type: application/json
 {
   "id": 1,
   "name": "adult",
-  "retail_price": 39.99,
-  "total_available": null,
+  "retailPrice": 39.99,
+  "totalAvailable": null,
   "event": {
     "id": 1,
     "name": "Death metal karaoke",
@@ -115,7 +115,7 @@ Content-Type: application/json
 ```json
 {
   "name": "Name must not be empty",
-  "retail_price": "Price must not be null",
+  "retailPrice": "Price must not be null",
   "event": "Event must not be null"
 }
 ```
@@ -129,8 +129,8 @@ Content-Type: application/json
 ```json
 {
   "name": "Name must be between 1 and 100 characters long",
-  "retail_price": "Price must be positive",
-  "total_available": "Total available must be positive or null"
+  "retailPrice": "Price must be positive",
+  "totalAvailable": "Total available must be positive or null"
 }
 ```
 

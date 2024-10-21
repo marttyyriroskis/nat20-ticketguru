@@ -35,8 +35,8 @@ Accept: application/json
 {
   "id": 1,
   "name": "adult",
-  "retail_price": 29.99,
-  "total_available": null,
+  "retailPrice": 29.99,
+  "totalAvailable": null,
   "event": {
     "id": 1,
     "name": "Death metal karaoke",
