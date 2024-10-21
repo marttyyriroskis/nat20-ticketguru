@@ -55,10 +55,10 @@ public class RestEventController {
                         event.getId(),
                         event.getName(),
                         event.getDescription(),
-                        event.getTotal_tickets(),
-                        event.getBegins_at(),
-                        event.getEnds_at(),
-                        event.getTicket_sale_begins(),
+                        event.getTotalTickets(),
+                        event.getBeginsAt(),
+                        event.getEndsAt(),
+                        event.getTicketSaleBegins(),
                         event.getVenue().getId()))
                 .collect(Collectors.toList());
 
@@ -75,10 +75,10 @@ public class RestEventController {
                 event.getId(),
                 event.getName(),
                 event.getDescription(),
-                event.getTotal_tickets(),
-                event.getBegins_at(),
-                event.getEnds_at(),
-                event.getTicket_sale_begins(),
+                event.getTotalTickets(),
+                event.getBeginsAt(),
+                event.getEndsAt(),
+                event.getTicketSaleBegins(),
                 event.getVenue().getId());
 
         return ResponseEntity.ok(eventDTO);
@@ -95,10 +95,10 @@ public class RestEventController {
             Event event = new Event(
                     eventDTO.name(),
                     eventDTO.description(),
-                    eventDTO.total_tickets(),
-                    eventDTO.begins_at(),
-                    eventDTO.ends_at(),
-                    eventDTO.ticket_sale_begins(),
+                    eventDTO.totalTickets(),
+                    eventDTO.beginsAt(),
+                    eventDTO.endsAt(),
+                    eventDTO.ticketSaleBegins(),
                     existingVenue.get());
 
             Event savedEvent = eventRepository.save(event);
@@ -107,10 +107,10 @@ public class RestEventController {
                     savedEvent.getId(),
                     savedEvent.getName(),
                     savedEvent.getDescription(),
-                    savedEvent.getTotal_tickets(),
-                    savedEvent.getBegins_at(),
-                    savedEvent.getEnds_at(),
-                    savedEvent.getTicket_sale_begins(),
+                    savedEvent.getTotalTickets(),
+                    savedEvent.getBeginsAt(),
+                    savedEvent.getEndsAt(),
+                    savedEvent.getTicketSaleBegins(),
                     savedEvent.getVenue().getId());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
@@ -132,10 +132,10 @@ public class RestEventController {
                 Event editedEvent = existingEvent.get();
                 editedEvent.setName(eventDTO.name());
                 editedEvent.setDescription(eventDTO.description());
-                editedEvent.setTotal_tickets(eventDTO.total_tickets());
-                editedEvent.setBegins_at(eventDTO.begins_at());
-                editedEvent.setEnds_at(eventDTO.ends_at());
-                editedEvent.setTicket_sale_begins(eventDTO.ticket_sale_begins());
+                editedEvent.setTotalTickets(eventDTO.totalTickets());
+                editedEvent.setBeginsAt(eventDTO.beginsAt());
+                editedEvent.setEndsAt(eventDTO.endsAt());
+                editedEvent.setTicketSaleBegins(eventDTO.ticketSaleBegins());
                 editedEvent.setVenue(existingVenue.get());
 
                 Event savedEvent = eventRepository.save(editedEvent);
@@ -144,10 +144,10 @@ public class RestEventController {
                         savedEvent.getId(),
                         savedEvent.getName(),
                         savedEvent.getDescription(),
-                        savedEvent.getTotal_tickets(),
-                        savedEvent.getBegins_at(),
-                        savedEvent.getEnds_at(),
-                        savedEvent.getTicket_sale_begins(),
+                        savedEvent.getTotalTickets(),
+                        savedEvent.getBeginsAt(),
+                        savedEvent.getEndsAt(),
+                        savedEvent.getTicketSaleBegins(),
                         savedEvent.getVenue().getId());
 
                 return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
