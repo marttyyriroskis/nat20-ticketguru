@@ -43,11 +43,13 @@ public class Event {
     @Column(name = "total_tickets", nullable = false)
     private int totalTickets;
 
-    @Future(message = "The event start date must be in the future")
+    @NotNull(message = "Event start date cannot be null")
+    @Future(message = "Event start date must be in the future")
     @Column(name = "begins_at")
     private LocalDateTime beginsAt;
 
-    @Future(message = "The event end date must be in the future")
+    @NotNull(message = "Event end date cannot be null")
+    @Future(message = "Event end date must be in the future")
     @Column(name = "ends_at")
     private LocalDateTime endsAt;
 

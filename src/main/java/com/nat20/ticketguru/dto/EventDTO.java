@@ -12,8 +12,8 @@ public record EventDTO(
                 @NotNull(message = "Event name cannot be null") @Size(min = 1, max = 500, message = "Event name cannot be empty and must be between 1 and 100 characters long") String name,
                 @NotNull(message = "Event description cannot be null") @Size(min = 1, max = 500, message = "Event description cannot be empty and must be between 1 and 500 characters long") String description,
                 @Positive(message = "Amount of tickets must be positive") int totalTickets,
-                @Future(message = "The event start date must be in the future") LocalDateTime beginsAt,
-                @Future(message = "The event end date must be in the future") LocalDateTime endsAt,
+                @NotNull(message = "Event start date cannot be null") @Future(message = "Event start date must be in the future") LocalDateTime beginsAt,
+                @NotNull(message = "Event end date cannot be null") @Future(message = "Event end date must be in the future") LocalDateTime endsAt,
                 LocalDateTime ticketSaleBegins,
                 Long venueId) {
 }
