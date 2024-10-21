@@ -30,12 +30,12 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/tickettypes")
 @Validated
-public class RestTicketTypeController {
+public class TicketTypeRestController {
 
     private final TicketTypeRepository ticketTypeRepository;
     private final EventRepository eventRepository;
 
-    public RestTicketTypeController(TicketTypeRepository ticketTypeRepository, EventRepository eventRepository) {
+    public TicketTypeRestController(TicketTypeRepository ticketTypeRepository, EventRepository eventRepository) {
         this.ticketTypeRepository = ticketTypeRepository;
         this.eventRepository = eventRepository;
     }

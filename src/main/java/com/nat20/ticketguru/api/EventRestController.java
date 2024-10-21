@@ -35,12 +35,12 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/events")
 @Validated
-public class RestEventController {
+public class EventRestController {
 
     private final EventRepository eventRepository;
     private final VenueRepository venueRepository;
 
-    public RestEventController(EventRepository eventRepository, VenueRepository venueRepository) {
+    public EventRestController(EventRepository eventRepository, VenueRepository venueRepository) {
         this.eventRepository = eventRepository;
         this.venueRepository = venueRepository;
     }
