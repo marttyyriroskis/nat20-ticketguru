@@ -15,9 +15,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -29,38 +26,31 @@ public class Event {
     @Column(name = "id")
     private Long id;
 
-    @NotNull(message = "Event name cannot be null")
-    @Size(min = 1, max = 500, message = "Event name cannot be empty and must be between 1 and 100 characters long")
+    @Size(min = 1, max = 100)
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull(message = "Event description cannot be null")
-    @Size(min = 1, max = 500, message = "Event description cannot be empty and must be between 1 and 500 characters long")
-    @Column(name = "description")
+    @Size(min = 1, max = 500)
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Positive(message = "Amount of tickets must be positive")
     @Column(name = "total_tickets", nullable = false)
     private int totalTickets;
 
-    @NotNull(message = "Event start date cannot be null")
-    @Future(message = "Event start date must be in the future")
-    @Column(name = "begins_at")
+    @Column(name = "begins_at", nullable = false)
     private LocalDateTime beginsAt;
 
-    @NotNull(message = "Event end date cannot be null")
-    @Future(message = "Event end date must be in the future")
-    @Column(name = "ends_at")
+    @Column(name = "ends_at", nullable = false)
     private LocalDateTime endsAt;
 
-    @Column(name = "ticket_sale_begins")
+    @Column(name = "ticket_sale_begins", nullable = true)
     private LocalDateTime ticketSaleBegins;
 
     @ManyToOne
     @JoinColumn(name = "venue_id", nullable = true)
     private Venue venue;
 
-    @Column(name = "deletedAt")
+    @Column(name = "deletedAt", nullable = true)
     private LocalDateTime deletedAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
