@@ -1,8 +1,8 @@
-# Add a new TIcket Type
+# Add a new Ticket Type
 
-Create a new `TicketType` entity
+Create a new `TicketType` entity.
 
-**URL** : `/api/tickettype`
+**URL** : `/api/tickettypes`
 
 **Method** : `POST`
 
@@ -12,7 +12,7 @@ Create a new `TicketType` entity
 
 **Data constraints** :
 
-Provide all required parameters for the `TicketType`to be created.
+Provide all required parameters for the `TicketType` to be created.
 
 | Field            | Type            | Required | Description                                                                    |
 | ---------------- | --------------- | -------- | ------------------------------------------------------------------------------ |
@@ -21,7 +21,13 @@ Provide all required parameters for the `TicketType`to be created.
 | `totalAvailable` | Integer OR null | Yes      | The total amount of tickets available of this ticket type OR null if unlimited |
 | `eventId`        | Long        | Yes      | A long representing the event. Must contain the event `id` (Long).          |
 
-**Data example** All required fields must be sent. All fields except `totalAvailable` must not be null.
+#### Example Request
+
+```json
+POST /api/tickettypes
+```
+
+All required fields must be sent. `name`, `retailPrice` and `eventId`must not be null.
 
 ```json
 {
@@ -34,7 +40,7 @@ Provide all required parameters for the `TicketType`to be created.
 
 ## Success Responses
 
-**Condition** : Data provided is valid. `EventId` is valid.
+**Condition** : Data provided is valid. `eventId` is valid.
 
 **Code** : `201 CREATED`
 

@@ -1,6 +1,6 @@
 # Get Ticket Type
 
-Allow getting `Ticket type` details of the given `id`.
+Allow getting `TicketType` details of the given `id`.
 
 **URL** : `/api/tickettypes/{id}`
 
@@ -19,8 +19,8 @@ Allow getting `Ticket type` details of the given `id`.
 #### Example Request
 
 ```json
-GET api/tickettypes/1
-Accept: application/json
+GET /api/tickettypes/1
+
 ```
 
 ## Success Responses
@@ -43,7 +43,7 @@ Accept: application/json
 
 ## Error Response
 
-**Condition**: If the ticket type with the specified `id` does not exist.
+**Condition**: If the `TicketType` with the specified `id` does not exist.
 
 **Code** : `404 NOT FOUND`
 

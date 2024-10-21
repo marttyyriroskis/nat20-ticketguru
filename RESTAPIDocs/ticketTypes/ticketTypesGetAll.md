@@ -1,6 +1,6 @@
 # Show All Ticket Types
 
-Show all ticket types
+Show all `TicketTypes`.
 
 **URL** : `/api/tickettypes`
 
@@ -10,9 +10,15 @@ Show all ticket types
 
 **Permissions required** : None
 
+### Example Request
+
+```json
+GET /api/tickettypes
+```
+
 ## Success Responses
 
-**Condition** : The request is successful and there are no ticket types in the system
+**Condition** : The request is successful and there are no `TicketType` objects in the system.
 
 **Code** : `200 OK`
 
@@ -24,11 +30,11 @@ Show all ticket types
 
 ### OR
 
-**Condition** : The request is successful and there are ticket types in the system
+**Condition** : The request is successful and there are `TicketTypes` objects in the system.
 
 **Code** : `200 OK`
 
-**Content** : In this example, the user can see four different ticket types
+**Content** : In this example, the `User` can see four `TicketType` objects:
 
 ```json
 [

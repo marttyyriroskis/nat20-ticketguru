@@ -1,6 +1,6 @@
 # Update Ticket Type
 
-Allow updating `TIcket type` details of the given `id`.
+Allow updating `TicketType` details of the given `id`.
 
 **URL** : `/api/tickettypes/{id}`
 
@@ -18,7 +18,7 @@ Allow updating `TIcket type` details of the given `id`.
 
 **Data constraints** :
 
-The request body should be a JSON object representing the `TicketType`. It may include the following fields:
+Provide all required parameters in the response body for the `TicketType` to be updated.
 
 | Field            | Type            | Required | Description                                                                    |
 | ---------------- | --------------- | -------- | ------------------------------------------------------------------------------ |
@@ -30,9 +30,11 @@ The request body should be a JSON object representing the `TicketType`. It may i
 #### Example Request
 
 ```json
-PUT api/tickettypes/1
-Content-Type: application/json
+PUT /api/tickettypes/1
+```
+All required fields must be sent. `name`, `retailPrice` and `eventId` must not be null.
 
+```json
 {
   "name": "adult",
   "retailPrice": 39.99,
@@ -61,7 +63,7 @@ Content-Type: application/json
 
 ## Error Response
 
-**Condition** : If the provided `TicketType` does not exist.
+**Condition** : If the `TicketType` with the specified `id` does not exist.
 
 **Code** : `404 NOT FOUND`
 
@@ -75,7 +77,7 @@ Content-Type: application/json
 }
 ```
 
-**Condition**: If the event with the specified `id` does not exist.
+**Condition**: If the provided `Event` does not exist. 
 
 **Code** : `404 NOT FOUND`
 

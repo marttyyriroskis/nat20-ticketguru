@@ -19,13 +19,12 @@ Allow deleting `TicketType` details of the given `id`.
 ## Example Request
 
 ```json
-DELETE api/tickettypes/2
-Content-Type: application/json
+DELETE /api/tickettypes/2
 ```
 
 ## Success Responses
 
-**Condition** : `id` provided belongs to a ticket type in the database
+**Condition** : `id` provided belongs to a `TicketType` in the database
 
 **Code** : `204 NO CONTENT`
 
