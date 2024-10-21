@@ -16,7 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
@@ -29,16 +29,17 @@ public class Event {
     @Column(name = "id")
     private Long id;
 
-    @NotBlank(message = "Name must not be empty")
-    @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters long")
+    @NotNull(message = "Event name cannot be null")
+    @Size(min = 1, max = 500, message = "Event name cannot be empty and must be between 1 and 100 characters long")
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Size(min = 1, max = 500, message = "Description must be between 1 and 500 characters long")
+    @NotNull(message = "Event description cannot be null")
+    @Size(min = 1, max = 500, message = "Event description cannot be empty and must be between 1 and 500 characters long")
     @Column(name = "description")
     private String description;
 
-    @Positive(message = "Total tickets must be positive")
+    @Positive(message = "Amount of tickets must be positive")
     @Column(name = "total_tickets", nullable = false)
     private int total_tickets;
 
