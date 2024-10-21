@@ -1,6 +1,7 @@
 package com.nat20.ticketguru.domain;
 
 import java.util.List;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -11,7 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -27,24 +27,26 @@ public class TicketType {
     @Column(name = "id")
     private Long id;
 
-    @NotBlank(message = "Name must not be empty")
-    @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters long")
+    @NotNull(message = "Ticket type name cannot be null")
+    @Size(min = 1, max = 100, message = "Ticket type name must be between 1 and 100 characters long")
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull(message = "Price must not be null")
-    @Positive(message = "Price must be positive")
+    @Positive(message = "Ticket type price must be positive")
     @Column(name = "retail_price", nullable = false)
-    private double retail_price;
+    private double retailPrice;
 
     @Positive(message = "Total available must be positive or null")
     @Column(name = "total_available", nullable = true)
-    private Integer total_available;
+    private Integer totalAvailable;
 
     @NotNull(message = "Event must not be null")
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketType")
     @JsonIgnore
@@ -53,11 +55,12 @@ public class TicketType {
     public TicketType() {
     }
 
-    public TicketType(String name, double retail_price, Integer total_available, Event event) {
+    public TicketType(String name, double retailPrice, Integer totalAvailable, Event event, LocalDateTime deletedAt) {
         this.name = name;
-        this.retail_price = retail_price;
-        this.total_available = total_available;
+        this.retailPrice = retailPrice;
+        this.totalAvailable = totalAvailable;
         this.event = event;
+        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -76,20 +79,20 @@ public class TicketType {
         this.name = name;
     }
 
-    public double getRetail_price() {
-        return retail_price;
+    public double getRetailPrice() {
+        return retailPrice;
     }
 
-    public void setRetail_price(double retail_price) {
-        this.retail_price = retail_price;
+    public void setRetailPrice(double retailPrice) {
+        this.retailPrice = retailPrice;
     }
 
-    public Integer getTotal_available() {
-        return total_available;
+    public Integer getTotalAvailable() {
+        return totalAvailable;
     }
 
-    public void setTotal_available(Integer total_available) {
-        this.total_available = total_available;
+    public void setTotalAvailable(Integer totalAvailable) {
+        this.totalAvailable = totalAvailable;
     }
 
     public Event getEvent() {
@@ -100,10 +103,23 @@ public class TicketType {
         this.event = event;
     }
 
-    @Override
-    public String toString() {
-        return "TicketType [id=" + id + ", name=" + name + ", retail_price=" + retail_price + ", total_available="
-                + total_available + ", event=" + event + "]";
+    public LocalDateTime getDeletedAt() {
+        return this.deletedAt;
     }
 
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+            " id='" + getId() + "'" +
+            ", name='" + getName() + "'" +
+            ", retailPrice='" + getRetailPrice() + "'" +
+            ", totalAvailable='" + getTotalAvailable() + "'" +
+            ", event='" + getEvent() + "'" +
+            ", deletedAt='" + getDeletedAt() + "'" +
+            "}";
+    }
 }

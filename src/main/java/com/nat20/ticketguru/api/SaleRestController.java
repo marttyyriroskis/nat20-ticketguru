@@ -1,5 +1,6 @@
 package com.nat20.ticketguru.api;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,13 +37,13 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/sales")
 @Validated
-public class RestSaleController {
+public class SaleRestController {
 
     private final SaleRepository saleRepository;
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
 
-    public RestSaleController(SaleRepository saleRepository, UserRepository userRepository, TicketRepository ticketRepository) {
+    public SaleRestController(SaleRepository saleRepository, UserRepository userRepository, TicketRepository ticketRepository) {
         this.saleRepository = saleRepository;
         this.userRepository = userRepository;
         this.ticketRepository = ticketRepository;
@@ -54,6 +55,7 @@ public class RestSaleController {
         saleRepository.findAll().forEach(sales::add);
 
         List<SaleDTO> saleDTOs = sales.stream()
+                .filter(sale -> sale.getDeletedAt() == null)
                 .map(sale -> new SaleDTO(sale.getId(),
                 sale.getPaidAt(),
                 sale.getUser().getId(),
@@ -67,6 +69,9 @@ public class RestSaleController {
     public ResponseEntity<SaleDTO> getSale(@PathVariable("id") Long id) {
         Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
+        if (sale.getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found");
+        }
         SaleDTO saleDTO = new SaleDTO(sale.getId(),
                 sale.getPaidAt(),
                 sale.getUser().getId(),
@@ -122,12 +127,19 @@ public class RestSaleController {
 
     @PutMapping("/{id}")
     public ResponseEntity<SaleDTO> editSale(@Valid @RequestBody SaleDTO editedSaleDTO, @PathVariable("id") Long id) {
-        // check that Id exists
+        // check that sale with the Id exists
         Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
+        // check if sale has been soft-deleted
+        if (sale.getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found");
+        }
         User existingUser = userRepository.findById(editedSaleDTO.userId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
-
+        // check if user has been soft-deleted
+        if (existingUser.getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
         // check Tickets
         List<Ticket> validTickets = new ArrayList<>();
         for (Long ticketId : editedSaleDTO.ticketIds()) {
@@ -135,10 +147,14 @@ public class RestSaleController {
             if (!ticket.isPresent()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket");
             }
-            // TODO maybe need to add more validation here? 
-            validTickets.add(ticket.get());
-            // set ticket association with sale in ticket
-            ticket.get().setSale(sale);
+            // check ticket for soft-delete status
+            if (ticket.get().getDeletedAt() == null) {
+                // TODO maybe need to add more validation here?
+                validTickets.add(ticket.get());
+                // set ticket association with sale in ticket
+                ticket.get().setSale(sale);
+            }
+
         }
         sale.setUser(existingUser);
         sale.setTickets(validTickets);
@@ -160,20 +176,28 @@ public class RestSaleController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteSale(@PathVariable("id") Long id) {
+    public void deleteSale(@PathVariable("id") Long id
+    ) {
         Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
+        if (sale.getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found");
+        }
+        sale.setDeletedAt(LocalDateTime.now());
+        saleRepository.save(sale);
+
+        // BELOW NOT NEEDED ANYMORE DUE TO SOFT DELETE!
         // remove sale association from tickets before delete (we want to preserve the tickets in the database)
-        for (Ticket ticket : sale.getTickets()) {
-            ticket.setSale(null);
-        }
+        // for (Ticket ticket : sale.getTickets()) {
+        //     ticket.setSale(null);
+        // }
         // remove sale association from user before delete (we want to preserve the users in the database)
-        User user = sale.getUser();
-        if (user != null) {
-            user.getSales().remove(sale);
-            userRepository.save(user);
-        }
-        saleRepository.deleteById(id);
+        // User user = sale.getUser();
+        // if (user != null) {
+        //     user.getSales().remove(sale);
+        //     userRepository.save(user);
+        // }
+        // saleRepository.deleteById(id);
     }
 
     // Exception handler for validation errors
@@ -182,7 +206,8 @@ public class RestSaleController {
     // as a BAD_REQUEST response
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex
+    ) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors()
                 .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));

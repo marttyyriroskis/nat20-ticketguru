@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,14 +52,15 @@ public class RestEventController {
         eventRepository.findAll().forEach(events::add);
 
         List<EventDTO> eventDTOs = events.stream()
+                .filter(event -> event.getDeletedAt() == null)
                 .map(event -> new EventDTO(
                         event.getId(),
                         event.getName(),
                         event.getDescription(),
-                        event.getTotal_tickets(),
-                        event.getBegins_at(),
-                        event.getEnds_at(),
-                        event.getTicket_sale_begins(),
+                        event.getTotalTickets(),
+                        event.getBeginsAt(),
+                        event.getEndsAt(),
+                        event.getTicketSaleBegins(),
                         event.getVenue().getId()))
                 .collect(Collectors.toList());
 
@@ -71,17 +73,21 @@ public class RestEventController {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-        EventDTO eventDTO = new EventDTO(
-                event.getId(),
-                event.getName(),
-                event.getDescription(),
-                event.getTotal_tickets(),
-                event.getBegins_at(),
-                event.getEnds_at(),
-                event.getTicket_sale_begins(),
-                event.getVenue().getId());
+        if (event.getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
+        } else {
+            EventDTO eventDTO = new EventDTO(
+                    event.getId(),
+                    event.getName(),
+                    event.getDescription(),
+                    event.getTotalTickets(),
+                    event.getBeginsAt(),
+                    event.getEndsAt(),
+                    event.getTicketSaleBegins(),
+                    event.getVenue().getId());
 
-        return ResponseEntity.ok(eventDTO);
+            return ResponseEntity.ok(eventDTO);
+        }
     }
 
     // Post a new event
@@ -95,11 +101,12 @@ public class RestEventController {
             Event event = new Event(
                     eventDTO.name(),
                     eventDTO.description(),
-                    eventDTO.total_tickets(),
-                    eventDTO.begins_at(),
-                    eventDTO.ends_at(),
-                    eventDTO.ticket_sale_begins(),
-                    existingVenue.get());
+                    eventDTO.totalTickets(),
+                    eventDTO.beginsAt(),
+                    eventDTO.endsAt(),
+                    eventDTO.ticketSaleBegins(),
+                    existingVenue.get(),
+                    null);
 
             Event savedEvent = eventRepository.save(event);
 
@@ -107,10 +114,10 @@ public class RestEventController {
                     savedEvent.getId(),
                     savedEvent.getName(),
                     savedEvent.getDescription(),
-                    savedEvent.getTotal_tickets(),
-                    savedEvent.getBegins_at(),
-                    savedEvent.getEnds_at(),
-                    savedEvent.getTicket_sale_begins(),
+                    savedEvent.getTotalTickets(),
+                    savedEvent.getBeginsAt(),
+                    savedEvent.getEndsAt(),
+                    savedEvent.getTicketSaleBegins(),
                     savedEvent.getVenue().getId());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
@@ -125,32 +132,36 @@ public class RestEventController {
         if (!existingEvent.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
         } else {
-            Optional<Venue> existingVenue = venueRepository.findById(eventDTO.venueId());
-            if (!existingVenue.isPresent()) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found");
+            if (existingEvent.get().getDeletedAt() != null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
             } else {
-                Event editedEvent = existingEvent.get();
-                editedEvent.setName(eventDTO.name());
-                editedEvent.setDescription(eventDTO.description());
-                editedEvent.setTotal_tickets(eventDTO.total_tickets());
-                editedEvent.setBegins_at(eventDTO.begins_at());
-                editedEvent.setEnds_at(eventDTO.ends_at());
-                editedEvent.setTicket_sale_begins(eventDTO.ticket_sale_begins());
-                editedEvent.setVenue(existingVenue.get());
+                Optional<Venue> existingVenue = venueRepository.findById(eventDTO.venueId());
+                if (!existingVenue.isPresent()) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found");
+                } else {
+                    Event editedEvent = existingEvent.get();
+                    editedEvent.setName(eventDTO.name());
+                    editedEvent.setDescription(eventDTO.description());
+                    editedEvent.setTotalTickets(eventDTO.totalTickets());
+                    editedEvent.setBeginsAt(eventDTO.beginsAt());
+                    editedEvent.setEndsAt(eventDTO.endsAt());
+                    editedEvent.setTicketSaleBegins(eventDTO.ticketSaleBegins());
+                    editedEvent.setVenue(existingVenue.get());
 
-                Event savedEvent = eventRepository.save(editedEvent);
+                    Event savedEvent = eventRepository.save(editedEvent);
 
-                EventDTO responseDTO = new EventDTO(
-                        savedEvent.getId(),
-                        savedEvent.getName(),
-                        savedEvent.getDescription(),
-                        savedEvent.getTotal_tickets(),
-                        savedEvent.getBegins_at(),
-                        savedEvent.getEnds_at(),
-                        savedEvent.getTicket_sale_begins(),
-                        savedEvent.getVenue().getId());
+                    EventDTO responseDTO = new EventDTO(
+                            savedEvent.getId(),
+                            savedEvent.getName(),
+                            savedEvent.getDescription(),
+                            savedEvent.getTotalTickets(),
+                            savedEvent.getBeginsAt(),
+                            savedEvent.getEndsAt(),
+                            savedEvent.getTicketSaleBegins(),
+                            savedEvent.getVenue().getId());
 
-                return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+                    return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+                }
             }
         }
     }
@@ -163,9 +174,13 @@ public class RestEventController {
         if (!existingEvent.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
         } else {
-            eventRepository.deleteById(eventId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Event removed succesfully");
-            // Not printed in response?
+            if (existingEvent.get().getDeletedAt() != null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
+            } else {
+                existingEvent.get().setDeletedAt(LocalDateTime.now());
+                eventRepository.save(existingEvent.get());
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
         }
     }
 

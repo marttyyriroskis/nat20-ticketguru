@@ -98,19 +98,19 @@ public class TicketguruApplication {
                 log.info("Creating a few event test entries");
                 eventRepository.save(new Event("Death metal karaoke", "Öriöriöriöriörirprir!!!!!", 10,
                         LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
-                        LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get()));
+                        LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get(), null));
                 eventRepository.save(new Event("Disney On Ice", "Mikki-hiiret jäällä. Suih suih vaan!", 10000,
                         LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
-                        LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(2L).get()));
+                        LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(2L).get(), null));
                 eventRepository.save(new Event("A Night at the Museum", "Night-show at the National Museum", 500,
                         LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
-                        LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get()));
+                        LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get(), null));
 
                 log.info("Creating a few ticket type test entries");
-                ticketTypeRepository.save(new TicketType("adult", 29.99, null, eventRepository.findById(1L).get()));
-                ticketTypeRepository.save(new TicketType("student", 14.99, null, eventRepository.findById(1L).get()));
-                ticketTypeRepository.save(new TicketType("pensioner", 14.99, null, eventRepository.findById(1L).get()));
-                ticketTypeRepository.save(new TicketType("vip", 79.99, 20, eventRepository.findById(1L).get()));
+                ticketTypeRepository.save(new TicketType("adult", 29.99, null, eventRepository.findById(1L).get(), null));
+                ticketTypeRepository.save(new TicketType("student", 14.99, null, eventRepository.findById(1L).get(), null));
+                ticketTypeRepository.save(new TicketType("pensioner", 14.99, null, eventRepository.findById(1L).get(), null));
+                ticketTypeRepository.save(new TicketType("vip", 79.99, 20, eventRepository.findById(1L).get(), null));
 
                 log.info("Creating a few ticket test entries");
                 Sale sale1 = new Sale(LocalDateTime.now(), new ArrayList<>(), userRepository.findById(1L).get());

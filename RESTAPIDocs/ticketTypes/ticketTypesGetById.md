@@ -1,6 +1,6 @@
 # Get Ticket Type
 
-Allow getting `ticket type` details of the given `id`.
+Allow getting `Ticket type` details of the given `id`.
 
 **URL** : `/api/tickettypes/{id}`
 
@@ -29,32 +29,15 @@ Accept: application/json
 
 **Code** : `200 OK`
 
-**Content example** : Returns the `TicketType` object of the given `id`, with the `Event` and `Venue` details.
+**Content example** : Returns the `TicketType` object of the given `id`.
 
 ```json
 {
   "id": 1,
   "name": "adult",
-  "retail_price": 29.99,
-  "total_available": null,
-  "event": {
-    "id": 1,
-    "name": "Death metal karaoke",
-    "total_tickets": 10,
-    "begins_at": "2055-10-12T12:00:00",
-    "ends_at": "2055-10-12T12:00:00",
-    "ticket_sale_begins": "2055-10-12T12:00:00",
-    "description": "Öriöriöriöriörirprir!!!!!",
-    "venue": {
-      "id": 1,
-      "name": "Bunkkeri",
-      "address": "Bunkkeritie 1",
-      "zipcode": {
-        "zipcode": "00100",
-        "city": "Helsinki"
-      }
-    }
-  }
+  "retailPrice": 29.99,
+  "totalAvailable": null,
+  "eventId": 1
 }
 ```
 
