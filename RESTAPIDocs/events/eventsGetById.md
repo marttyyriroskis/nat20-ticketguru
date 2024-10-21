@@ -19,8 +19,7 @@ Allow getting `Event` details of the given `id`.
 #### Example Request
 
 ```json
-GET /events/3
-Accept: application/json
+GET /api/events/3
 ```
 
 ## Success Responses
@@ -46,7 +45,7 @@ Accept: application/json
 
 ## Error Response
 
-**Condition**: If the event with the specified `id` does not exist.
+**Condition**: If the `Event` with the specified `id` does not exist.
 
 **Code** : `404 NOT FOUND`
 

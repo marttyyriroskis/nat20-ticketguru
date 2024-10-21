@@ -18,7 +18,7 @@ Allow updating `Event` details of the given `id`.
 
 **Data constraints** :
 
-Provide all required parameters for the `Event`to be created.
+Provide all required parameters in the response body for the `Event` to be updated.
 
 | Field                | Type                     | Required | Description                                                                    |
 | -------------------- | ------------------------ | -------- | ------------------------------------------------------------------------------ |
@@ -33,9 +33,11 @@ Provide all required parameters for the `Event`to be created.
 #### Example Request
 
 ```json
-PUT /events/2
-Content-Type: application/json
+PUT /api/events/2
+```
+All required fields must be sent. `name`, `description`, `totalTickets`, `beginsAt` and `endsAt` must not be null.
 
+```json
 {
     "name": "Disney On Meth-Ice",
     "description": "Mikki-hiiret jäällä. Suih suih vaan!",
@@ -53,7 +55,7 @@ Content-Type: application/json
 
 **Code** : `200 OK`
 
-**Content example** : Returns the updated `Event` object, with the `id` field and `Venue` details.
+**Content example** : Returns the updated `Event` object.
 
 ```json
 {
@@ -99,7 +101,7 @@ Content-Type: application/json
 ```
 
 
-**Condition** : If required fields are missing.
+**Condition** : If required fields are missing or null.
 
 **Code** : `400 BAD REQUEST`
 

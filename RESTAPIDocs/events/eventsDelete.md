@@ -19,13 +19,12 @@ Allow deleting `Event` details of the given `id`.
 ## Example Request
 
 ```json
-DELETE api/events/2
-Content-Type: application/json
+DELETE /api/events/2
 ```
 
 ## Success Responses
 
-**Condition** : Id provided belongs to an event in the database
+**Condition** : `id` provided belongs to an `Event` in the database.
 
 **Code** : `204 NO CONTENT`
 

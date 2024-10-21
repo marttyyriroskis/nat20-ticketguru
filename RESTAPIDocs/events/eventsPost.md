@@ -1,6 +1,6 @@
 # Add a new Event
 
-Create a new `Event` entity
+Create a new `Event` entity.
 
 **URL** : `/api/events`
 
@@ -12,7 +12,7 @@ Create a new `Event` entity
 
 **Data constraints** :
 
-Provide all required parameters for the `Event`to be created.
+Provide all required parameters for the `Event` to be created.
 
 | Field                | Type                     | Required | Description                                                                    |
 | -------------------- | ------------------------ | -------- | ------------------------------------------------------------------------------ |
@@ -24,7 +24,12 @@ Provide all required parameters for the `Event`to be created.
 | `ticketSaleBegins` | String (ISO 8601 format) | No       | The date and time when ticket sales begin.                                     |
 | `venueId`            | Long                     | No      | A long representing the venue. It may be null or contain the venue `id` (Long) |
 
-**Data example** All required fields must be sent. `name`, `description`, `totalTickets`, `beginsAt` and `endsAt` must not be null.
+#### Example Request
+
+```json
+POST /api/events
+```
+All required fields must be sent. `name`, `description`, `totalTickets`, `beginsAt` and `endsAt` must not be null.
 
 ```json
 {
@@ -40,7 +45,7 @@ Provide all required parameters for the `Event`to be created.
 
 ## Success Responses
 
-**Condition** : Data provided is valid. `VenueId` is valid.
+**Condition** : Data provided is valid. `venueId` is valid.
 
 **Code** : `201 CREATED`
 

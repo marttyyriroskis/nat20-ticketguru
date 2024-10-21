@@ -1,6 +1,6 @@
-# Get All Events
+# Show All Events
 
-Show all `Events` the active `User` can access.
+Show all `Events`.
 
 **URL** : `/api/events`
 
@@ -14,12 +14,11 @@ Show all `Events` the active `User` can access.
 
 ```json
 GET /api/events
-Accept: application/json
 ```
 
 ## Success Responses
 
-**Condition** : User can not see any `Events`.
+**Condition** : The request is successful and there are no `Event` objects in the system.
 
 **Code** : `200 OK`
 
@@ -31,11 +30,11 @@ Accept: application/json
 
 ### OR
 
-**Condition** : User can see one or more `Events`.
+**Condition** : The request is successful and there are `Event` objects in the system.
 
 **Code** : `200 OK`
 
-**Content** : In this example, the `User` can see three `Events`:
+**Content** : In this example, the `User` can see three `Event` objects:
 
 ```json
 [
