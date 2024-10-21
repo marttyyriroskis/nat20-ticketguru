@@ -90,10 +90,10 @@ public class TicketguruApplication {
                 zipcodeRepository.save(new Zipcode("90140", "Oulu"));
 
                 log.info("Creating a few venue test entries");
-                venueRepository.save(new Venue("Bunkkeri", "Bunkkeritie 1", zipcodeRepository.findById("00100").get()));
+                venueRepository.save(new Venue("Bunkkeri", "Bunkkeritie 1", zipcodeRepository.findByZipcode("00100"), null));
                 venueRepository.save(new Venue("Helsingin jäähalli", "Nordenskiöldinkatu 11-13",
-                        zipcodeRepository.findById("00250").get()));
-                venueRepository.save(new Venue("National Museum", "Museokatu 1", zipcodeRepository.findByZipcode("00100")));
+                        zipcodeRepository.findByZipcode("00250"), null));
+                venueRepository.save(new Venue("National Museum", "Museokatu 1", zipcodeRepository.findByZipcode("00100"), null));
 
                 log.info("Creating a few event test entries");
                 eventRepository.save(new Event("Death metal karaoke", "Öriöriöriöriörirprir!!!!!", 10,
