@@ -21,11 +21,19 @@ Below you can find a table of contents to the REST API request calls. Please not
 
 ### Permissions (/api/permissions)
 
-- [all](permissions/all.md)
+- [permissionsDelete](permissions/permissionsDelete.md)
+- [permissionsGetAll](permissions/permissionsGetAll.md)
+- [permissionsGetById](permissions/permissionsGetById.md)
+- [permissionsPost](permissions/permissionsPost.md)
+- [permissionsPut](permissions/permissionsPut.md)
 
 ### Roles (/api/roles)
 
-- [all](permissions/all.md)
+- [roleDelete](role/roleDelete.md)
+- [roleGetAll](role/roleGetAll.md)
+- [roleGetById](role/roleGetById.md)
+- [rolePost](role/rolePost.md)
+- [rolePut](role/rolePut.md)
 
 ### Sales (/api/sales)
 
