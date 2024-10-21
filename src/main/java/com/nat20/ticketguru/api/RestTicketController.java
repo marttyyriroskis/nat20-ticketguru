@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Sale;
 import com.nat20.ticketguru.repository.SaleRepository;
@@ -66,8 +65,13 @@ public class RestTicketController {
     // Get ticket by id
     @GetMapping("/{id}")
     public ResponseEntity<TicketDTO> getTicket(@PathVariable Long id) {
-        Ticket ticket = ticketRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+        Optional<Ticket> existingTicket = ticketRepository.findById(id);
+
+        if (!existingTicket.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Ticket ticket = existingTicket.get();
 
         return ResponseEntity.ok(new TicketDTO(
                     ticket.getBarcode(),
@@ -81,14 +85,23 @@ public class RestTicketController {
     // Post a new ticket
     @PostMapping
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
-        TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Ticket Type not found"));
-        Sale sale = saleRepository.findById(ticketDTO.saleId())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Sale not found"));
+        Optional<TicketType> existingTicketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId());
 
-        // TODO: Autogenerate barcode
+        if (!existingTicketType.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        TicketType ticketType = existingTicketType.get();
+
+        Optional<Sale> existingSale = saleRepository.findById(ticketDTO.saleId());
+
+        if (!existingSale.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Sale sale = existingSale.get();
+
         Ticket newTicket = new Ticket();
-        newTicket.setBarcode(ticketDTO.barcode());
         newTicket.setUsedAt(ticketDTO.usedAt());
         newTicket.setPrice(ticketDTO.price());
         newTicket.setTicketType(ticketType);
@@ -122,10 +135,21 @@ public class RestTicketController {
         ticketToUpdate.setUsedAt(ticketDTO.usedAt());
         ticketToUpdate.setPrice(ticketDTO.price());
 
-        TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid TicketType ID"));
-        Sale sale = saleRepository.findById(ticketDTO.saleId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Sale ID"));
+        Optional<TicketType> existingTicketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId());
+
+        if (!existingTicketType.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        TicketType ticketType = existingTicketType.get();
+
+        Optional<Sale> existingSale = saleRepository.findById(ticketDTO.saleId());
+
+        if (!existingSale.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Sale sale = existingSale.get();
 
         ticketToUpdate.setTicketType(ticketType);
         ticketToUpdate.setSale(sale);

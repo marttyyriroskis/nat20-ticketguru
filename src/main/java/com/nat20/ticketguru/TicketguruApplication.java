@@ -118,7 +118,7 @@ public class TicketguruApplication {
                 saleRepository.save(sale1);
                 saleRepository.save(sale2);
                 
-                ticketRepository.save(new Ticket(null, 10.0, null, ticketTypeRepository.findById(1L).get(), saleRepository.findById(2L).get()));
+                ticketRepository.save(new Ticket(null, 10.0, LocalDateTime.of(2024, 3, 12, 9, 0), ticketTypeRepository.findById(1L).get(), saleRepository.findById(2L).get()));
                 ticketRepository.save(new Ticket(null, 20.0, null, ticketTypeRepository.findById(2L).get(), saleRepository.findById(1L).get()));
                 ticketRepository.save(new Ticket(null, 30.0, null, ticketTypeRepository.findById(3L).get(), saleRepository.findById(2L).get()));
                 ticketRepository.save(new Ticket(null, 40.0, null, ticketTypeRepository.findById(4L).get(), saleRepository.findById(1L).get()));
