@@ -60,6 +60,9 @@ public class Event {
     @JoinColumn(name = "venue_id", nullable = true)
     private Venue venue;
 
+    @Column(name = "deletedAt")
+    private LocalDateTime deletedAt;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
     @JsonIgnore
     private List<TicketType> ticketType;
@@ -68,7 +71,7 @@ public class Event {
     }
 
     public Event(String name, String description, int totalTickets, LocalDateTime beginsAt,
-            LocalDateTime endsAt, LocalDateTime ticketSaleBegins, Venue venue) {
+            LocalDateTime endsAt, LocalDateTime ticketSaleBegins, Venue venue, LocalDateTime deletedAt) {
         this.name = name;
         this.description = description;
         this.totalTickets = totalTickets;
@@ -76,6 +79,7 @@ public class Event {
         this.endsAt = endsAt;
         this.ticketSaleBegins = ticketSaleBegins;
         this.venue = venue;
+        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -142,6 +146,14 @@ public class Event {
         this.venue = venue;
     }
 
+    public LocalDateTime getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
     @Override
     public String toString() {
         return "{"
@@ -153,6 +165,7 @@ public class Event {
                 + ", endsAt='" + getEndsAt() + "'"
                 + ", ticketSaleBegins='" + getTicketSaleBegins() + "'"
                 + ", venue='" + getVenue() + "'"
+                + ", deletedAt='" + getDeletedAt() + "'"
                 + "}";
     }
 }
