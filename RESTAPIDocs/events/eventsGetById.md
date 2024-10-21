@@ -19,7 +19,7 @@ Allow getting `Event` details of the given `id`.
 #### Example Request
 
 ```json
-GET /events/2
+GET /events/3
 Accept: application/json
 ```
 
@@ -29,26 +29,18 @@ Accept: application/json
 
 **Code** : `200 OK`
 
-**Content example** : Returns the `Event` object of the given `id`, with the `Venue` details.
+**Content example** : Returns the `Event` object of the given `id`.
 
 ```json
 {
-  "id": 2,
-  "name": "Disney On Meth-Ice",
-  "description": "Mikki-hiiret jäällä. Suih suih vaan!",
-  "total_tickets": 10000,
-  "begins_at": "2024-09-29T09:18:26.535823",
-  "ends_at": "2024-09-29T09:18:26.535823",
-  "ticket_sale_begins": "2024-09-29T09:18:26.535823",
-  "venue": {
-    "id": 2,
-    "name": "Helsingin jäähalli",
-    "address": "Nordenskiöldinkatu 11-13",
-    "zipcode": {
-      "zipcode": "00250",
-      "city": "Helsinki"
-    }
-  }
+  "id": 3,
+  "name": "A Night at the Museum",
+  "description": "Night-show at the National Museum",
+  "total_tickets": 500,
+  "begins_at": "2055-10-12T12:00:00",
+  "ends_at": "2055-10-12T12:00:00",
+  "ticket_sale_begins": "2055-10-12T12:00:00",
+  "venueId": 1
 }
 ```
 
