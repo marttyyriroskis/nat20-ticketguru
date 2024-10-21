@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,7 @@ public class RestTicketTypeController {
         ticketTypeRepository.findAll().forEach(ticketTypes::add);
 
         List<TicketTypeDTO> ticketTypeDTOs = ticketTypes.stream()
+                .filter(ticketType -> ticketType.getDeletedAt() == null)
                 .map(ticketType -> new TicketTypeDTO(
                         ticketType.getId(),
                         ticketType.getName(),
@@ -60,17 +62,21 @@ public class RestTicketTypeController {
     // Get ticket type by id
     @GetMapping("/{id}")
     public ResponseEntity<TicketTypeDTO> getTicketTypeById(@PathVariable("id") Long ticketTypeId) {
-        TicketType ticketType = ticketTypeRepository.findById(ticketTypeId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found"));
+        Optional<TicketType> ticketType = ticketTypeRepository.findById(ticketTypeId);
 
-        TicketTypeDTO ticketTypeDTO = new TicketTypeDTO(
-                ticketType.getId(),
-                ticketType.getName(),
-                ticketType.getRetailPrice(),
-                ticketType.getTotalAvailable(),
-                ticketType.getEvent().getId());
+        if (!ticketType.isPresent() || ticketType.get().getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found");
+        } else {
+            TicketType presentTicketType = ticketType.get();
+            TicketTypeDTO ticketTypeDTO = new TicketTypeDTO(
+                    presentTicketType.getId(),
+                    presentTicketType.getName(),
+                    presentTicketType.getRetailPrice(),
+                    presentTicketType.getTotalAvailable(),
+                    presentTicketType.getEvent().getId());
 
-        return ResponseEntity.ok(ticketTypeDTO);
+            return ResponseEntity.ok(ticketTypeDTO);
+        }
     }
 
     // Add a new ticket type
@@ -85,7 +91,8 @@ public class RestTicketTypeController {
                     ticketTypeDTO.name(),
                     ticketTypeDTO.retailPrice(),
                     ticketTypeDTO.totalAvailable(),
-                    existingEvent.get());
+                    existingEvent.get(),
+                    null);
 
             TicketType savedTicketType = ticketTypeRepository.save(ticketType);
 
@@ -105,7 +112,8 @@ public class RestTicketTypeController {
     public ResponseEntity<TicketTypeDTO> editTicketType(@Valid @RequestBody TicketTypeDTO ticketTypeDTO,
             @PathVariable("id") Long ticketTypeId) {
         Optional<TicketType> existingTicketType = ticketTypeRepository.findById(ticketTypeId);
-        if (!existingTicketType.isPresent()) {
+
+        if (!existingTicketType.isPresent() || existingTicketType.get().getDeletedAt() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found!");
         } else {
             Optional<Event> existingEvent = eventRepository.findById(ticketTypeDTO.eventId());
@@ -136,12 +144,12 @@ public class RestTicketTypeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTicketType(@PathVariable("id") Long ticketTypeId) {
         Optional<TicketType> existingTicketType = ticketTypeRepository.findById(ticketTypeId);
-        if (!existingTicketType.isPresent()) {
+        if (!existingTicketType.isPresent() || existingTicketType.get().getDeletedAt() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found");
         } else {
-            ticketTypeRepository.deleteById(ticketTypeId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Ticket type removed succesfully");
-            // Not printed in response?
+            existingTicketType.get().setDeletedAt((LocalDateTime.now()));
+            ticketTypeRepository.save(existingTicketType.get());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
     }
 }

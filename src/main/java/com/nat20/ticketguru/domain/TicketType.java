@@ -1,6 +1,7 @@
 package com.nat20.ticketguru.domain;
 
 import java.util.List;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -46,6 +47,9 @@ public class TicketType {
     @JoinColumn(name = "event_id")
     private Event event;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketType")
     @JsonIgnore
     private List<Ticket> tickets;
@@ -53,11 +57,12 @@ public class TicketType {
     public TicketType() {
     }
 
-    public TicketType(String name, double retailPrice, Integer totalAvailable, Event event) {
+    public TicketType(String name, double retailPrice, Integer totalAvailable, Event event, LocalDateTime deletedAt) {
         this.name = name;
         this.retailPrice = retailPrice;
         this.totalAvailable = totalAvailable;
         this.event = event;
+        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -100,10 +105,23 @@ public class TicketType {
         this.event = event;
     }
 
-    @Override
-    public String toString() {
-        return "TicketType [id=" + id + ", name=" + name + ", retailPrice=" + retailPrice + ", totalAvailable="
-                + totalAvailable + ", event=" + event + "]";
+    public LocalDateTime getDeletedAt() {
+        return this.deletedAt;
     }
 
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+            " id='" + getId() + "'" +
+            ", name='" + getName() + "'" +
+            ", retailPrice='" + getRetailPrice() + "'" +
+            ", totalAvailable='" + getTotalAvailable() + "'" +
+            ", event='" + getEvent() + "'" +
+            ", deletedAt='" + getDeletedAt() + "'" +
+            "}";
+    }
 }
