@@ -12,7 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -28,13 +27,12 @@ public class TicketType {
     @Column(name = "id")
     private Long id;
 
-    @NotBlank(message = "Name must not be empty")
-    @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters long")
+    @NotNull(message = "Ticket type name cannot be null")
+    @Size(min = 1, max = 100, message = "Ticket type name must be between 1 and 100 characters long")
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull(message = "Price must not be null")
-    @Positive(message = "Price must be positive")
+    @Positive(message = "Ticket type price must be positive")
     @Column(name = "retail_price", nullable = false)
     private double retailPrice;
 
