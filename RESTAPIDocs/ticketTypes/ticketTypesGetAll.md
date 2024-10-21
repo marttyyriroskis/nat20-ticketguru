@@ -10,15 +10,17 @@ Show all ticket types
 
 **Permissions required** : None
 
-**Data constraints** : `{}`
-
 ## Success Responses
 
 **Condition** : The request is successful and there are no ticket types in the system
 
 **Code** : `200 OK`
 
-**Content** : `{[]}`
+**Content** :
+
+```json
+[]
+```
 
 ### OR
 
@@ -35,96 +37,28 @@ Show all ticket types
     "name": "adult",
     "retailPrice": 29.99,
     "totalAvailable": null,
-    "event": {
-      "id": 1,
-      "name": "Death metal karaoke",
-      "total_tickets": 10,
-      "begins_at": "2055-10-12T12:00:00",
-      "ends_at": "2055-10-12T12:00:00",
-      "ticket_sale_begins": "2055-10-12T12:00:00",
-      "description": "Öriöriöriöriörirprir!!!!!",
-      "venue": {
-        "id": 1,
-        "name": "Bunkkeri",
-        "address": "Bunkkeritie 1",
-        "zipcode": {
-          "zipcode": "00100",
-          "city": "Helsinki"
-        }
-      }
-    }
+    "eventId": 1
   },
   {
     "id": 2,
     "name": "student",
     "retailPrice": 14.99,
     "totalAvailable": null,
-    "event": {
-      "id": 1,
-      "name": "Death metal karaoke",
-      "total_tickets": 10,
-      "begins_at": "2055-10-12T12:00:00",
-      "ends_at": "2055-10-12T12:00:00",
-      "ticket_sale_begins": "2055-10-12T12:00:00",
-      "description": "Öriöriöriöriörirprir!!!!!",
-      "venue": {
-        "id": 1,
-        "name": "Bunkkeri",
-        "address": "Bunkkeritie 1",
-        "zipcode": {
-          "zipcode": "00100",
-          "city": "Helsinki"
-        }
-      }
-    }
+    "eventId": 1
   },
   {
     "id": 3,
     "name": "pensioner",
     "retailPrice": 14.99,
     "totalAvailable": null,
-    "event": {
-      "id": 1,
-      "name": "Death metal karaoke",
-      "total_tickets": 10,
-      "begins_at": "2055-10-12T12:00:00",
-      "ends_at": "2055-10-12T12:00:00",
-      "ticket_sale_begins": "2055-10-12T12:00:00",
-      "description": "Öriöriöriöriörirprir!!!!!",
-      "venue": {
-        "id": 1,
-        "name": "Bunkkeri",
-        "address": "Bunkkeritie 1",
-        "zipcode": {
-          "zipcode": "00100",
-          "city": "Helsinki"
-        }
-      }
-    }
+    "eventId": 1
   },
   {
     "id": 4,
     "name": "vip",
-    "retail_price": 79.99,
-    "total_available": 20,
-    "event": {
-      "id": 1,
-      "name": "Death metal karaoke",
-      "total_tickets": 10,
-      "begins_at": "2055-10-12T12:00:00",
-      "ends_at": "2055-10-12T12:00:00",
-      "ticket_sale_begins": "2055-10-12T12:00:00",
-      "description": "Öriöriöriöriörirprir!!!!!",
-      "venue": {
-        "id": 1,
-        "name": "Bunkkeri",
-        "address": "Bunkkeritie 1",
-        "zipcode": {
-          "zipcode": "00100",
-          "city": "Helsinki"
-        }
-      }
-    }
+    "retailPrice": 79.99,
+    "totalAvailable": 20,
+    "eventId": 1
   }
 ]
 ```
