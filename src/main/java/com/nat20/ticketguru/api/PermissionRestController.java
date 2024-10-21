@@ -31,10 +31,10 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/permissions")
 @Validated
-public class RestPermissionController {
+public class PermissionRestController {
     private final PermissionRepository permissionRepository;
 
-    public RestPermissionController(PermissionRepository permissionRepository) {
+    public PermissionRestController(PermissionRepository permissionRepository) {
         this.permissionRepository = permissionRepository;
     }
 

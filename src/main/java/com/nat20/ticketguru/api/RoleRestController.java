@@ -35,11 +35,11 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 @RestController
 @RequestMapping("/api/roles")
-public class RestRoleController {
+public class RoleRestController {
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
 
-    public RestRoleController(RoleRepository roleRepository, PermissionRepository permissionRepository) {
+    public RoleRestController(RoleRepository roleRepository, PermissionRepository permissionRepository) {
         this.roleRepository = roleRepository;
         this.permissionRepository = permissionRepository;
     }

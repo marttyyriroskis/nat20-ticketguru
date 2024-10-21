@@ -35,7 +35,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/users")
-public class RestUserController {
+public class UserRestController {
 
     @Autowired
     private final UserRepository userRepository;
@@ -43,7 +43,7 @@ public class RestUserController {
     @Autowired
     private final RoleRepository roleRepository;
 
-    public RestUserController(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserRestController(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
