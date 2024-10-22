@@ -113,6 +113,14 @@ public class TicketType {
         this.deletedAt = deletedAt;
     }
 
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void restore() {
+        this.deletedAt = null;
+    }
+
     public TicketTypeDTO toDTO() {
         return new TicketTypeDTO(
             this.id,

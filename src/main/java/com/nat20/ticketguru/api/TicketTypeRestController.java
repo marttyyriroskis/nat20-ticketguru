@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
-import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -123,13 +122,13 @@ public class TicketTypeRestController {
     // Delete a ticket type
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTicketType(@PathVariable("id") Long ticketTypeId) {
-        
+
         Optional<TicketType> existingTicketType = ticketTypeRepository.findById(ticketTypeId);
         if (!existingTicketType.isPresent() || existingTicketType.get().getDeletedAt() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found");
         }
 
-        existingTicketType.get().setDeletedAt((LocalDateTime.now()));
+        existingTicketType.get().delete();
 
         ticketTypeRepository.save(existingTicketType.get());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
