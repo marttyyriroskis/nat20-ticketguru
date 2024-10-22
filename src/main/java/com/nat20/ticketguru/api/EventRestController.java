@@ -140,7 +140,7 @@ public class EventRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
         }
 
-        existingEvent.get().setDeletedAt(LocalDateTime.now());
+        existingEvent.get().delete();
         
         eventRepository.save(existingEvent.get());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

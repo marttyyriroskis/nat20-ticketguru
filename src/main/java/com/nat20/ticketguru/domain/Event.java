@@ -146,6 +146,14 @@ public class Event {
         this.deletedAt = deletedAt;
     }
 
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void restore() {
+        this.deletedAt = null;
+    }
+
     public EventDTO toDTO() {
         return new EventDTO(
                 this.id,
