@@ -3,6 +3,8 @@ package com.nat20.ticketguru.domain;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nat20.ticketguru.dto.TicketDTO;
+import com.nat20.ticketguru.dto.UserDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
@@ -21,24 +24,22 @@ public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @NotBlank(message = "Barcode must not be empty")
+    @NotBlank
     //Size annotation if the barcode should always be the same length
-    @Column(name = "barcode", updatable = false)
     private String barcode;
 
     @Column(name = "used_at")
     private LocalDateTime usedAt;
 
-    @PositiveOrZero(message = "Price must be positive or zero")
-    @Column(name = "price", nullable = false)
+    @PositiveOrZero
     private double price;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "ticket_type_id")
     @JsonIgnore
@@ -46,7 +47,7 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "sale_id")
-    @JsonIgnore // prevent infinite loops
+    @JsonIgnore
     private Sale sale;
 
     public Ticket() {
@@ -112,8 +113,8 @@ public class Ticket {
         return deletedAt;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
+    public void delete() {
+        deletedAt = LocalDateTime.now();
     }
 
     public TicketType getTicketType() {
@@ -136,6 +137,10 @@ public class Ticket {
     public String toString() {
         return "Ticket [id=" + id + ", barcode=" + barcode + ", usedAt=" + usedAt + ", price=" + price + ", deletedAt="
                 + deletedAt + "]";
+    }
+
+    public TicketDTO toDTO() {
+        return new TicketDTO(id, barcode, usedAt, price, deletedAt, ticketType.toDTO(), sale.toDTO());
     }
 
 }

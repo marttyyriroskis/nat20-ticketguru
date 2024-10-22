@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Sale;
 import com.nat20.ticketguru.repository.SaleRepository;
@@ -46,60 +47,31 @@ public class TicketRestController {
     // Get tickets
     @GetMapping
     public ResponseEntity<List<TicketDTO>> getTickets() {
-        Iterable<Ticket> iterableTickets = ticketRepository.findAll();
+        Iterable<Ticket> iterableTickets = ticketRepository.findAllActive();
         List<Ticket> ticketList = new ArrayList<>();
         iterableTickets.forEach(ticketList::add);
 
         return ResponseEntity.ok(ticketList.stream()
-                .map(ticket -> new TicketDTO(
-                    ticket.getBarcode(),
-                    ticket.getUsedAt(),
-                    ticket.getPrice(),
-                    ticket.getDeletedAt(),
-                    ticket.getTicketType().getId(),
-                    ticket.getSale().getId()))
-                .filter(t -> t.deletedAt() == null)
-                .collect(Collectors.toList()));
+                .map(Ticket::toDTO)
+                .toList());
     }
-    
+
     // Get ticket by id
     @GetMapping("/{id}")
     public ResponseEntity<TicketDTO> getTicket(@PathVariable Long id) {
-        Optional<Ticket> existingTicket = ticketRepository.findById(id);
+        Ticket ticket = ticketRepository.findByIdActive(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
-        if (!existingTicket.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Ticket ticket = existingTicket.get();
-
-        return ResponseEntity.ok(new TicketDTO(
-                    ticket.getBarcode(),
-                    ticket.getUsedAt(),
-                    ticket.getPrice(),
-                    ticket.getDeletedAt(),
-                    ticket.getTicketType().getId(),
-                    ticket.getSale().getId()));
+        return ResponseEntity.ok(ticket.toDTO());
     }
     
     // Post a new ticket
     @PostMapping
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
-        Optional<TicketType> existingTicketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId());
-
-        if (!existingTicketType.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        TicketType ticketType = existingTicketType.get();
-
-        Optional<Sale> existingSale = saleRepository.findById(ticketDTO.saleId());
-
-        if (!existingSale.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Sale sale = existingSale.get();
+        TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Ticket Type not found"));
+        Sale sale = saleRepository.findById(ticketDTO.saleId())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Sale not found"));
 
         Ticket newTicket = new Ticket();
         newTicket.setUsedAt(ticketDTO.usedAt());
@@ -109,89 +81,42 @@ public class TicketRestController {
 
         ticketRepository.save(newTicket);
 
-        TicketDTO newTicketDTO = new TicketDTO(
-                newTicket.getBarcode(),
-                newTicket.getUsedAt(),
-                newTicket.getPrice(),
-                newTicket.getDeletedAt(),
-                newTicket.getTicketType().getId(),
-                newTicket.getSale().getId()
-        );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(newTicketDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newTicket.toDTO());
     }
 
     // Edit ticket
     @PutMapping("/{id}")
     public ResponseEntity<TicketDTO> updateTicket(@PathVariable Long id, @RequestBody TicketDTO ticketDTO) {
-        Optional<Ticket> existingTicket = ticketRepository.findById(id);
-        
-        if (!existingTicket.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
+        Ticket ticket = ticketRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
-        Ticket ticketToUpdate = existingTicket.get();
+        ticket.setUsedAt(ticketDTO.usedAt());
+        ticket.setPrice(ticketDTO.price());
 
-        ticketToUpdate.setUsedAt(ticketDTO.usedAt());
-        ticketToUpdate.setPrice(ticketDTO.price());
+        TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid TicketType ID"));
+        Sale sale = saleRepository.findById(ticketDTO.saleId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Sale ID"));
 
-        Optional<TicketType> existingTicketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId());
+        ticket.setTicketType(ticketType);
+        ticket.setSale(sale);
 
-        if (!existingTicketType.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
+        Ticket updatedTicket = ticketRepository.save(ticket);
 
-        TicketType ticketType = existingTicketType.get();
-
-        Optional<Sale> existingSale = saleRepository.findById(ticketDTO.saleId());
-
-        if (!existingSale.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Sale sale = existingSale.get();
-
-        ticketToUpdate.setTicketType(ticketType);
-        ticketToUpdate.setSale(sale);
-
-        Ticket updatedTicket = ticketRepository.save(ticketToUpdate);
-
-        TicketDTO updatedTicketDTO = new TicketDTO(
-                updatedTicket.getBarcode(),
-                updatedTicket.getUsedAt(),
-                updatedTicket.getPrice(),
-                updatedTicket.getDeletedAt(),
-                updatedTicket.getTicketType().getId(),
-                updatedTicket.getSale().getId()
-        );
-
-        return ResponseEntity.ok(updatedTicketDTO);
+        return ResponseEntity.ok(updatedTicket.toDTO());
     }
 
     // Delete ticket
     @DeleteMapping("/{id}")
     public ResponseEntity<TicketDTO> deleteTicket(@PathVariable Long id) {
-        Optional<Ticket> existingTicket = ticketRepository.findById(id);
+        Ticket ticket = ticketRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
-        if (!existingTicket.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
+        ticket.delete();
 
-        Ticket ticketToDelete = existingTicket.get();
-        ticketToDelete.setDeletedAt(LocalDateTime.now());
+        ticketRepository.save(ticket);
 
-        Ticket deletedTicket = ticketRepository.save(ticketToDelete);
-
-        TicketDTO deletedTicketDTO = new TicketDTO(
-                deletedTicket.getBarcode(),
-                deletedTicket.getUsedAt(),
-                deletedTicket.getPrice(),
-                deletedTicket.getDeletedAt(),
-                deletedTicket.getTicketType().getId(),
-                deletedTicket.getSale().getId()
-        );
-
-        return ResponseEntity.ok(deletedTicketDTO);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }
