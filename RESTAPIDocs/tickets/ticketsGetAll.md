@@ -1,6 +1,6 @@
 # Show Accessible Tickets
 
-Show all Tickets the active User can access and with what permission level.
+Show all `Tickets`.
 
 **URL** : `/api/tickets`
 
@@ -10,30 +10,31 @@ Show all Tickets the active User can access and with what permission level.
 
 **Permissions required** : None
 
-**Data constraints** : `{}`
-
 ## Example Request
 
 ```json
 GET /tickets
-Content-Type: application/json
 ```
 
 ## Success Responses
 
-**Condition** : User can not see any Tickets.
+**Condition** : The request is successful and there are no `Ticket` objects in the system.
 
 **Code** : `200 OK`
 
-**Content** : `{[]}`
+**Content** :
+
+```json
+[]
+```
 
 ### OR
 
-**Condition** : User can see one or more Tickets.
+**Condition** : The request is successful and there are `Ticket` objects in the system.
 
 **Code** : `200 OK`
 
-**Content** : In this example, the User can see four Tickets:
+**Content** : In this example, the User can see four `Ticket` objects:
 
 ```json
 [

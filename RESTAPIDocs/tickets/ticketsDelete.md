@@ -16,51 +16,17 @@ Allow deleting `Ticket` details of the given `id`.
 | --------- | ---- | ------------------------------------------ |
 | `id`      | Long | Unique identifier for the ticket to delete |
 
-**Data constraints** : `{}`
-
 ## Example Request
 
 ```json
-DELETE api/tickets/4
-Content-Type: application/json
+DELETE /api/tickets/4
 ```
 
 ## Success Responses
 
-**Condition** : Provided ticket `id` is valid.
+**Condition** : `id` provided belongs to a `Ticket` in the database.
 
-**Code** : `200 OK`
-
-**Content example** : Returns remaining `Ticket` objects.
-
-```json
-[
-  {
-    "id": 1,
-    "barcode": "1728296528349",
-    "usedAt": null,
-    "price": 200.5,
-    "ticketTypeId": 1,
-    "saleId": 2
-  },
-  {
-    "id": 2,
-    "barcode": "1728296528351",
-    "usedAt": null,
-    "price": 0.0,
-    "ticketTypeId": 2,
-    "saleId": 1
-  },
-  {
-    "id": 3,
-    "barcode": "1728296528353",
-    "usedAt": null,
-    "price": 0.0,
-    "ticketTypeId": 2,
-    "saleId": 2
-  }
-]
-```
+**Code** : `204 NO CONTENT`
 
 ## Error Response
 
