@@ -19,6 +19,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+import com.nat20.ticketguru.dto.TicketTypeDTO;
+
 @Entity
 @Table(name = "ticket_types")
 public class TicketType {
@@ -109,6 +111,15 @@ public class TicketType {
 
     public void setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public TicketTypeDTO toDTO() {
+        return new TicketTypeDTO(
+            this.id,
+            this.name,
+            this.retailPrice,
+            this.totalAvailable,
+            this.event.getId());
     }
 
     @Override

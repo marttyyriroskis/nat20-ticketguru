@@ -48,12 +48,7 @@ public class TicketTypeRestController {
 
         List<TicketTypeDTO> ticketTypeDTOs = ticketTypes.stream()
                 .filter(ticketType -> ticketType.getDeletedAt() == null)
-                .map(ticketType -> new TicketTypeDTO(
-                        ticketType.getId(),
-                        ticketType.getName(),
-                        ticketType.getRetailPrice(),
-                        ticketType.getTotalAvailable(),
-                        ticketType.getEvent().getId()))
+                .map(ticketType -> ticketType.toDTO())
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(ticketTypeDTOs);
@@ -67,14 +62,8 @@ public class TicketTypeRestController {
         if (!ticketType.isPresent() || ticketType.get().getDeletedAt() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found");
         } else {
-            TicketType presentTicketType = ticketType.get();
-            TicketTypeDTO ticketTypeDTO = new TicketTypeDTO(
-                    presentTicketType.getId(),
-                    presentTicketType.getName(),
-                    presentTicketType.getRetailPrice(),
-                    presentTicketType.getTotalAvailable(),
-                    presentTicketType.getEvent().getId());
 
+            TicketTypeDTO ticketTypeDTO = ticketType.get().toDTO();
             return ResponseEntity.ok(ticketTypeDTO);
         }
     }
@@ -96,13 +85,7 @@ public class TicketTypeRestController {
 
             TicketType savedTicketType = ticketTypeRepository.save(ticketType);
 
-            TicketTypeDTO responseDTO = new TicketTypeDTO(
-                    savedTicketType.getId(),
-                    savedTicketType.getName(),
-                    savedTicketType.getRetailPrice(),
-                    savedTicketType.getTotalAvailable(),
-                    savedTicketType.getEvent().getId());
-
+            TicketTypeDTO responseDTO = savedTicketType.toDTO();
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
         }
     }
@@ -128,13 +111,7 @@ public class TicketTypeRestController {
 
                 TicketType savedTicketType = ticketTypeRepository.save(editedTicketType);
 
-                TicketTypeDTO responseDTO = new TicketTypeDTO(
-                        savedTicketType.getId(),
-                        savedTicketType.getName(),
-                        savedTicketType.getRetailPrice(),
-                        savedTicketType.getTotalAvailable(),
-                        savedTicketType.getEvent().getId());
-
+                TicketTypeDTO responseDTO = savedTicketType.toDTO();
                 return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
             }
         }
