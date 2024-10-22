@@ -53,15 +53,7 @@ public class EventRestController {
 
         List<EventDTO> eventDTOs = events.stream()
                 .filter(event -> event.getDeletedAt() == null)
-                .map(event -> new EventDTO(
-                        event.getId(),
-                        event.getName(),
-                        event.getDescription(),
-                        event.getTotalTickets(),
-                        event.getBeginsAt(),
-                        event.getEndsAt(),
-                        event.getTicketSaleBegins(),
-                        event.getVenue().getId()))
+                .map(event -> event.toDTO())
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(eventDTOs);
@@ -76,16 +68,7 @@ public class EventRestController {
         if (event.getDeletedAt() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
         } else {
-            EventDTO eventDTO = new EventDTO(
-                    event.getId(),
-                    event.getName(),
-                    event.getDescription(),
-                    event.getTotalTickets(),
-                    event.getBeginsAt(),
-                    event.getEndsAt(),
-                    event.getTicketSaleBegins(),
-                    event.getVenue().getId());
-
+            EventDTO eventDTO = event.toDTO();
             return ResponseEntity.ok(eventDTO);
         }
     }
@@ -110,16 +93,7 @@ public class EventRestController {
 
             Event savedEvent = eventRepository.save(event);
 
-            EventDTO responseDTO = new EventDTO(
-                    savedEvent.getId(),
-                    savedEvent.getName(),
-                    savedEvent.getDescription(),
-                    savedEvent.getTotalTickets(),
-                    savedEvent.getBeginsAt(),
-                    savedEvent.getEndsAt(),
-                    savedEvent.getTicketSaleBegins(),
-                    savedEvent.getVenue().getId());
-
+            EventDTO responseDTO = savedEvent.toDTO();
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
         }
     }
@@ -150,16 +124,7 @@ public class EventRestController {
 
                     Event savedEvent = eventRepository.save(editedEvent);
 
-                    EventDTO responseDTO = new EventDTO(
-                            savedEvent.getId(),
-                            savedEvent.getName(),
-                            savedEvent.getDescription(),
-                            savedEvent.getTotalTickets(),
-                            savedEvent.getBeginsAt(),
-                            savedEvent.getEndsAt(),
-                            savedEvent.getTicketSaleBegins(),
-                            savedEvent.getVenue().getId());
-
+                    EventDTO responseDTO = savedEvent.toDTO();
                     return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
                 }
             }
