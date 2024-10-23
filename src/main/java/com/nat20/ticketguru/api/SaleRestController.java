@@ -2,18 +2,14 @@ package com.nat20.ticketguru.api;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -185,36 +181,6 @@ public class SaleRestController {
         }
         sale.setDeletedAt(LocalDateTime.now());
         saleRepository.save(sale);
-
-        // BELOW NOT NEEDED ANYMORE DUE TO SOFT DELETE!
-        // remove sale association from tickets before delete (we want to preserve the tickets in the database)
-        // for (Ticket ticket : sale.getTickets()) {
-        //     ticket.setSale(null);
-        // }
-        // remove sale association from user before delete (we want to preserve the users in the database)
-        // User user = sale.getUser();
-        // if (user != null) {
-        //     user.getSales().remove(sale);
-        //     userRepository.save(user);
-        // }
-        // saleRepository.deleteById(id);
     }
 
-    // Exception handler for validation errors
-    // If validation fails, a MethodArgumentNotValidException is thrown,
-    // which then returns the failed field(s) and the validation failure message(s)
-    // as a BAD_REQUEST response
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex
-    ) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors()
-                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-        return errors;
-    }
-    // Source:
-    // https://dev.to/shujaat34/exception-handling-and-validation-in-spring-boot-3of9
-    // The source details a Global Exception handler, that we could implement later
-    // to handle all the endpoints
 }
