@@ -25,14 +25,8 @@ Provide all required parameters for the `Sale`to be created.
 ```json
 {
   "paidAt": "2024-10-04T12:58:29.580761",
-  "user": {
-    "id": 1
-  },
-  "tickets": [
-    {
-      "id": 4
-    }
-  ]
+  "userId": 1,
+  "ticketIds": [4]
 }
 ```
 
@@ -52,15 +46,8 @@ Content-Type: application/json
   "id": 3,
   "paidAt": "2024-10-04T12:58:29.580761",
   "userId": 1,
-  "tickets": [
-    {
-      "id": 4,
-      "barcode": "1728234222447",
-      "usedAt": null,
-      "price": 0.0,
-      "ticketTypeId": null,
-      "saleId": 3
-    }
+  "ticketIds": [
+    4
   ]
 }
 ```
