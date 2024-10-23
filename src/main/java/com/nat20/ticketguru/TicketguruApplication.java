@@ -48,8 +48,8 @@ public class TicketguruApplication {
             public void run(String[] args) throws Exception {
 
                 log.info("Creating a few role test entries");
-                roleRepository.save(new Role("cashier"));
-                roleRepository.save(new Role("event organizer"));
+                roleRepository.save(new Role("USER"));
+                roleRepository.save(new Role("ADMIN"));
 
                 log.info("Creating a few permission test entries");
                 permissionRepository.save(new Permission("read"));
@@ -57,9 +57,9 @@ public class TicketguruApplication {
 
                 log.info("Creating a few user test entries");
                 userRepository.save(new User("test1@test.com", "User1", "Cashier", "VerySecureHash1",
-                        roleRepository.findByTitle("cashier").get()));
+                        roleRepository.findByTitle("USER").get()));
                 userRepository.save(new User("test2@test.com", "User2", "Event Organizer", "VerySecureHash2",
-                        roleRepository.findByTitle("event organizer").get()));
+                        roleRepository.findByTitle("ADMIN").get()));
 
                 log.info("Creating a few zipcode test entries");
                 zipcodeRepository.save(new Zipcode("00100", "Helsinki"));
