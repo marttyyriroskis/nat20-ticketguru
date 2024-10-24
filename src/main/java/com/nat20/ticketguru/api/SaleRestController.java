@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,6 +78,7 @@ public class SaleRestController {
     }
 
     @PostMapping("")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SaleDTO> createSale(@Valid @RequestBody SaleDTO saleDTO) {
         // check User
         Optional<User> existingUser = userRepository.findById(saleDTO.userId());
@@ -122,6 +124,7 @@ public class SaleRestController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SaleDTO> editSale(@Valid @RequestBody SaleDTO editedSaleDTO, @PathVariable("id") Long id) {
         // check that sale with the Id exists
         Sale sale = saleRepository.findById(id)
@@ -171,6 +174,7 @@ public class SaleRestController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSale(@PathVariable("id") Long id
     ) {

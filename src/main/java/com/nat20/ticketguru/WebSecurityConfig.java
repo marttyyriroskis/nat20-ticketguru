@@ -3,6 +3,7 @@ package com.nat20.ticketguru;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -37,7 +38,10 @@ public class WebSecurityConfig {
                 authorize -> authorize
                         .requestMatchers(antMatcher("/css/**")).permitAll()
                         .requestMatchers(WHITE_LIST_URLS).permitAll()
-                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .headers(
@@ -51,8 +55,8 @@ public class WebSecurityConfig {
                                 .defaultSuccessUrl("/index", true)
                                 .permitAll()
                 )
-                .logout(logout -> logout
-                .permitAll()
+                .logout(logout -> logout.permitAll())
+                .csrf(csrf -> csrf.disable() // TODO: disable csrf for now, enable later for production?
                 );
 
         return http.build();

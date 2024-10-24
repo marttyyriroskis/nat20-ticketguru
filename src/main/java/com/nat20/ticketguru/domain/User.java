@@ -1,5 +1,6 @@
 package com.nat20.ticketguru.domain;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.annotations.OnDelete;
@@ -21,9 +22,13 @@ import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +51,7 @@ public class User {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Sale> sales;
 
-    @Column(name="deleted_at")
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     public User() {
@@ -170,6 +175,43 @@ public class User {
 
     public UserDTO toDTO() {
         return new UserDTO(id, email, firstName, lastName, role.toDTO());
+    }
+
+    // Have to implement all UserDetails methods:
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.getTitle()));
+        // eg. hasAuthority("ROLE_ADMIN")
+    }
+
+    @Override
+    public String getPassword() {
+        return hashedPassword;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
 }
