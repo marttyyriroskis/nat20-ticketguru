@@ -37,6 +37,7 @@ public class WebSecurityConfig {
                 authorize -> authorize
                         .requestMatchers(antMatcher("/css/**")).permitAll()
                         .requestMatchers(WHITE_LIST_URLS).permitAll()
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .headers(
