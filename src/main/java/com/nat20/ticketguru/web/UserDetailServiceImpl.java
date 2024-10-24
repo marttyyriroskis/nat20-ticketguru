@@ -11,6 +11,7 @@ import com.nat20.ticketguru.repository.UserRepository;
 
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
+
     private final UserRepository userRepository;
 
     public UserDetailServiceImpl(UserRepository userRepository) {
@@ -21,8 +22,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User currentUser = userRepository.findByEmail(email).get();
         UserDetails user = new org.springframework.security.core.userdetails.User(email, currentUser.gethashedPassword(),
-               AuthorityUtils.createAuthorityList(currentUser.getRole().getTitle()));
-       return user;
+                AuthorityUtils.createAuthorityList(currentUser.getRole().getTitle()));
+        return user;
     }
 
 }
