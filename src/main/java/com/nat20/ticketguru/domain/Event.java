@@ -17,6 +17,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 
+import com.nat20.ticketguru.dto.EventDTO;
+
 @Entity
 @Table(name = "events")
 public class Event {
@@ -142,6 +144,26 @@ public class Event {
 
     public void setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void restore() {
+        this.deletedAt = null;
+    }
+
+    public EventDTO toDTO() {
+        return new EventDTO(
+                this.id,
+                this.name,
+                this.description,
+                this.totalTickets,
+                this.beginsAt,
+                this.endsAt,
+                this.ticketSaleBegins,
+                this.venue.getId());
     }
 
     @Override

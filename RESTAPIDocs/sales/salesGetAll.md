@@ -25,7 +25,11 @@ Content-Type: application/json
 
 **Code** : `200 OK`
 
-**Content** : `{[]}`
+**Content** :
+
+```json
+{[]}
+```
 
 ### OR
 
@@ -39,41 +43,15 @@ Content-Type: application/json
 [
   {
     "id": 1,
-    "paidAt": "2024-10-06T19:18:28.891855",
+    "paidAt": "2024-10-23T11:01:13.116922",
     "userId": 1,
-    "tickets": [
-      {
-        "id": 1,
-        "barcode": "1728231508859",
-        "usedAt": null,
-        "price": 0.0,
-        "ticketTypeId": 1,
-        "saleId": 1
-      },
-      {
-        "id": 2,
-        "barcode": "1728231508863",
-        "usedAt": null,
-        "price": 0.0,
-        "ticketTypeId": 2,
-        "saleId": 1
-      }
-    ]
+    "ticketIds": [1, 2, 4]
   },
   {
     "id": 2,
-    "paidAt": "2024-10-06T19:18:28.896336",
+    "paidAt": "2024-10-23T11:01:13.119915",
     "userId": 2,
-    "tickets": [
-      {
-        "id": 3,
-        "barcode": "1728231508866",
-        "usedAt": null,
-        "price": 0.0,
-        "ticketTypeId": 2,
-        "saleId": 2
-      }
-    ]
+    "ticketIds": [3]
   }
 ]
 ```

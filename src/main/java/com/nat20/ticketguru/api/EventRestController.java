@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,20 +47,13 @@ public class EventRestController {
     // Get events
     @GetMapping("")
     public ResponseEntity<List<EventDTO>> getAllEvents() {
+
         List<Event> events = new ArrayList<Event>();
         eventRepository.findAll().forEach(events::add);
 
         List<EventDTO> eventDTOs = events.stream()
                 .filter(event -> event.getDeletedAt() == null)
-                .map(event -> new EventDTO(
-                        event.getId(),
-                        event.getName(),
-                        event.getDescription(),
-                        event.getTotalTickets(),
-                        event.getBeginsAt(),
-                        event.getEndsAt(),
-                        event.getTicketSaleBegins(),
-                        event.getVenue().getId()))
+                .map(event -> event.toDTO())
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(eventDTOs);
@@ -70,24 +62,15 @@ public class EventRestController {
     // Get event by id
     @GetMapping("/{id}")
     public ResponseEntity<EventDTO> getEventById(@PathVariable("id") Long eventId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-        if (event.getDeletedAt() != null) {
+        Optional<Event> event = eventRepository.findById(eventId);
+
+        if (!event.isPresent() || event.get().getDeletedAt() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
-        } else {
-            EventDTO eventDTO = new EventDTO(
-                    event.getId(),
-                    event.getName(),
-                    event.getDescription(),
-                    event.getTotalTickets(),
-                    event.getBeginsAt(),
-                    event.getEndsAt(),
-                    event.getTicketSaleBegins(),
-                    event.getVenue().getId());
-
-            return ResponseEntity.ok(eventDTO);
         }
+
+        EventDTO eventDTO = event.get().toDTO();
+        return ResponseEntity.ok(eventDTO);
     }
 
     // Post a new event
@@ -95,33 +78,25 @@ public class EventRestController {
     public ResponseEntity<EventDTO> createEvent(@Valid @RequestBody EventDTO eventDTO) {
 
         Optional<Venue> existingVenue = venueRepository.findById(eventDTO.venueId());
+
         if (!existingVenue.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue does not exist!");
-        } else {
-            Event event = new Event(
-                    eventDTO.name(),
-                    eventDTO.description(),
-                    eventDTO.totalTickets(),
-                    eventDTO.beginsAt(),
-                    eventDTO.endsAt(),
-                    eventDTO.ticketSaleBegins(),
-                    existingVenue.get(),
-                    null);
-
-            Event savedEvent = eventRepository.save(event);
-
-            EventDTO responseDTO = new EventDTO(
-                    savedEvent.getId(),
-                    savedEvent.getName(),
-                    savedEvent.getDescription(),
-                    savedEvent.getTotalTickets(),
-                    savedEvent.getBeginsAt(),
-                    savedEvent.getEndsAt(),
-                    savedEvent.getTicketSaleBegins(),
-                    savedEvent.getVenue().getId());
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
         }
+
+        Event event = new Event(
+                eventDTO.name(),
+                eventDTO.description(),
+                eventDTO.totalTickets(),
+                eventDTO.beginsAt(),
+                eventDTO.endsAt(),
+                eventDTO.ticketSaleBegins(),
+                existingVenue.get(),
+                null);
+
+        Event savedEvent = eventRepository.save(event);
+
+        EventDTO responseDTO = savedEvent.toDTO();
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
     // Edit event with PUT request
@@ -129,41 +104,29 @@ public class EventRestController {
     public ResponseEntity<EventDTO> editEvent(@Valid @RequestBody EventDTO eventDTO, @PathVariable("id") Long eventId) {
 
         Optional<Event> existingEvent = eventRepository.findById(eventId);
-        if (!existingEvent.isPresent()) {
+        Optional<Venue> existingVenue = venueRepository.findById(eventDTO.venueId());
+
+        if (!existingEvent.isPresent() || existingEvent.get().getDeletedAt() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
-        } else {
-            if (existingEvent.get().getDeletedAt() != null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
-            } else {
-                Optional<Venue> existingVenue = venueRepository.findById(eventDTO.venueId());
-                if (!existingVenue.isPresent()) {
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found");
-                } else {
-                    Event editedEvent = existingEvent.get();
-                    editedEvent.setName(eventDTO.name());
-                    editedEvent.setDescription(eventDTO.description());
-                    editedEvent.setTotalTickets(eventDTO.totalTickets());
-                    editedEvent.setBeginsAt(eventDTO.beginsAt());
-                    editedEvent.setEndsAt(eventDTO.endsAt());
-                    editedEvent.setTicketSaleBegins(eventDTO.ticketSaleBegins());
-                    editedEvent.setVenue(existingVenue.get());
-
-                    Event savedEvent = eventRepository.save(editedEvent);
-
-                    EventDTO responseDTO = new EventDTO(
-                            savedEvent.getId(),
-                            savedEvent.getName(),
-                            savedEvent.getDescription(),
-                            savedEvent.getTotalTickets(),
-                            savedEvent.getBeginsAt(),
-                            savedEvent.getEndsAt(),
-                            savedEvent.getTicketSaleBegins(),
-                            savedEvent.getVenue().getId());
-
-                    return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
-                }
-            }
         }
+
+        if (!existingVenue.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found");
+        }
+
+        Event editedEvent = existingEvent.get();
+        editedEvent.setName(eventDTO.name());
+        editedEvent.setDescription(eventDTO.description());
+        editedEvent.setTotalTickets(eventDTO.totalTickets());
+        editedEvent.setBeginsAt(eventDTO.beginsAt());
+        editedEvent.setEndsAt(eventDTO.endsAt());
+        editedEvent.setTicketSaleBegins(eventDTO.ticketSaleBegins());
+        editedEvent.setVenue(existingVenue.get());
+
+        Event savedEvent = eventRepository.save(editedEvent);
+
+        EventDTO responseDTO = savedEvent.toDTO();
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
     // Delete event with DELETE Request
@@ -171,33 +134,14 @@ public class EventRestController {
     public ResponseEntity<String> deleteEvent(@PathVariable("id") Long eventId) {
 
         Optional<Event> existingEvent = eventRepository.findById(eventId);
-        if (!existingEvent.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
-        } else {
-            if (existingEvent.get().getDeletedAt() != null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
-            } else {
-                existingEvent.get().setDeletedAt(LocalDateTime.now());
-                eventRepository.save(existingEvent.get());
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            }
-        }
-    }
 
-    // Exception handler for validation errors
-    // If validation fails, a MethodArgumentNotValidException is thrown,
-    // which then returns the failed field(s) and the validation failure message(s)
-    // as a BAD_REQUEST response
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors()
-                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-        return errors;
+        if (!existingEvent.isPresent() || existingEvent.get().getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
+        }
+
+        existingEvent.get().delete();
+
+        eventRepository.save(existingEvent.get());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    // Source:
-    // https://dev.to/shujaat34/exception-handling-and-validation-in-spring-boot-3of9
-    // The source details a Global Exception handler, that we could implement later
-    // to handle all the endpoints
 }
