@@ -17,7 +17,7 @@ import com.nat20.ticketguru.web.UserDetailServiceImpl;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true)
+@EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig {
 
     private final UserDetailServiceImpl userDetailsService;
