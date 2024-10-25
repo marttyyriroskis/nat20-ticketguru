@@ -8,7 +8,7 @@ Allow updating the details of an existing user.
 
 **Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : Admin
 
 ### Path Parameters:
 

@@ -6,9 +6,9 @@ Allow updating the details of an existing permission.
 
 **Method** : `PUT`
 
-**Auth required** : NO
+**Auth required** : Yes
 
-**Permissions required** : None
+**Permissions required** : Admin
 
 ### Path Parameters:
 

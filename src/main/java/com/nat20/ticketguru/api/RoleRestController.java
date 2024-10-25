@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -90,6 +91,7 @@ public class RoleRestController {
      * @return the added role
      * @throws ResponseStatusException if the role already exists
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<RoleDTO> addRole(@Valid @RequestBody RoleDTO roleDTO) {
         
@@ -113,6 +115,7 @@ public class RoleRestController {
      * @return the updated role
      * @throws ResponseStatusException if the role is not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<RoleDTO> updateRole(@PathVariable Long id, @RequestBody RoleDTO roleDTO) {
 
@@ -139,6 +142,7 @@ public class RoleRestController {
      * @return no content
      * @throws ResponseStatusException if the role is not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
         Role role = roleRepository.findByIdActive(id).orElseThrow(
@@ -158,6 +162,7 @@ public class RoleRestController {
      * @return the role with the added permission
      * @throws ResponseStatusException if the role or permission is not found, or if the role already has the permission
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/permissions")
     public ResponseEntity<RoleDTO> addPermissionToRole(@PathVariable Long id, @RequestBody Permission permissionRequest) {
         Long permissionId = permissionRequest.getId();
@@ -197,6 +202,7 @@ public class RoleRestController {
      * @return the role with the removed permission
      * @throws ResponseStatusException if the role or permission is not found, or if the role does not have the permission
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/permissions/{permissionId}")
     public ResponseEntity<RoleDTO> removePermissionFromRole(@PathVariable Long id, @PathVariable Long permissionId) {
         Optional<Role> optionalRole = roleRepository.findById(id);

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,6 +82,7 @@ public class PermissionRestController {
      * @return the added permission
      * @throws ResponseStatusException if the permission title already exists
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<PermissionDTO> addPermission(@Valid @RequestBody PermissionDTO permissionDTO) {
         if (permissionRepository.findByTitle(permissionDTO.title()).isPresent()) {
@@ -103,6 +105,7 @@ public class PermissionRestController {
      * @return the updated permission
      * @throws ResponseStatusException if the permission is not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PermissionDTO> updatePermission(@PathVariable Long id, @Valid @RequestBody PermissionDTO permissionDTO) {
         Permission existingPermission = permissionRepository.findByIdActive(id)
@@ -128,6 +131,7 @@ public class PermissionRestController {
      * @return no content
      * @throws ResponseStatusException if the permission is not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePermission(@PathVariable Long id) {
         Permission permission = permissionRepository.findByIdActive(id)
