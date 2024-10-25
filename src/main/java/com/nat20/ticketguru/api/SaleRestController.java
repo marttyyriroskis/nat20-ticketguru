@@ -47,6 +47,7 @@ public class SaleRestController {
     }
 
     @GetMapping("")
+    @PreAuthorize("hasAuthority('VIEW_SALES') or hasRole('ADMIN')")
     public ResponseEntity<List<SaleDTO>> getAllSales() {
         List<Sale> sales = new ArrayList<>();
         saleRepository.findAll().forEach(sales::add);
@@ -63,6 +64,7 @@ public class SaleRestController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VIEW_SALES') or hasRole('ADMIN')")
     public ResponseEntity<SaleDTO> getSale(@PathVariable("id") Long id) {
         Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
@@ -78,7 +80,7 @@ public class SaleRestController {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('CREATE_SALES') or hasRole('ADMIN')")
     public ResponseEntity<SaleDTO> createSale(@Valid @RequestBody SaleDTO saleDTO) {
         // check User
         Optional<User> existingUser = userRepository.findById(saleDTO.userId());
@@ -124,7 +126,7 @@ public class SaleRestController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('EDIT_SALES') or hasRole('ADMIN')")
     public ResponseEntity<SaleDTO> editSale(@Valid @RequestBody SaleDTO editedSaleDTO, @PathVariable("id") Long id) {
         // check that sale with the Id exists
         Sale sale = saleRepository.findById(id)
@@ -174,7 +176,7 @@ public class SaleRestController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_SALES') or hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSale(@PathVariable("id") Long id
     ) {

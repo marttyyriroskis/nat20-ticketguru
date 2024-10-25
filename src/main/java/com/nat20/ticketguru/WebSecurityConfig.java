@@ -39,6 +39,7 @@ public class WebSecurityConfig {
                         .requestMatchers(antMatcher("/css/**")).permitAll()
                         .requestMatchers(WHITE_LIST_URLS).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/sales").hasAnyAuthority("CREATE_SALES", "ROLE_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")

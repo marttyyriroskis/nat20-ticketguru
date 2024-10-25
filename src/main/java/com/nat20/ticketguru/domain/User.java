@@ -21,6 +21,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -180,8 +183,17 @@ public class User implements UserDetails {
     // Have to implement all UserDetails methods:
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.getTitle()));
-        // eg. hasAuthority("ROLE_ADMIN")
+        Set<GrantedAuthority> roleAuthorities = Stream.of(
+                new SimpleGrantedAuthority("ROLE_" + role.getTitle()))
+                .collect(Collectors.toSet());
+
+        Set<GrantedAuthority> permissionAuthorities = role.getPermissions().stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.name()))
+                .collect(Collectors.toSet());
+
+        return Stream.concat(roleAuthorities.stream(), permissionAuthorities.stream())
+                .collect(Collectors.toSet());
+        // eg. hasRole("ADMIN") or hasAuthority("VIEW_SALES")
     }
 
     @Override

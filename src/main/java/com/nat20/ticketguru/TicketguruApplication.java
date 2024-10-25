@@ -21,7 +21,6 @@ import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.domain.Venue;
 import com.nat20.ticketguru.domain.Zipcode;
 import com.nat20.ticketguru.repository.EventRepository;
-import com.nat20.ticketguru.repository.PermissionRepository;
 import com.nat20.ticketguru.repository.RoleRepository;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.TicketRepository;
@@ -40,7 +39,7 @@ public class TicketguruApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(PermissionRepository permissionRepository, TicketRepository ticketRepository,
+    public CommandLineRunner demo(TicketRepository ticketRepository,
             UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository,
             SaleRepository saleRepository, EventRepository eventRepository, VenueRepository venueRepository,
             TicketTypeRepository ticketTypeRepository) {
@@ -49,12 +48,13 @@ public class TicketguruApplication {
             public void run(String[] args) throws Exception {
 
                 log.info("Creating a few role test entries");
-                roleRepository.save(new Role("USER"));
-                roleRepository.save(new Role("ADMIN"));
+                Role userRole = roleRepository.save(new Role("USER"));
+                Role adminRole = roleRepository.save(new Role("ADMIN"));
 
-                log.info("Creating a few permission test entries");
-                permissionRepository.save(new Permission("read"));
-                permissionRepository.save(new Permission("write"));
+                log.info("Add a few permissions to roles");
+                userRole.addPermission(Permission.VIEW_SALES);
+                userRole.addPermission(Permission.CREATE_SALES);
+                roleRepository.save(userRole);
 
                 log.info("Creating a few user test entries");
                 String userPass = BCrypt.hashpw("user", BCrypt.gensalt());
