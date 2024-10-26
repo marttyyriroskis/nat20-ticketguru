@@ -55,6 +55,7 @@ public class TicketguruApplication {
                 userRole.addPermission(Permission.VIEW_SALES);
                 userRole.addPermission(Permission.CREATE_SALES);
                 roleRepository.save(userRole);
+                roleRepository.save(adminRole);
 
                 log.info("Creating a few user test entries");
                 String userPass = BCrypt.hashpw("user", BCrypt.gensalt());

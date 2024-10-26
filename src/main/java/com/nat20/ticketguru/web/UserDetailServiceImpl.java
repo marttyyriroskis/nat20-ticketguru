@@ -1,6 +1,5 @@
 package com.nat20.ticketguru.web;
 
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,8 +21,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username"));
-        // UserDetails user = new org.springframework.security.core.userdetails.User(email, currentUser.gethashedPassword(),
-        //         AuthorityUtils.createAuthorityList(currentUser.getRole().getTitle()));
 
         return currentUser;
         // return our own User implementation instead
