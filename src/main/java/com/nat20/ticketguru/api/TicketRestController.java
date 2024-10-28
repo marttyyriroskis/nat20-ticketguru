@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -83,6 +84,7 @@ public class TicketRestController {
     }
     
     // Post a new ticket
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
         Optional<TicketType> existingTicketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId());
@@ -122,6 +124,7 @@ public class TicketRestController {
     }
 
     // Edit ticket
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<TicketDTO> updateTicket(@PathVariable Long id, @RequestBody TicketDTO ticketDTO) {
         Optional<Ticket> existingTicket = ticketRepository.findById(id);
@@ -169,6 +172,7 @@ public class TicketRestController {
     }
 
     // Delete ticket
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<TicketDTO> deleteTicket(@PathVariable Long id) {
         Optional<Ticket> existingTicket = ticketRepository.findById(id);

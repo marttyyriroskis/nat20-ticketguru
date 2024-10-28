@@ -24,10 +24,12 @@ import org.springframework.web.server.ResponseStatusException;
 import com.nat20.ticketguru.domain.Sale;
 import com.nat20.ticketguru.domain.Ticket;
 import com.nat20.ticketguru.domain.User;
+import com.nat20.ticketguru.dto.BasketDTO;
 import com.nat20.ticketguru.dto.SaleDTO;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.repository.UserRepository;
+import com.nat20.ticketguru.web.TicketSaleService;
 
 import jakarta.validation.Valid;
 
@@ -39,11 +41,13 @@ public class SaleRestController {
     private final SaleRepository saleRepository;
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
+    private final TicketSaleService ticketSaleService;
 
-    public SaleRestController(SaleRepository saleRepository, UserRepository userRepository, TicketRepository ticketRepository) {
+    public SaleRestController(SaleRepository saleRepository, UserRepository userRepository, TicketRepository ticketRepository, TicketSaleService ticketSaleService) {
         this.saleRepository = saleRepository;
         this.userRepository = userRepository;
         this.ticketRepository = ticketRepository;
+        this.ticketSaleService = ticketSaleService;
     }
 
     @GetMapping("")
@@ -187,6 +191,13 @@ public class SaleRestController {
         }
         sale.setDeletedAt(LocalDateTime.now());
         saleRepository.save(sale);
+    }
+
+    @PostMapping("/confirm")
+    @PreAuthorize("hasAuthority('CREATE_SALES') or hasRole('ADMIN')")
+    public ResponseEntity<SaleDTO> confirmSaleFromBasket(@Valid @RequestBody BasketDTO basketDTO) {
+        SaleDTO sale = ticketSaleService.processSale(basketDTO);
+        return ResponseEntity.ok(sale);
     }
 
 }
