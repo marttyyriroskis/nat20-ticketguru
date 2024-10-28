@@ -2,12 +2,9 @@ package com.nat20.ticketguru.dto;
 
 import java.util.List;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 
 public record BasketDTO(
-        @NotNull(message = "TicketItems list cannot be null")
-        List<TicketItemDTO> ticketItems,
-        @NotNull(message = "UserId cannot be null")
-        Long userId) {
-
+        @NotEmpty(message = "TicketItems list cannot be empty")
+        List<TicketItemDTO> ticketItems) {
 }

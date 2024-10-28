@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -195,8 +196,8 @@ public class SaleRestController {
 
     @PostMapping("/confirm")
     @PreAuthorize("hasAuthority('CREATE_SALES') or hasRole('ADMIN')")
-    public ResponseEntity<SaleDTO> confirmSaleFromBasket(@Valid @RequestBody BasketDTO basketDTO) {
-        SaleDTO sale = ticketSaleService.processSale(basketDTO);
+    public ResponseEntity<SaleDTO> confirmSaleFromBasket(@Valid @RequestBody BasketDTO basketDTO, @AuthenticationPrincipal User user) {
+        SaleDTO sale = ticketSaleService.processSale(basketDTO, user.getId());
         return ResponseEntity.ok(sale);
     }
 

@@ -45,9 +45,9 @@ public class TicketSaleService {
         return tickets;
     }
 
-    public SaleDTO processSale(BasketDTO basketDTO) {
+    public SaleDTO processSale(BasketDTO basketDTO, Long userId) {
         Sale sale = new Sale();
-        sale.setUser(userRepository.findById(basketDTO.userId()).get());
+        sale.setUser(userRepository.findById(userId).get());
         saleRepository.save(sale);
 
         List<Ticket> tickets = basketDTO.ticketItems().stream()
