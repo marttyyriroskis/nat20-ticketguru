@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,7 @@ public class EventRestController {
 
     // Get events
     @GetMapping("")
+    @PreAuthorize("hasAuthority('VIEW_EVENTS') or hasRole('ADMIN')")
     public ResponseEntity<List<EventDTO>> getAllEvents() {
 
         List<Event> events = new ArrayList<Event>();
@@ -56,6 +58,7 @@ public class EventRestController {
 
     // Get event by id
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VIEW_EVENTS') or hasRole('ADMIN')")
     public ResponseEntity<EventDTO> getEventById(@PathVariable("id") Long eventId) {
 
         Optional<Event> event = eventRepository.findById(eventId);
@@ -70,6 +73,7 @@ public class EventRestController {
 
     // Post a new event
     @PostMapping("")
+    @PreAuthorize("hasAuthority('CREATE_EVENTS') or hasRole('ADMIN')")
     public ResponseEntity<EventDTO> createEvent(@Valid @RequestBody EventDTO eventDTO) {
 
         Optional<Venue> existingVenue = venueRepository.findById(eventDTO.venueId());
@@ -96,6 +100,7 @@ public class EventRestController {
 
     // Edit event with PUT request
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EDIT_EVENTS') or hasRole('ADMIN')")
     public ResponseEntity<EventDTO> editEvent(@Valid @RequestBody EventDTO eventDTO, @PathVariable("id") Long eventId) {
 
         Optional<Event> existingEvent = eventRepository.findById(eventId);
@@ -126,6 +131,7 @@ public class EventRestController {
 
     // Delete event with DELETE Request
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE_EVENTS') or hasRole('ADMIN')")
     public ResponseEntity<String> deleteEvent(@PathVariable("id") Long eventId) {
 
         Optional<Event> existingEvent = eventRepository.findById(eventId);
