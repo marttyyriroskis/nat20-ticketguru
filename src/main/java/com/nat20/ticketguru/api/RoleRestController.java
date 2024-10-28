@@ -10,24 +10,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Permission;
 import com.nat20.ticketguru.domain.Role;
+import com.nat20.ticketguru.dto.PermissionDTO;
 import com.nat20.ticketguru.dto.RoleDTO;
 import com.nat20.ticketguru.repository.RoleRepository;
 
 import jakarta.validation.Valid;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * REST controller for roles
@@ -164,7 +164,7 @@ public class RoleRestController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/permissions")
-    public ResponseEntity<RoleDTO> addPermissionToRole(@PathVariable Long id, @RequestBody Permission permissionRequest) {
+    public ResponseEntity<RoleDTO> addPermissionToRole(@PathVariable Long id, @RequestBody PermissionDTO permissionRequest) {
 
         Optional<Role> optionalRole = roleRepository.findById(id);
         if (!optionalRole.isPresent()) {
@@ -172,18 +172,18 @@ public class RoleRestController {
                     HttpStatus.NOT_FOUND, "Role not found");
         }
 
-        if (!EnumSet.allOf(Permission.class).contains(permissionRequest)) {
+        if (!EnumSet.allOf(Permission.class).contains(permissionRequest.permission())) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Permission not found");
         }
 
-        if (optionalRole.get().hasPermission(permissionRequest)) {
+        if (optionalRole.get().hasPermission(permissionRequest.permission())) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT, "Role already has this permission");
         }
 
         Role role = optionalRole.get();
-        role.addPermission(permissionRequest);
+        role.addPermission(permissionRequest.permission());
         roleRepository.save(role);
 
         return ResponseEntity.ok(role.toDTO());
