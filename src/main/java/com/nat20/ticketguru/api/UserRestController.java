@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal; 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,6 +57,7 @@ public class UserRestController {
      * 
      * @return all users
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<Iterable<UserDTO>> getUsers() {
         List<User> users = userRepository.findAllActive();
@@ -77,14 +80,20 @@ public class UserRestController {
      * @exception ResponseStatusException if user not found
      */
     @GetMapping("/{id}")
-    public UserDTO getUser(@PathVariable Long id) {
+    public UserDTO getUser(@PathVariable Long id, @AuthenticationPrincipal User user) {
+
+        if (user.getId() != id && !user.getRole().getTitle().equals("ADMIN")) {
+            throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN, "You are not authorized to view this user");
+        }
+
         Optional<User> optionalUser = userRepository.findByIdActive(id);
         if (!optionalUser.isPresent()) {
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "User not found");
         }
-        UserDTO user = optionalUser.get().toDTO();
-        return user;
+        UserDTO responseUser = optionalUser.get().toDTO();
+        return responseUser;
     }
 
     /**
@@ -94,6 +103,7 @@ public class UserRestController {
      * @return the user added
      * @exception ResponseStatusException if role not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserCreateDTO ucDTO) {
 
@@ -130,6 +140,7 @@ public class UserRestController {
      * @param editedUser the requested updates for the user
      * @return the updated user
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserCreateDTO editedUser) {
         
@@ -171,6 +182,7 @@ public class UserRestController {
      * @return 204 No Content
      * @exception ResponseStatusException if user not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
         User user = userRepository.findByIdActive(id).orElseThrow(

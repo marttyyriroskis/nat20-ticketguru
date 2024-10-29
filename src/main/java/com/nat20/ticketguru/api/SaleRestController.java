@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +25,12 @@ import org.springframework.web.server.ResponseStatusException;
 import com.nat20.ticketguru.domain.Sale;
 import com.nat20.ticketguru.domain.Ticket;
 import com.nat20.ticketguru.domain.User;
+import com.nat20.ticketguru.dto.BasketDTO;
 import com.nat20.ticketguru.dto.SaleDTO;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.repository.UserRepository;
+import com.nat20.ticketguru.web.TicketSaleService;
 
 import jakarta.validation.Valid;
 
@@ -38,14 +42,17 @@ public class SaleRestController {
     private final SaleRepository saleRepository;
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
+    private final TicketSaleService ticketSaleService;
 
-    public SaleRestController(SaleRepository saleRepository, UserRepository userRepository, TicketRepository ticketRepository) {
+    public SaleRestController(SaleRepository saleRepository, UserRepository userRepository, TicketRepository ticketRepository, TicketSaleService ticketSaleService) {
         this.saleRepository = saleRepository;
         this.userRepository = userRepository;
         this.ticketRepository = ticketRepository;
+        this.ticketSaleService = ticketSaleService;
     }
 
     @GetMapping("")
+    @PreAuthorize("hasAuthority('VIEW_SALES') or hasRole('ADMIN')")
     public ResponseEntity<List<SaleDTO>> getAllSales() {
         List<Sale> sales = new ArrayList<>();
         saleRepository.findAll().forEach(sales::add);
@@ -62,6 +69,7 @@ public class SaleRestController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VIEW_SALES') or hasRole('ADMIN')")
     public ResponseEntity<SaleDTO> getSale(@PathVariable("id") Long id) {
         Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
@@ -77,6 +85,7 @@ public class SaleRestController {
     }
 
     @PostMapping("")
+    @PreAuthorize("hasAuthority('CREATE_SALES') or hasRole('ADMIN')")
     public ResponseEntity<SaleDTO> createSale(@Valid @RequestBody SaleDTO saleDTO) {
         // check User
         Optional<User> existingUser = userRepository.findById(saleDTO.userId());
@@ -122,6 +131,7 @@ public class SaleRestController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EDIT_SALES') or hasRole('ADMIN')")
     public ResponseEntity<SaleDTO> editSale(@Valid @RequestBody SaleDTO editedSaleDTO, @PathVariable("id") Long id) {
         // check that sale with the Id exists
         Sale sale = saleRepository.findById(id)
@@ -171,6 +181,7 @@ public class SaleRestController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE_SALES') or hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSale(@PathVariable("id") Long id
     ) {
@@ -181,6 +192,13 @@ public class SaleRestController {
         }
         sale.setDeletedAt(LocalDateTime.now());
         saleRepository.save(sale);
+    }
+
+    @PostMapping("/confirm")
+    @PreAuthorize("hasAuthority('CREATE_SALES') or hasRole('ADMIN')")
+    public ResponseEntity<SaleDTO> confirmSaleFromBasket(@Valid @RequestBody BasketDTO basketDTO, @AuthenticationPrincipal User user) {
+        SaleDTO sale = ticketSaleService.processSale(basketDTO, user.getId());
+        return ResponseEntity.ok(sale);
     }
 
 }

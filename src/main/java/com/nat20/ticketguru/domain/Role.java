@@ -1,24 +1,25 @@
 package com.nat20.ticketguru.domain;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat20.ticketguru.dto.RoleDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "roles")
@@ -31,15 +32,11 @@ public class Role {
     @Column(unique = true)
     private String title;
 
-    @Column(name="deleted_at")
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-        name = "role_permissions",
-        joinColumns = @JoinColumn(name = "role_id"),
-        inverseJoinColumns = @JoinColumn(name = "permission_id")
-    )
+    @ElementCollection(targetClass = Permission.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
     private Set<Permission> permissions = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
@@ -129,15 +126,13 @@ public class Role {
 
     public RoleDTO toDTO() {
         return new RoleDTO(
-            this.title,
-
-            this.permissions.stream()
-                .map(Permission::getId)
-                .collect(Collectors.toSet()),
-
-            this.users.stream()
-                .map(User::getId)
-                .collect(Collectors.toList()) 
+                this.title,
+                this.permissions.stream()
+                        .map(Permission::toString)
+                        .collect(Collectors.toList()),
+                this.users.stream()
+                        .map(User::getId)
+                        .collect(Collectors.toList())
         );
     }
 

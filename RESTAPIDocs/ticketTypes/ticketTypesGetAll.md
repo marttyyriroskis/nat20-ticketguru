@@ -6,9 +6,9 @@ Show all `TicketTypes`.
 
 **Method** : `GET`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `VIEW_TICKET_TYPES`
 
 ### Example Request
 

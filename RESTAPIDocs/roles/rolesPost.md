@@ -6,9 +6,9 @@ Allow adding a new role to the system.
 
 **Method** : `POST`
 
-**Auth required** : NO
+**Auth required** : Yes
 
-**Permissions required** : None
+**Permissions required** : Admin
 
 ### Request Body:
 

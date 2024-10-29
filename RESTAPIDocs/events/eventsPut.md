@@ -8,7 +8,7 @@ Allow updating `Event` details of the given `id`.
 
 **Auth required** : NO
 
-**Permissions required** : None
+**Permissions required** : `EDIT_EVENTS`
 
 **Path Parameters** :
 

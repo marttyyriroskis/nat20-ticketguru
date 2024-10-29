@@ -9,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.nat20.ticketguru.domain.Event;
 import com.nat20.ticketguru.domain.Permission;
@@ -20,7 +21,6 @@ import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.domain.Venue;
 import com.nat20.ticketguru.domain.Zipcode;
 import com.nat20.ticketguru.repository.EventRepository;
-import com.nat20.ticketguru.repository.PermissionRepository;
 import com.nat20.ticketguru.repository.RoleRepository;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.TicketRepository;
@@ -39,7 +39,7 @@ public class TicketguruApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(PermissionRepository permissionRepository, TicketRepository ticketRepository,
+    public CommandLineRunner demo(TicketRepository ticketRepository,
             UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository,
             SaleRepository saleRepository, EventRepository eventRepository, VenueRepository venueRepository,
             TicketTypeRepository ticketTypeRepository) {
@@ -48,17 +48,22 @@ public class TicketguruApplication {
             public void run(String[] args) throws Exception {
 
                 log.info("Creating a few role test entries");
-                roleRepository.save(new Role("USER"));
-                roleRepository.save(new Role("ADMIN"));
+                Role userRole = roleRepository.save(new Role("USER"));
+                Role adminRole = roleRepository.save(new Role("ADMIN"));
 
-                log.info("Creating a few permission test entries");
-                permissionRepository.save(new Permission("read"));
-                permissionRepository.save(new Permission("write"));
+                log.info("Add a few permissions to roles");
+                userRole.addPermission(Permission.VIEW_SALES);
+                userRole.addPermission(Permission.CREATE_SALES);
+                roleRepository.save(userRole);
+                roleRepository.save(adminRole);
 
                 log.info("Creating a few user test entries");
-                userRepository.save(new User("test1@test.com", "User1", "Cashier", "VerySecureHash1",
+                String userPass = BCrypt.hashpw("user", BCrypt.gensalt());
+                String adminPass = BCrypt.hashpw("admin", BCrypt.gensalt());
+                // user@test.com "user" and admin@test.com "admin"
+                userRepository.save(new User("user@test.com", "User1", "Cashier", userPass,
                         roleRepository.findByTitle("USER").get()));
-                userRepository.save(new User("test2@test.com", "User2", "Event Organizer", "VerySecureHash2",
+                userRepository.save(new User("admin@test.com", "User2", "Event Organizer", adminPass,
                         roleRepository.findByTitle("ADMIN").get()));
 
                 log.info("Creating a few zipcode test entries");
@@ -117,7 +122,7 @@ public class TicketguruApplication {
                 Sale sale2 = new Sale(LocalDateTime.now(), new ArrayList<>(), userRepository.findById(2L).get());
                 saleRepository.save(sale1);
                 saleRepository.save(sale2);
-                
+
                 ticketRepository.save(new Ticket(null, 10.0, LocalDateTime.of(2024, 3, 12, 9, 0), ticketTypeRepository.findById(1L).get(), saleRepository.findById(2L).get()));
                 ticketRepository.save(new Ticket(null, 20.0, null, ticketTypeRepository.findById(2L).get(), saleRepository.findById(1L).get()));
                 ticketRepository.save(new Ticket(null, 30.0, null, ticketTypeRepository.findById(3L).get(), saleRepository.findById(2L).get()));

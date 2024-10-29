@@ -6,7 +6,7 @@ Allow retrieving a permission by its unique identifier.
 
 **Method** : `GET`
 
-**Auth required** : NO
+**Auth required** : No
 
 **Permissions required** : None
 

@@ -6,9 +6,9 @@ Allow associating a permission with a specific role.
 
 **Method** : `POST`
 
-**Auth required** : NO
+**Auth required** : Yes
 
-**Permissions required** : None
+**Permissions required** : Admin
 
 ### Request Body:
 
@@ -51,9 +51,9 @@ Allow removing a permission (by its ID) from a specific role.
 
 **Method**: `DELETE`
 
-**Auth required**: NO
+**Auth required**: Yes
 
-**Permissions required**: None
+**Permissions required**: Admin
 
 ### URL Parameters
 

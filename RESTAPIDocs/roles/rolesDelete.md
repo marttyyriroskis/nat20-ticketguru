@@ -6,9 +6,9 @@ Allow deleting a role from the system.
 
 **Method** : `DELETE`
 
-**Auth required** : NO
+**Auth required** : Yes
 
-**Permissions required** : None
+**Permissions required** : Admin
 
 ### Path Parameters:
 

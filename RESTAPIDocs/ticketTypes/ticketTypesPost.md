@@ -6,9 +6,9 @@ Create a new `TicketType` entity.
 
 **Method** : `POST`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `CREATE_TICKET_TYPES`
 
 **Data constraints** :
 
