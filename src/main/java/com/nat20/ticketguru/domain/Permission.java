@@ -18,6 +18,12 @@ public enum Permission {
     EDIT_TICKET_TYPES,
     CREATE_TICKET_TYPES,
     DELETE_TICKET_TYPES,
+
+    // Ticket permissions
+    VIEW_TICKETS,
+    EDIT_TICKETS,
+    CREATE_TICKETS,
+    DELETE_TICKETS,
     
     // add others as needed
 }

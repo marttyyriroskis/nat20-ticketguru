@@ -49,12 +49,14 @@ public class TicketguruApplication {
 
                 log.info("Creating a few role test entries");
                 Role userRole = roleRepository.save(new Role("USER"));
+                Role coordinatorRole = roleRepository.save(new Role("COORDINATOR"));
                 Role adminRole = roleRepository.save(new Role("ADMIN"));
 
                 log.info("Add a few permissions to roles");
                 userRole.addPermission(Permission.VIEW_SALES);
                 userRole.addPermission(Permission.CREATE_SALES);
                 roleRepository.save(userRole);
+                roleRepository.save(coordinatorRole);
                 roleRepository.save(adminRole);
 
                 log.info("Creating a few user test entries");

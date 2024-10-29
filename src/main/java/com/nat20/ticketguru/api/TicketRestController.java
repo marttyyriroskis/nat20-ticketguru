@@ -63,7 +63,7 @@ public class TicketRestController {
     }
     
     // Post a new ticket
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('COORDINATOR')")
     @PostMapping
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
         TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
@@ -83,7 +83,7 @@ public class TicketRestController {
     }
 
     // Edit ticket
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('COORDINATOR')")
     @PutMapping("/{id}")
     public ResponseEntity<TicketDTO> updateTicket(@Valid @RequestBody TicketDTO ticketDTO, @PathVariable Long id) {
         Ticket ticket = ticketRepository.findById(id)
@@ -106,7 +106,7 @@ public class TicketRestController {
     }
 
     // Delete ticket
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('COORDINATOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<TicketDTO> deleteTicket(@PathVariable Long id) {
         Ticket ticket = ticketRepository.findById(id)
