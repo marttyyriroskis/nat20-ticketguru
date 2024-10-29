@@ -6,9 +6,9 @@ Create a new `Sale` entity
 
 **Method** : `POST`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `CREATE_SALES`
 
 **Data constraints** :
 

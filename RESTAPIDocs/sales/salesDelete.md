@@ -6,9 +6,9 @@ Allow deleting `Sale` details of the given `id`. When a Sale is deleted, it's de
 
 **Method** : `DELETE`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `DELETE_SALES`
 
 **Path Parameters** : `{id}`
 
