@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat20.ticketguru.dto.TicketDTO;
-import com.nat20.ticketguru.dto.UserDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -140,7 +139,7 @@ public class Ticket {
     }
 
     public TicketDTO toDTO() {
-        return new TicketDTO(id, barcode, usedAt, price, deletedAt, ticketType.toDTO(), sale.toDTO());
+        return new TicketDTO(id, barcode, usedAt, price, deletedAt, ticketType.getId(), sale.getId());
     }
 
 }
