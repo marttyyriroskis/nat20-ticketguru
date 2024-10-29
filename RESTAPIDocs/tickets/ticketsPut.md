@@ -6,9 +6,9 @@ Allow updating `Ticket` details of the given `id`.
 
 **Method** : `PUT`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `EDIT_TICKETS`
 
 **Path Parameters** :
 

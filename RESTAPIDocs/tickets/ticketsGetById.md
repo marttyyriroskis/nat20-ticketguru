@@ -6,9 +6,9 @@ Allow getting `Ticket` details of the given `id`.
 
 **Method** : `GET`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `VIEW_TICKETS`
 
 **Path Parameters** :
 

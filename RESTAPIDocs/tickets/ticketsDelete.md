@@ -6,9 +6,9 @@ Allow deleting `Ticket` details of the given `id`.
 
 **Method** : `DELETE`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `DELETE_TICKETS`
 
 **Path Parameters** : `{id}`
 

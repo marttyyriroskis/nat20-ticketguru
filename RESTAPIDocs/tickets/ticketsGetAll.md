@@ -6,9 +6,9 @@ Show all `Tickets`.
 
 **Method** : `GET`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `VIEW_TICKETS`
 
 ## Example Request
 
