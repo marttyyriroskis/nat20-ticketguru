@@ -1,6 +1,7 @@
 package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat20.ticketguru.dto.TicketDTO;
@@ -57,12 +58,12 @@ public class Ticket {
     public Ticket(String eventCode) { // TODO: Figure out how the barcode should be generated
         // Generate barcode from timestamp and event code
         // Event code = event id?
-        this.barcode = eventCode + "-" + System.currentTimeMillis();
+        this.barcode = eventCode + "-" + String.valueOf(UUID.randomUUID().getMostSignificantBits());
     }
 
     public Ticket(LocalDateTime usedAt, @PositiveOrZero(message = "Price must be positive or zero") double price, LocalDateTime deletedAt,
             TicketType ticketType, Sale sale) {
-        this.barcode = String.valueOf(System.currentTimeMillis());
+        this.barcode = String.valueOf(UUID.randomUUID().getMostSignificantBits());
         this.usedAt = usedAt;
         this.price = price;
         this.deletedAt = deletedAt;
@@ -90,8 +91,7 @@ public class Ticket {
         public void markAsUsed() {
         this.usedAt = LocalDateTime.now();
         }
-        */
-
+     */
     public LocalDateTime getUsedAt() {
         return usedAt;
     }
