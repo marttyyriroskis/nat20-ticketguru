@@ -3,8 +3,10 @@ package com.nat20.ticketguru.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nat20.ticketguru.dto.SaleDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -102,6 +104,18 @@ public class Sale {
 
     public void setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public SaleDTO toDTO() {
+        return new SaleDTO(
+            this.id,
+            this.paidAt,
+            this.user.getId(),
+
+            this.tickets.stream()
+                .map(ticket -> ticket.getId())
+                .collect(Collectors.toList())
+        );
     }
 
 }

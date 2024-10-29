@@ -19,8 +19,7 @@ Allow getting `Ticket` details of the given `id`.
 #### Example Request
 
 ```json
-GET /tickets/1
-Accept: application/json
+GET /api/tickets/1
 ```
 
 ## Success Responses
@@ -29,7 +28,7 @@ Accept: application/json
 
 **Code** : `200 OK`
 
-**Content example** : Returns the `Ticket` object of the given `id`, with the `TicketType` and `Sale` id`s.
+**Content example** : Returns the `Ticket` object of the given `id`.
 
 ```json
 {
