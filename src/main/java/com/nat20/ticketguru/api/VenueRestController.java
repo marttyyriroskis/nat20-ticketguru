@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,6 +78,7 @@ public class VenueRestController {
     }
 
     // Post a new venue
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("")
     public ResponseEntity<VenueDTO> createVenue(@Valid @RequestBody VenueDTO venueDTO) {
 
@@ -114,6 +116,7 @@ public class VenueRestController {
     }
 
     // Edit venue with PUT request
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<VenueDTO> editVenue(@Valid @RequestBody VenueDTO venueDTO, @PathVariable("id") Long venueId) {
 
@@ -162,6 +165,7 @@ public class VenueRestController {
     }
 
     // Delete venue with DELETE Request
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteVenue(@PathVariable("id") Long venueId) {
         // Finds the venue with the mapped id from the repository; assigns null if not
