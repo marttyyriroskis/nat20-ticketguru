@@ -9,4 +9,4 @@ DB_PASSWORD=psqladmin
 # Make sure the following is set to true when
 # 1. Running tests
 # 2. You have already initialized the database and no longer want to be prompted
-app.skipPrompt=true
+app.skipPrompt=false

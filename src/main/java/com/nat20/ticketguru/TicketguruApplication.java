@@ -51,7 +51,7 @@ public class TicketguruApplication {
             public void run(String[] args) throws Exception {
 
 
-                if (!skipPrompt) {
+                if (skipPrompt) {
                     log.info("Ticket Guru is now up and running 👌");
                     return;
                 }
