@@ -42,6 +42,7 @@ public class TicketRestController {
     }
 
     // Get tickets
+    @PreAuthorize("hasAuthority('VIEW_TICKETS')")
     @GetMapping
     public ResponseEntity<List<TicketDTO>> getTickets() {
         Iterable<Ticket> iterableTickets = ticketRepository.findAllActive();
@@ -54,6 +55,7 @@ public class TicketRestController {
     }
 
     // Get ticket by id
+    @PreAuthorize("hasAuthority('VIEW_TICKETS')")
     @GetMapping("/{id}")
     public ResponseEntity<TicketDTO> getTicket(@PathVariable Long id) {
         Ticket ticket = ticketRepository.findByIdActive(id)
@@ -63,7 +65,7 @@ public class TicketRestController {
     }
     
     // Post a new ticket
-    @PreAuthorize("hasRole('COORDINATOR')")
+    @PreAuthorize("hasAuthority('CREATE_TICKETS')")
     @PostMapping
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
         TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
@@ -83,7 +85,7 @@ public class TicketRestController {
     }
 
     // Edit ticket
-    @PreAuthorize("hasRole('COORDINATOR')")
+    @PreAuthorize("hasAuthority('EDIT_TICKETS')")
     @PutMapping("/{id}")
     public ResponseEntity<TicketDTO> updateTicket(@Valid @RequestBody TicketDTO ticketDTO, @PathVariable Long id) {
         Ticket ticket = ticketRepository.findById(id)
@@ -106,7 +108,7 @@ public class TicketRestController {
     }
 
     // Delete ticket
-    @PreAuthorize("hasRole('COORDINATOR')")
+    @PreAuthorize("hasAuthority('DELETE_TICKETS')")
     @DeleteMapping("/{id}")
     public ResponseEntity<TicketDTO> deleteTicket(@PathVariable Long id) {
         Ticket ticket = ticketRepository.findById(id)
