@@ -1,6 +1,7 @@
 package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -107,8 +108,8 @@ public class Role {
         this.permissions = permissions;
     }
 
-    public void addPermission(Permission permission) {
-        this.permissions.add(permission);
+    public void addPermissions(Permission... permissions) {
+        this.permissions.addAll(Arrays.asList(permissions));
     }
 
     public void removePermission(Permission permission) {
