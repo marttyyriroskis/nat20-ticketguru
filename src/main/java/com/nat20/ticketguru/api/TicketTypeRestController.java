@@ -42,7 +42,7 @@ public class TicketTypeRestController {
 
     // Get all ticket types
     @GetMapping("")
-    @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
     public ResponseEntity<List<TicketTypeDTO>> getAllTicketTypes() {
 
         List<TicketType> ticketTypes = new ArrayList<TicketType>();
@@ -58,7 +58,7 @@ public class TicketTypeRestController {
 
     // Get ticket type by id
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
     public ResponseEntity<TicketTypeDTO> getTicketTypeById(@PathVariable("id") Long ticketTypeId) {
 
         Optional<TicketType> ticketType = ticketTypeRepository.findById(ticketTypeId);
@@ -73,7 +73,7 @@ public class TicketTypeRestController {
 
     // Add a new ticket type
     @PostMapping("")
-    @PreAuthorize("hasAuthority('CREATE_TICKET_TYPES') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('CREATE_TICKET_TYPES')")
     public ResponseEntity<TicketTypeDTO> createTicketType(@Valid @RequestBody TicketTypeDTO ticketTypeDTO) {
 
         Optional<Event> existingEvent = eventRepository.findById(ticketTypeDTO.eventId());
@@ -97,7 +97,7 @@ public class TicketTypeRestController {
 
     // Update a ticket type
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('EDIT_TICKET_TYPES') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('EDIT_TICKET_TYPES')")
     public ResponseEntity<TicketTypeDTO> editTicketType(@Valid @RequestBody TicketTypeDTO ticketTypeDTO,
             @PathVariable("id") Long ticketTypeId) {
 
@@ -126,7 +126,7 @@ public class TicketTypeRestController {
 
     // Delete a ticket type
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('DELETE_TICKET_TYPES') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_TICKET_TYPES')")
     public ResponseEntity<String> deleteTicketType(@PathVariable("id") Long ticketTypeId) {
 
         Optional<TicketType> existingTicketType = ticketTypeRepository.findById(ticketTypeId);
