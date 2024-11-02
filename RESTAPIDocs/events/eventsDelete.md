@@ -12,9 +12,9 @@ Allow deleting `Event` details of the given `id`.
 
 **Path Parameters** : `{id}`
 
-| Parameter | Type | Description                               |
-| --------- | ---- | ----------------------------------------- |
-| `id`      | Long | Unique identifier for the event to delete |
+| Parameter | Type | Required | Description                               |
+| --------- | ---- | -------- | ----------------------------------------- |
+| `id`      | Long | YES      | Unique identifier for the event to delete |
 
 ## Example Request
 

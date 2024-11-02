@@ -21,7 +21,7 @@ Provide all required parameters for the `Event` to be created.
 | `totalTickets`     | Integer                  | Yes      | The total number of tickets available for the event.             |
 | `beginsAt`         | String (ISO 8601 format) | Yes      | The start date and time of the event.                            |
 | `endsAt`           | String (ISO 8601 format) | Yes      | The end date and time of the event.                              |
-| `ticketSaleBegins` | String (ISO 8601 format) | Yes      | The date and time when ticket sales begin.                       |
+| `ticketSaleBegins` | String (ISO 8601 format) | No      | The date and time when ticket sales begin.                       |
 | `venueId`          | Long                     | Yes      | A long representing the venue. Must contain the `venueId` (Long) |
 
 #### Example Request

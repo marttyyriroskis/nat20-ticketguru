@@ -20,15 +20,15 @@ Allow updating `Event` details of the given `id`.
 
 Provide all required parameters in the response body for the `Event` to be updated.
 
-| Field                | Type                     | Required | Description                                                                    |
-| -------------------- | ------------------------ | -------- | ------------------------------------------------------------------------------ |
-| `name`               | String                   | Yes      | The name of the event (1-100 char).                                            |
-| `description`        | String                   | No       | A description of the event (1-500 char).                                       |
-| `totalTickets`      | Integer                  | Yes      | The total number of tickets available for the event.                           |
-| `beginsAt`          | String (ISO 8601 format) | No       | The start date and time of the event.                                          |
-| `endsAt`            | String (ISO 8601 format) | No       | The end date and time of the event.                                            |
-| `ticketSaleBegins` | String (ISO 8601 format) | No       | The date and time when ticket sales begin.                                     |
-| `venueId`            | Long                     | No      | A long representing the venue. It may be null or contain the venue `id` (Long) |
+| Field              | Type                     | Required | Description                                                      |
+| ------------------ | ------------------------ | -------- | ---------------------------------------------------------------- |
+| `name`             | String                   | Yes      | The name of the event (1-100 char).                              |
+| `description`      | String                   | Yes      | A description of the event (1-500 char).                         |
+| `totalTickets`     | Integer                  | Yes      | The total number of tickets available for the event.             |
+| `beginsAt`         | String (ISO 8601 format) | Yes      | The start date and time of the event.                            |
+| `endsAt`           | String (ISO 8601 format) | Yes      | The end date and time of the event.                              |
+| `ticketSaleBegins` | String (ISO 8601 format) | No      | The date and time when ticket sales begin.                       |
+| `venueId`          | Long                     | Yes      | A long representing the venue. Must contain the `venueId` (Long) |
 
 #### Example Request
 
