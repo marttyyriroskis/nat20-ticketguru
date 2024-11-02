@@ -12,9 +12,9 @@ Allow getting `Event` details of the given `id`.
 
 **Path Parameters** :
 
-| Parameter | Type | Required | Description                            |
-| --------- | ---- | -------- | -------------------------------------- |
-| `id`      | Long | YES      | Unique identifier for the event to get |
+| Parameter | Type | Description                            |
+| --------- | ---- | -------------------------------------- |
+| `id`      | Long | Unique identifier for the event to get |
 
 #### Example Request
 
