@@ -52,18 +52,18 @@ public class Ticket {
 
     public Ticket() {
         // Generate barcode from timestamp
-        this.barcode = String.valueOf(System.currentTimeMillis());
+        this.barcode = UUID.randomUUID().toString();
     }
 
     public Ticket(String eventCode) { // TODO: Figure out how the barcode should be generated
         // Generate barcode from timestamp and event code
         // Event code = event id?
-        this.barcode = eventCode + "-" + String.valueOf(UUID.randomUUID().getMostSignificantBits());
+        this.barcode = eventCode + "-" + UUID.randomUUID().toString();
     }
 
-    public Ticket(LocalDateTime usedAt, @PositiveOrZero(message = "Price must be positive or zero") double price, LocalDateTime deletedAt,
+    public Ticket(LocalDateTime usedAt, double price, LocalDateTime deletedAt,
             TicketType ticketType, Sale sale) {
-        this.barcode = String.valueOf(UUID.randomUUID().getMostSignificantBits());
+        this.barcode = UUID.randomUUID().toString();
         this.usedAt = usedAt;
         this.price = price;
         this.deletedAt = deletedAt;
