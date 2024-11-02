@@ -42,7 +42,7 @@ public class EventRestController {
 
     // Get events
     @GetMapping("")
-    @PreAuthorize("hasAuthority('VIEW_EVENTS') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('VIEW_EVENTS')")
     public ResponseEntity<List<EventDTO>> getAllEvents() {
 
         List<Event> events = new ArrayList<Event>();
@@ -58,7 +58,7 @@ public class EventRestController {
 
     // Get event by id
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VIEW_EVENTS') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('VIEW_EVENTS')")
     public ResponseEntity<EventDTO> getEventById(@PathVariable("id") Long eventId) {
 
         Optional<Event> event = eventRepository.findById(eventId);
@@ -73,7 +73,7 @@ public class EventRestController {
 
     // Post a new event
     @PostMapping("")
-    @PreAuthorize("hasAuthority('CREATE_EVENTS') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('CREATE_EVENTS')")
     public ResponseEntity<EventDTO> createEvent(@Valid @RequestBody EventDTO eventDTO) {
 
         Optional<Venue> existingVenue = venueRepository.findById(eventDTO.venueId());
@@ -100,7 +100,7 @@ public class EventRestController {
 
     // Edit event with PUT request
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('EDIT_EVENTS') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('EDIT_EVENTS')")
     public ResponseEntity<EventDTO> editEvent(@Valid @RequestBody EventDTO eventDTO, @PathVariable("id") Long eventId) {
 
         Optional<Event> existingEvent = eventRepository.findById(eventId);
@@ -131,7 +131,7 @@ public class EventRestController {
 
     // Delete event with DELETE Request
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('DELETE_EVENTS') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_EVENTS')")
     public ResponseEntity<String> deleteEvent(@PathVariable("id") Long eventId) {
 
         Optional<Event> existingEvent = eventRepository.findById(eventId);
