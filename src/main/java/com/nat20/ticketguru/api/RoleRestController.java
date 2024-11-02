@@ -183,7 +183,7 @@ public class RoleRestController {
         }
 
         Role role = optionalRole.get();
-        role.addPermission(permissionRequest.permission());
+        role.addPermissions(permissionRequest.permission());
         roleRepository.save(role);
 
         return ResponseEntity.ok(role.toDTO());
@@ -217,7 +217,7 @@ public class RoleRestController {
                     HttpStatus.NOT_FOUND, "Role does not have this permission");
         }
         Role role = optionalRole.get();
-        role.removePermission(permissionToRemove);
+        role.removePermissions(permissionToRemove);
 
         roleRepository.save(role);
 
