@@ -55,6 +55,7 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 
 ### Sales (/api/sales)
 
+- [salesConfirm](sales/salesConfirm.md)
 - [salesDelete](sales/salesDelete.md)
 - [salesGetAll](sales/salesGetAll.md)
 - [salesGetById](sales/salesGetById.md)

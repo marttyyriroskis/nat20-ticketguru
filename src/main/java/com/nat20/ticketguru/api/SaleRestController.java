@@ -196,9 +196,13 @@ public class SaleRestController {
 
     @PostMapping("/confirm")
     @PreAuthorize("hasAuthority('CREATE_SALES')")
-    public ResponseEntity<SaleDTO> confirmSaleFromBasket(@Valid @RequestBody BasketDTO basketDTO, @AuthenticationPrincipal User user) {
-        SaleDTO sale = ticketSaleService.processSale(basketDTO, user.getId());
-        return ResponseEntity.ok(sale);
+    public ResponseEntity<?> confirmSaleFromBasket(@Valid @RequestBody BasketDTO basketDTO, @AuthenticationPrincipal User user) {
+        try {
+            SaleDTO sale = ticketSaleService.processSale(basketDTO, user.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(sale);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.nat20.ticketguru.domain.Sale;
 import com.nat20.ticketguru.domain.Ticket;
+import com.nat20.ticketguru.domain.TicketType;
 import com.nat20.ticketguru.dto.BasketDTO;
 import com.nat20.ticketguru.dto.SaleDTO;
 import com.nat20.ticketguru.dto.TicketItemDTO;
@@ -35,10 +36,13 @@ public class TicketSaleService {
     }
 
     public List<Ticket> generateTickets(TicketItemDTO ticketItemDTO) {
+        TicketType ticketType = ticketTypeRepository.findById(ticketItemDTO.ticketTypeId())
+                .orElseThrow(() -> new IllegalArgumentException("TicketType with ID " + ticketItemDTO.ticketTypeId() + " does not exist."));
+
         List<Ticket> tickets = new ArrayList<>();
         for (int i = 0; i < ticketItemDTO.quantity(); i++) {
             Ticket ticket = new Ticket();
-            ticket.setTicketType(ticketTypeRepository.findById(ticketItemDTO.ticketTypeId()).get());
+            ticket.setTicketType(ticketType);
             ticket.setPrice(ticketItemDTO.price());
             tickets.add(ticket);
         }
