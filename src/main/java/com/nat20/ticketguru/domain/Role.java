@@ -112,8 +112,8 @@ public class Role {
         this.permissions.addAll(Arrays.asList(permissions));
     }
 
-    public void removePermission(Permission permission) {
-        this.permissions.remove(permission);
+    public void removePermissions(Permission... permissions) {
+        this.permissions.removeAll(Arrays.asList(permissions));
     }
 
     public boolean hasPermission(Permission permission) {
