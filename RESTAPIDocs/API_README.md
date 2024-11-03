@@ -65,12 +65,13 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 <details>
 <summary>Sales permissions</summary>
 
-| Permission   | Request | SALESPERSON | COORDINATOR | ADMIN |
-| ------------ | ------- | ----------- | ----------- | ----- |
-| VIEW_SALES   | GET     | YES         | NO          | YES   |
-| CREATE_SALES | POST    | YES         | NO          | YES   |
-| EDIT_SALES   | PUT     | YES         | NO          | YES   |
-| DELETE_SALES | DELETE  | NO          | NO          | YES   |
+| Permission    | Request | SALESPERSON | COORDINATOR | ADMIN |
+| ------------- | ------- | ----------- | ----------- | ----- |
+| VIEW_SALES    | GET     | YES         | NO          | YES   |
+| CREATE_SALES  | POST    | YES         | NO          | YES   |
+| EDIT_SALES    | PUT     | YES         | NO          | YES   |
+| DELETE_SALES  | DELETE  | NO          | NO          | YES   |
+| CONFIRM_SALES | POST    | YES         | NO          | YES   |
 
 </details>
 

@@ -1,6 +1,6 @@
 # Add a new Sale
 
-Confirm a basket of ticket types to create a new `Sale` entity.
+Confirm a basket of `ticketItems` to create a new `Sale`.
 
 **URL** : `/api/sales/confirm`
 
@@ -8,7 +8,7 @@ Confirm a basket of ticket types to create a new `Sale` entity.
 
 **Auth required** : YES
 
-**Permissions required** : `CREATE_SALES`
+**Permissions required** : `CONFIRM_SALES`
 
 **Data constraints** :
 

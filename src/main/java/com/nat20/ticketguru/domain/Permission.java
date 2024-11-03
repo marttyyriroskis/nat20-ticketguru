@@ -6,6 +6,7 @@ public enum Permission {
     EDIT_SALES,
     CREATE_SALES,
     DELETE_SALES,
+    CONFIRM_SALES,
     // Events permissions
     VIEW_EVENTS,
     EDIT_EVENTS,

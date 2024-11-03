@@ -76,6 +76,7 @@ public class TicketguruApplication {
                             Permission.VIEW_SALES,
                             Permission.CREATE_SALES,
                             Permission.EDIT_SALES,
+                            Permission.CONFIRM_SALES,
                             Permission.VIEW_TICKETS,
                             Permission.DELETE_TICKETS,
                             Permission.USE_TICKETS,

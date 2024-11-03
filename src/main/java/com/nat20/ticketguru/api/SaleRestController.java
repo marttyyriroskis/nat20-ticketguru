@@ -195,7 +195,7 @@ public class SaleRestController {
     }
 
     @PostMapping("/confirm")
-    @PreAuthorize("hasAuthority('CREATE_SALES')")
+    @PreAuthorize("hasAuthority('CONFIRM_SALES')")
     public ResponseEntity<?> confirmSaleFromBasket(@Valid @RequestBody BasketDTO basketDTO, @AuthenticationPrincipal User user) {
         try {
             SaleDTO sale = ticketSaleService.processSale(basketDTO, user.getId());
