@@ -8,7 +8,7 @@ Allow retrieving a list of all users.
 
 **Auth required** : YES
 
-**Permissions required** : Admin
+**Permissions required** : `VIEW_USERS`
 
 #### Example Request
 

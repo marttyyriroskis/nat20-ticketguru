@@ -52,6 +52,7 @@ public class RoleRestController {
      * @return all roles
      * @throws ResponseStatusException if there are no roles
      */
+    @PreAuthorize("hasAuthority('VIEW_ROLES')")
     @GetMapping
     public ResponseEntity<List<RoleDTO>> getRoles() {
         Iterable<Role> iterableRoles = roleRepository.findAllActive();
@@ -75,6 +76,7 @@ public class RoleRestController {
      * @return the role
      * @throws ResponseStatusException if the role is not found
      */
+    @PreAuthorize("hasAuthority('VIEW_ROLES')")
     @GetMapping("/{id}")
     public ResponseEntity<RoleDTO> getRole(@PathVariable Long id) {
         Role role = roleRepository.findByIdActive(id)
@@ -90,7 +92,7 @@ public class RoleRestController {
      * @return the added role
      * @throws ResponseStatusException if the role already exists
      */
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('CREATE_ROLES')")
     @PostMapping
     public ResponseEntity<RoleDTO> addRole(@Valid @RequestBody RoleDTO roleDTO) {
 
@@ -114,7 +116,7 @@ public class RoleRestController {
      * @return the updated role
      * @throws ResponseStatusException if the role is not found
      */
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('EDIT_ROLES')")
     @PutMapping("/{id}")
     public ResponseEntity<RoleDTO> updateRole(@PathVariable Long id, @RequestBody RoleDTO roleDTO) {
 
@@ -141,7 +143,7 @@ public class RoleRestController {
      * @return no content
      * @throws ResponseStatusException if the role is not found
      */
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_ROLES')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
         Role role = roleRepository.findByIdActive(id).orElseThrow(
@@ -162,7 +164,7 @@ public class RoleRestController {
      * @throws ResponseStatusException if the role or permission is not found,
      * or if the role already has the permission
      */
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('GRANT_PERMISSIONS')")
     @PostMapping("/{id}/permissions")
     public ResponseEntity<RoleDTO> addPermissionToRole(@PathVariable Long id, @RequestBody PermissionDTO permissionRequest) {
 
@@ -198,7 +200,7 @@ public class RoleRestController {
      * @throws ResponseStatusException if the role or permission is not found,
      * or if the role does not have the permission
      */
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('REVOKE_PERMISSIONS')")
     @DeleteMapping("/{id}/permissions/{permissionId}")
     public ResponseEntity<RoleDTO> removePermissionFromRole(@PathVariable Long id, @RequestParam("permission") Permission permissionToRemove) {
         Optional<Role> optionalRole = roleRepository.findById(id);

@@ -8,7 +8,7 @@ Allow deleting a user from the system.
 
 **Auth required** : YES
 
-**Permissions required** : Admin
+**Permissions required** : `DELETE_USERS`
 
 ### Path Parameters:
 

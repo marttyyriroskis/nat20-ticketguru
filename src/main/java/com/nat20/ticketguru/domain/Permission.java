@@ -21,11 +21,14 @@ public enum Permission {
     EDIT_TICKETS,
     CREATE_TICKETS,
     DELETE_TICKETS,
+    USE_TICKETS,
     // Role permissions
     VIEW_ROLES,
     CREATE_ROLES,
     EDIT_ROLES,
     DELETE_ROLES,
+    GRANT_PERMISSIONS,
+    REVOKE_PERMISSIONS,
     // User permissions
     VIEW_USERS,
     CREATE_USERS,

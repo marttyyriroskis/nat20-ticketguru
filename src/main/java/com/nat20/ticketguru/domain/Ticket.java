@@ -51,19 +51,16 @@ public class Ticket {
     private Sale sale;
 
     public Ticket() {
-        // Generate barcode from timestamp
-        this.barcode = UUID.randomUUID().toString();
+        this.barcode = generateBarcode();
     }
 
-    public Ticket(String eventCode) { // TODO: Figure out how the barcode should be generated
-        // Generate barcode from timestamp and event code
-        // Event code = event id?
-        this.barcode = eventCode + "-" + UUID.randomUUID().toString();
+    public Ticket(String eventCode) {
+        this.barcode = generateBarcode(eventCode);
     }
 
     public Ticket(LocalDateTime usedAt, double price, LocalDateTime deletedAt,
             TicketType ticketType, Sale sale) {
-        this.barcode = UUID.randomUUID().toString();
+        this.barcode = generateBarcode();
         this.usedAt = usedAt;
         this.price = price;
         this.deletedAt = deletedAt;
@@ -87,11 +84,11 @@ public class Ticket {
         this.barcode = barcode;
     }
 
-    /* TODO: Implement markAsUsed() method, e.g.:
-        public void markAsUsed() {
+    public Ticket use() {
         this.usedAt = LocalDateTime.now();
-        }
-     */
+        return this;
+    }
+
     public LocalDateTime getUsedAt() {
         return usedAt;
     }
@@ -140,6 +137,14 @@ public class Ticket {
 
     public TicketDTO toDTO() {
         return new TicketDTO(id, barcode, usedAt, price, deletedAt, ticketType.getId(), sale.getId());
+    }
+
+    private String generateBarcode() {
+        return UUID.randomUUID().toString() + System.currentTimeMillis();
+    }
+
+    private String generateBarcode(String eventCode) {
+        return eventCode + generateBarcode();
     }
 
 }

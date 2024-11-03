@@ -8,7 +8,7 @@ Allow retrieving a list of all roles.
 
 **Auth required** : NO
 
-**Permissions required** : None
+**Permissions required** : `VIEW_ROLES`
 
 ### Example Request
 

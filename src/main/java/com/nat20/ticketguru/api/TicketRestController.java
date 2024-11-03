@@ -63,6 +63,40 @@ public class TicketRestController {
 
         return ResponseEntity.ok(ticket.toDTO());
     }
+
+    // Get ticket by barcode
+    @PreAuthorize("hasAuthority('VIEW_TICKETS')")
+    @GetMapping("/barcode/{barcode}")
+    public ResponseEntity<TicketDTO> getTicketByBarcode(@PathVariable String barcode) {
+        Ticket ticket = ticketRepository.findByBarcode(barcode);
+
+        if (ticket == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found");
+        }
+
+        return ResponseEntity.ok(ticket.toDTO());
+    }
+
+    // Use ticket
+    @PreAuthorize("hasAuthority('USE_TICKETS')")
+    @PutMapping("/use/{barcode}")
+    public ResponseEntity<TicketDTO> useTicket(@PathVariable String barcode) {
+        Ticket ticket = ticketRepository.findByBarcode(barcode);
+
+        if (ticket == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found");
+        }
+
+        if (ticket.getUsedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ticket already used");
+        }
+
+        ticket.use();
+
+        Ticket updatedTicket = ticketRepository.save(ticket);
+
+        return ResponseEntity.ok(updatedTicket.toDTO());
+    }
     
     // Post a new ticket
     @PreAuthorize("hasAuthority('CREATE_TICKETS')")

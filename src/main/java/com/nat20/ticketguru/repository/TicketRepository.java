@@ -16,4 +16,6 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
     @Query(value = "SELECT * FROM tickets WHERE id = :id AND deleted_at IS NULL", nativeQuery = true)
     Optional<Ticket> findByIdActive(@Param("id") Long id);
 
+    Ticket findByBarcode(String barcode);
+
 }
