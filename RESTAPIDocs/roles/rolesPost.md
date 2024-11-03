@@ -8,7 +8,7 @@ Allow adding a new role to the system.
 
 **Auth required** : Yes
 
-**Permissions required** : Admin
+**Permissions required** : `CREATE_ROLES`
 
 ### Request Body:
 

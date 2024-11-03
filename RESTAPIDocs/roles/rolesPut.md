@@ -8,7 +8,7 @@ Allow updating the details of an existing role.
 
 **Auth required** : Yes
 
-**Permissions required** : Admin
+**Permissions required** : `EDIT_ROLES`
 
 ### Path Parameters:
 

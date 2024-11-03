@@ -8,7 +8,7 @@ Allow associating a permission with a specific role.
 
 **Auth required** : Yes
 
-**Permissions required** : Admin
+**Permissions required** : `GRANT_PERMISSIONS`
 
 ### Request Body:
 
@@ -53,7 +53,7 @@ Allow removing a permission (by its ID) from a specific role.
 
 **Auth required**: Yes
 
-**Permissions required**: Admin
+**Permissions required** : `REVOKE_PERMISSIONS`
 
 ### URL Parameters
 

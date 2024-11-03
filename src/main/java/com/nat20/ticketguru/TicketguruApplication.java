@@ -62,11 +62,15 @@ public class TicketguruApplication {
                 if (scanner.nextLine().equals("yes")) {
 
                     log.info("Creating a few role test entries");
+                    Role ticketInspectorRole = roleRepository.save(new Role("TICKET_INSPECTOR"));
                     Role salespersonRole = roleRepository.save(new Role("SALESPERSON"));
                     Role coordinatorRole = roleRepository.save(new Role("COORDINATOR"));
                     Role adminRole = roleRepository.save(new Role("ADMIN"));
 
                     log.info("Add a few permissions to roles");
+                    ticketInspectorRole.addPermissions(
+                            Permission.VIEW_TICKETS,
+                            Permission.USE_TICKETS);
                     salespersonRole.addPermissions(
                             Permission.VIEW_EVENTS,
                             Permission.VIEW_SALES,
@@ -74,6 +78,7 @@ public class TicketguruApplication {
                             Permission.EDIT_SALES,
                             Permission.VIEW_TICKETS,
                             Permission.DELETE_TICKETS,
+                            Permission.USE_TICKETS,
                             Permission.VIEW_TICKET_TYPES,
                             Permission.VIEW_VENUES);
                     coordinatorRole.addPermissions(
@@ -91,6 +96,7 @@ public class TicketguruApplication {
                     );
                     // Admin has all existing permissions defined in Permission
                     adminRole.addPermissions(Permission.values());
+                    roleRepository.save(ticketInspectorRole);
                     roleRepository.save(salespersonRole);
                     roleRepository.save(coordinatorRole);
                     roleRepository.save(adminRole);

@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal; 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,7 +58,7 @@ public class UserRestController {
      * 
      * @return all users
      */
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('VIEW_USERS')")
     @GetMapping
     public ResponseEntity<Iterable<UserDTO>> getUsers() {
         List<User> users = userRepository.findAllActive();
@@ -79,6 +80,7 @@ public class UserRestController {
      * @return the user requested
      * @exception ResponseStatusException if user not found
      */
+    @PreAuthorize("hasAuthority('VIEW_USERS')")
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable Long id, @AuthenticationPrincipal User user) {
 
@@ -103,7 +105,7 @@ public class UserRestController {
      * @return the user added
      * @exception ResponseStatusException if role not found
      */
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('CREATE_USERS')")
     @PostMapping
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserCreateDTO ucDTO) {
 
@@ -123,11 +125,10 @@ public class UserRestController {
 
         }
 
-        // Uncomment the following when spring security is added
-        // if (ucDTO.getPassword() != null) {
-        //     String hashedPassword = BCrypt.hashpw(ucDTO.getPassword(), BCrypt.gensalt());
-        //     user.sethashedPassword(hashedPassword);
-        // }
+        if (ucDTO.getPassword() != null) {
+            String hashedPassword = BCrypt.hashpw(ucDTO.getPassword(), BCrypt.gensalt());
+            user.sethashedPassword(hashedPassword);
+        }
 
         User savedUser = userRepository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser.toDTO());
@@ -140,7 +141,7 @@ public class UserRestController {
      * @param editedUser the requested updates for the user
      * @return the updated user
      */
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('EDIT_USERS')")
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserCreateDTO editedUser) {
         
@@ -165,11 +166,10 @@ public class UserRestController {
             user.setRole(existingRole);
         }
 
-        // Uncomment the following when spring security is added
-        // if (ucDTO.getPassword() != null) {
-        //     String hashedPassword = BCrypt.hashpw(ucDTO.getPassword(), BCrypt.gensalt());
-        //     user.sethashedPassword(hashedPassword);
-        // }
+        if (editedUser.getPassword() != null) {
+            String hashedPassword = BCrypt.hashpw(editedUser.getPassword(), BCrypt.gensalt());
+            user.sethashedPassword(hashedPassword);
+        }
 
         User updatedUser = userRepository.save(user);
         return ResponseEntity.ok(updatedUser.toDTO());
@@ -182,7 +182,7 @@ public class UserRestController {
      * @return 204 No Content
      * @exception ResponseStatusException if user not found
      */
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_USERS')")
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
         User user = userRepository.findByIdActive(id).orElseThrow(

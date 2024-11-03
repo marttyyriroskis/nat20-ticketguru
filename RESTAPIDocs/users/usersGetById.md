@@ -8,7 +8,7 @@ Allow retrieving a user's details by their unique identifier.
 
 **Auth required** : YES
 
-**Permissions required** : Admin (Unless authenticated user equals the requested user)
+**Permissions required** : `VIEW_USERS` (Unless authenticated user equals the requested user)
 
 ### Path Parameters:
 

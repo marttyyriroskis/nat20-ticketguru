@@ -8,7 +8,7 @@ Allow deleting a role from the system.
 
 **Auth required** : Yes
 
-**Permissions required** : Admin
+**Permissions required** : `DELETE_ROLES`
 
 ### Path Parameters:
 

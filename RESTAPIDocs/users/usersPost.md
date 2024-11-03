@@ -8,7 +8,7 @@ Allow adding a new user to the system.
 
 **Auth required** : Yes
 
-**Permissions required** : Admin
+**Permissions required** : `CREATE_USERS`
 
 ### Request Body:
 

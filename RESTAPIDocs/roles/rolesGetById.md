@@ -8,7 +8,7 @@ Allow retrieving a role by its unique identifier.
 
 **Auth required** : NO
 
-**Permissions required** : None
+**Permissions required** : `VIEW_ROLES`
 
 ### Path Parameters:
 
