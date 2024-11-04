@@ -146,12 +146,12 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 <details>
 <summary>Venues permissions</summary>
 
-| Permission    | Request | USER | COORDINATOR | ADMIN |
-| ------------- | ------- | ---- | ----------- | ----- |
-| VIEW_VENUES   | GET     | YES  | YES         | YES   |
-| CREATE_VENUES | POST    | NO   | YES         | YES   |
-| EDIT_VENUES   | PUT     | NO   | YES         | YES   |
-| DELETE_VENUES | DELETE  | NO   | YES         | YES   |
+| Permission    | Request | SALESPERSON | COORDINATOR | ADMIN |
+| ------------- | ------- | ----------- | ----------- | ----- |
+| VIEW_VENUES   | GET     | YES         | YES         | YES   |
+| CREATE_VENUES | POST    | NO          | YES         | YES   |
+| EDIT_VENUES   | PUT     | NO          | YES         | YES   |
+| DELETE_VENUES | DELETE  | NO          | YES         | YES   |
 
 </details>
 
