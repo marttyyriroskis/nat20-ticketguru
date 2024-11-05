@@ -1,4 +1,4 @@
-package com.nat20.ticketguru.web;
+package com.nat20.ticketguru.service;
 
 import java.util.ArrayList;
 import java.util.List;

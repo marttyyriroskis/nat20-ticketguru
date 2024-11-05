@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
-import com.nat20.ticketguru.web.UserDetailServiceImpl;
+import com.nat20.ticketguru.service.UserDetailServiceImpl;
 
 @Configuration
 @EnableWebSecurity
