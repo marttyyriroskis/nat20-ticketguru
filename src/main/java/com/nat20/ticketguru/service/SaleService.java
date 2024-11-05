@@ -26,6 +26,10 @@ public class SaleService {
 
         Optional<User> user = (userId != null) ? userRepository.findById(userId) : Optional.empty();
 
+        if (userId != null && user.isEmpty()) {
+            throw new IllegalArgumentException("User with ID " + userId + " does not exist.");
+        }
+
         if (start != null && end != null && userId != null) {
             return saleRepository.findByPaidAtBetweenAndUser(start, end, user.get());
         } else if (start != null && end != null) {

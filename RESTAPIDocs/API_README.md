@@ -55,12 +55,13 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 
 ### Sales (/api/sales)
 
-- [salesConfirm](sales/salesConfirm.md)
 - [salesDelete](sales/salesDelete.md)
 - [salesGetAll](sales/salesGetAll.md)
 - [salesGetById](sales/salesGetById.md)
 - [salesPost](sales/salesPost.md)
 - [salesPut](sales/salesPut.md)
+- [salesSearch](sales/salesSearch.md)
+- [salesConfirm](sales/salesConfirm.md)
 
 <details>
 <summary>Sales permissions</summary>
