@@ -332,17 +332,219 @@ Tänne kirjataan myös lopuksi järjestelmän tunnetut ongelmat, joita ei ole ko
 
 ## Asennustiedot
 
-Järjestelmän asennus on syytä dokumentoida kahdesta näkökulmasta:
+## Spring Boot -sovelluksen käyttöönotto tuotantopalvelimella
 
-- järjestelmän kehitysympäristö: miten järjestelmän kehitysympäristön saisi
-  rakennettua johonkin toiseen koneeseen
+Tässä ohjeessa käydään läpi Spring Boot -sovelluksen käyttöönotto NGINX-palvelimella, PostgreSQL-tietokannan käyttäminen sekä A-tietueen asettaminen verkkotunnukselle.
 
-- järjestelmän asentaminen tuotantoympäristöön: miten järjestelmän saisi
-  asennettua johonkin uuteen ympäristöön.
+---
 
-Asennusohjeesta tulisi ainakin käydä ilmi, miten käytettävä tietokanta ja
-käyttäjät tulee ohjelmistoa asentaessa määritellä (käytettävä tietokanta,
-käyttäjätunnus, salasana, tietokannan luonti yms.).
+### Esivaatimukset
+
+1. Näiden ohjeiden noudattamiseksi tarvitset kaksi asiaa:
+   - Verkkotunnuksen (esim. saatavilla [hover.com](https://hover.com):sta)
+   - VPS:n (Virtual Private Server). [Hetzner](https://hetzner.com) tai [DigitalOcean](https://digitalocean.com) ovat suosittuja palveluntarjoajia.
+
+2. Käyttääksesi palvelimesi komentoriviä SSH:n kautta, seuraa [ohjeita tämän linkin takaa.](https://community.hetzner.com/tutorials/add-ssh-key-to-your-hetzner-cloud)
+
+Seuraavassa esimerkissä meillä on `hellmanstudios.fi` domain ja luomme sille tg subdomainin, eli `tg.hellmanstudios.fi`, jossa TicketGuru Spring Boot sovellus isännöidään.
+
+### Vaihe 1: Git-repositorion kloonaus
+
+1. **Siirry kotihakemistoon** (jos et ole jo siellä):
+   ```bash
+   cd ~
+   ```
+
+2. **Kloonaa repositorio** GitHubista:
+   ```bash
+   git clone https://github.com/marttyyriroskis/nat20-ticketguru.git tg.hellmanstudios.fi
+   ```
+
+3. **Siirry projektihakemistoon**:
+   ```bash
+   cd tg.hellmanstudios.fi
+   ```
+
+### Vaihe 2: PostgreSQL-tietokannan määrittäminen
+
+1. **Asenna PostgreSQL** (jos sitä ei ole jo asennettu):
+   ```bash
+   sudo apt update
+   sudo apt install postgresql postgresql-contrib
+   ```
+
+2. **Kirjaudu PostgreSQL:ään** käyttäjänä `postgres`:
+   ```bash
+   sudo -i -u postgres
+   ```
+
+3. **Luo tietokanta ja käyttäjä** sovellusta varten:
+
+   ```sql
+   # Käynnistä PostgreSQL:n komentorivi
+   psql
+
+   # Luo tietokanta
+   CREATE DATABASE ticketguru;
+
+   # Luo käyttäjä salasanalla
+   CREATE USER psqladmin WITH PASSWORD 'psqladmin';
+
+   # Myönnä oikeudet käyttäjälle uuteen tietokantaan
+   GRANT ALL PRIVILEGES ON DATABASE ticketguru TO psqladmin;
+
+   # Poistu PostgreSQL:stä
+   \q
+   ```
+
+4. **Poistu `postgres`-käyttäjätilistä**:
+   ```bash
+   exit
+   ```
+
+### Vaihe 3: Sovelluksen paikallisen profiilin määrittäminen
+
+1. **Kopioi `application-local.properties.example`** tiedostoksi `application-local.properties`:
+   ```bash
+   cp src/main/resources/application-local.properties.example src/main/resources/application-local.properties
+   ```
+
+2. **Muokkaa `application-local.properties`** PostgreSQL-yhteyden määrittämiseksi:
+   ```bash
+   nano src/main/resources/application-local.properties
+   ```
+
+3. **Lisää seuraavat PostgreSQL-konfiguraatiot** tiedostoon `application-local.properties`:
+   ```properties
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_NAME=ticketguru
+   DB_USER=psqladmin
+   DB_PASSWORD=psqladmin
+   ```
+
+4. **Tallenna ja sulje tiedosto**.
+
+### Vaihe 4: Rakenna Spring Boot JAR
+
+1. **Rakenna JAR-tiedosto** käyttämällä Mavenia:
+   ```bash
+   mvn clean package
+   ```
+
+   Tämä luo JAR-tiedoston sijaintiin `/home/user/tg.hellmanstudios.fi/target/ticketguru-0.0.1-SNAPSHOT.jar`. "user" on oma käyttäjätunnuksesi
+
+### Vaihe 5: Systemd-palvelutiedoston asettaminen
+
+1. **Luo uusi systemd-palvelutiedosto** sovellukselle:
+   ```bash
+   sudo nano /etc/systemd/system/tg.service
+   ```
+
+2. **Lisää seuraava konfiguraatio**, ja päivitä polut tarvittaessa:
+
+   ```ini
+   [Unit]
+   Description=TG Spring Boot -sovellus
+   After=syslog.target
+
+   [Service]
+   User=www-data
+   Group=www-data
+   ExecStart=/usr/bin/java -jar /home/user/tg.hellmanstudios.fi/target/ticketguru-0.0.1-SNAPSHOT.jar # vaihda "user" omaksi käyttäjätunnukseksi
+   SuccessExitStatus=143
+   Restart=on-failure
+   RestartSec=10
+   StandardOutput=journal
+   StandardError=inherit
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+
+3. **Lataa systemd uudelleen** uuden palvelutiedoston ottamiseksi käyttöön:
+   ```bash
+   sudo systemctl daemon-reload
+   ```
+
+4. **Ota palvelu käyttöön ja käynnistä se**:
+   ```bash
+   sudo systemctl enable tg.service
+   sudo systemctl start tg.service
+   ```
+
+5. **Tarkista palvelun tila**:
+   ```bash
+   sudo systemctl status tg.service
+   ```
+
+### Vaihe 6: NGINX:n konfigurointi käänteisenä välityspalvelimena
+
+1. **Luo NGINX-konfiguraatiotiedosto** sovelluksellesi:
+   ```bash
+   sudo nano /etc/nginx/sites-available/tg
+   ```
+
+2. **Lisää seuraava konfiguraatio**:
+
+   ```nginx
+   server {
+       listen 80;
+       server_name tg.hellmanstudios.fi;
+
+       location / {
+           proxy_pass http://localhost:8080;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+   }
+   ```
+
+3. **Ota konfiguraatio käyttöön** luomalla symbolinen linkki `sites-enabled`-hakemistoon:
+   ```bash
+   sudo ln -s /etc/nginx/sites-available/tg /etc/nginx/sites-enabled/
+   ```
+
+4. **Testaa ja lataa NGINX uudelleen** muutosten käyttöönottoa varten:
+   ```bash
+   sudo nginx -t
+   sudo systemctl reload nginx
+   ```
+
+### Vaihe 7: A-tietueen asettaminen DNS asetuksista
+
+Alla on käytetty [Cloudflarea](https://cloudflare.com), joka on vahvasti suositeltu, mutta domain nimien palveluntarjoajilla on aina omat DNS asetussivut, joihin alla olevaa on helppo soveltaa.
+
+1. **Kirjaudu Cloudflareen** ja siirry `hellmanstudios.fi` -verkkotunnuksen DNS-asetuksiin.
+
+2. **Luo uusi A-tietue**:
+   - **Tyyppi**: `A`
+   - **Nimi**: `tg` (tämä luo `tg.hellmanstudios.fi`)
+   - **IPv4-osoite**: Syötä palvelimesi IP-osoite
+   - **TTL**: Auto
+   - **Välitystila**: Käytössä (oranssi pilvi), jos haluat käyttää Cloudflarea, tai Pois päältä (harmaa pilvi) ohittaaksesi sen.
+
+3. **Tallenna tietue**.
+
+### Vaihe 8: Käyttöönoton tarkistaminen
+
+1. Avaa selain ja siirry osoitteeseen `http://tg.hellmanstudios.fi`.
+2. Sinun pitäisi nähdä Spring Boot -sovelluksesi palvelevan NGINX:n kautta, kytkettynä PostgreSQL-tietokantaan ja käytettävissä `tg.hellmanstudios.fi` -aliverkkotunnuksella.
+
+### Deployment Script
+Alla olevat kommennot suorittamalla voit päivittää ohjelman palvelimella
+
+```bash
+cd ~/tg.hellmanstudios.fi
+git pull origin main
+mvn clean package || ./mvnw clean package
+echo "your-sudo-password" | sudo -S systemctl daemon-reload
+echo "your-sudo-password"  | sudo -S systemctl stop rentanything
+echo "your-sudo-password"  | sudo -S systemctl start rentanything
+echo "🚀 Application deployed!"
+```
 
 ## Käynnistys- ja käyttöohje
 
