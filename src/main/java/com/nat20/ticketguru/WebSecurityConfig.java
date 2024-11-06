@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 import com.nat20.ticketguru.web.UserDetailServiceImpl;
@@ -21,9 +22,11 @@ import com.nat20.ticketguru.web.UserDetailServiceImpl;
 public class WebSecurityConfig {
 
     private final UserDetailServiceImpl userDetailsService;
+    private final CustomCorsConfig customCorsConfig;
 
-    public WebSecurityConfig(UserDetailServiceImpl userDetailsService) {
+    public WebSecurityConfig(UserDetailServiceImpl userDetailsService, CustomCorsConfig customCorsConfig) {
         this.userDetailsService = userDetailsService;
+        this.customCorsConfig = customCorsConfig;
     }
 
     private static final AntPathRequestMatcher[] WHITE_LIST_URLS = {
@@ -33,11 +36,13 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(
+        http
+            .authorizeHttpRequests(
                 authorize -> authorize
                         .requestMatchers(antMatcher("/css/**")).permitAll()
                         .requestMatchers(WHITE_LIST_URLS).permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                    )
                 .httpBasic(Customizer.withDefaults())
                 .headers(
                         headers -> headers
@@ -51,8 +56,8 @@ public class WebSecurityConfig {
                                 .permitAll()
                 )
                 .logout(logout -> logout.permitAll())
-                .csrf(csrf -> csrf.disable() // TODO: disable csrf for now, enable later for production?
-                );
+                .csrf(csrf -> csrf.disable()) // TODO: disable csrf for now, enable later for production?
+                .cors(cors -> cors.configurationSource(customCorsConfig));
 
         return http.build();
 
