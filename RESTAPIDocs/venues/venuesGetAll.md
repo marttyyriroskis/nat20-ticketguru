@@ -6,9 +6,9 @@ Show all Venues the active User can access and with what permission level.
 
 **Method** : `GET`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `VIEW_VENUES`
 
 **Data constraints** : `{}`
 

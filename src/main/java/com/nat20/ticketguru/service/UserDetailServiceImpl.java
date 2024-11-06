@@ -1,4 +1,4 @@
-package com.nat20.ticketguru.web;
+package com.nat20.ticketguru.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

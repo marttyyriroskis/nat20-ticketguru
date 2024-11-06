@@ -43,6 +43,7 @@ public class VenueRestController {
 
     // Get venues
     @GetMapping("")
+    @PreAuthorize("hasAuthority('VIEW_VENUES')")
     public ResponseEntity<List<VenueDTO>> getAllVenues() {
         List<Venue> venues = new ArrayList<Venue>();
         venueRepository.findAll().forEach(venues::add);
@@ -61,6 +62,7 @@ public class VenueRestController {
 
     // Get venue by id
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VIEW_VENUES')")
     public ResponseEntity<VenueDTO> getVenueById(@PathVariable("id") Long venueId) {
         Venue venue = venueRepository.findById(venueId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found"));
@@ -78,7 +80,7 @@ public class VenueRestController {
     }
 
     // Post a new venue
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('CREATE_VENUES')")
     @PostMapping("")
     public ResponseEntity<VenueDTO> createVenue(@Valid @RequestBody VenueDTO venueDTO) {
 
@@ -116,7 +118,7 @@ public class VenueRestController {
     }
 
     // Edit venue with PUT request
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('EDIT_VENUES')")
     @PutMapping("/{id}")
     public ResponseEntity<VenueDTO> editVenue(@Valid @RequestBody VenueDTO venueDTO, @PathVariable("id") Long venueId) {
 
@@ -165,7 +167,7 @@ public class VenueRestController {
     }
 
     // Delete venue with DELETE Request
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_VENUES')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteVenue(@PathVariable("id") Long venueId) {
         // Finds the venue with the mapped id from the repository; assigns null if not

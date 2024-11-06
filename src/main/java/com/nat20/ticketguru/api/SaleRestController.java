@@ -1,6 +1,9 @@
 package com.nat20.ticketguru.api;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,7 +34,8 @@ import com.nat20.ticketguru.dto.SaleDTO;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.repository.UserRepository;
-import com.nat20.ticketguru.web.TicketSaleService;
+import com.nat20.ticketguru.service.SaleService;
+import com.nat20.ticketguru.service.TicketSaleService;
 
 import jakarta.validation.Valid;
 
@@ -43,12 +48,17 @@ public class SaleRestController {
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
     private final TicketSaleService ticketSaleService;
+    private final SaleService saleService;
 
-    public SaleRestController(SaleRepository saleRepository, UserRepository userRepository, TicketRepository ticketRepository, TicketSaleService ticketSaleService) {
+    public SaleRestController(SaleRepository saleRepository,
+            UserRepository userRepository, TicketRepository ticketRepository,
+            TicketSaleService ticketSaleService,
+            SaleService saleService) {
         this.saleRepository = saleRepository;
         this.userRepository = userRepository;
         this.ticketRepository = ticketRepository;
         this.ticketSaleService = ticketSaleService;
+        this.saleService = saleService;
     }
 
     @GetMapping("")
@@ -202,6 +212,46 @@ public class SaleRestController {
             return ResponseEntity.status(HttpStatus.CREATED).body(sale);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('VIEW_SALES')")
+    public ResponseEntity<List<Sale>> searchSales(
+            @RequestParam(required = false) String start,
+            @RequestParam(required = false) String end,
+            @RequestParam(required = false) Long userId) {
+
+        LocalDateTime startDateTime = parseToDateTime(start);
+        LocalDateTime endDateTime = parseToDateTime(end);
+
+        if (startDateTime == null && endDateTime == null && userId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one search parameter must be provided.");
+        }
+        try {
+            List<Sale> sales = saleService.searchSales(startDateTime, endDateTime, userId);
+            return ResponseEntity.ok(sales);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    private LocalDateTime parseToDateTime(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) {
+            return null;
+        }
+        try {
+            // parse as LocalDateTime
+            return LocalDateTime.parse(dateStr);
+        } catch (DateTimeParseException e) {
+            try {
+                // parse as LocalDate
+                LocalDate localDate = LocalDate.parse(dateStr);
+                return localDate.atStartOfDay(); // convert to start of day LocalDateTime object
+            } catch (DateTimeParseException ex) {
+                // does not parse as either
+                return null;
+            }
         }
     }
 

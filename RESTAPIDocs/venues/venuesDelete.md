@@ -8,7 +8,7 @@ Allow deleting `Venue` details of the given `id`.
 
 **Auth required** : NO
 
-**Permissions required** : None
+**Permissions required** : `DELETE_VENUES`
 
 **Path Parameters** : `{id}`
 
