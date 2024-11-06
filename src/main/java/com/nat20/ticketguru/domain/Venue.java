@@ -1,10 +1,12 @@
 package com.nat20.ticketguru.domain;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,19 +24,25 @@ public class Venue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @NotBlank(message = "Name must not be empty")
     @Size(min = 1, max = 100)
+    @Column(name = "name")
     private String name;
 
     @NotBlank(message = "Address must not be empty")
     @Size(min = 1, max = 100)
+    @Column(name = "address")
     private String address;
 
     @ManyToOne
     @JoinColumn(name = "zipcode", nullable = false)
     private Zipcode zipcode;
+
+    @Column(name = "deletedAt")
+    private LocalDateTime deletedAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
     @JsonIgnore
@@ -43,10 +51,11 @@ public class Venue {
     public Venue() {
     }
 
-    public Venue(String name, String address, Zipcode zipcode) {
+    public Venue(String name, String address, Zipcode zipcode, LocalDateTime deletedAt) {
         this.name = name;
         this.address = address;
         this.zipcode = zipcode;
+        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -79,6 +88,14 @@ public class Venue {
 
     public void setZipcode(Zipcode zipcode) {
         this.zipcode = zipcode;
+    }
+
+     public LocalDateTime getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
 }

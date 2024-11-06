@@ -3,8 +3,10 @@ package com.nat20.ticketguru.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nat20.ticketguru.dto.SaleDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -46,6 +48,8 @@ public class Sale {
 
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Ticket> tickets = new ArrayList<>();
+
+    private LocalDateTime deletedAt;
 
     public Sale() {
         this.paidAt = LocalDateTime.now();
@@ -92,6 +96,26 @@ public class Sale {
     @Override
     public String toString() {
         return "Sale [id=" + id + ", paidAt=" + paidAt + ", tickets=" + tickets + ", userId=" + userId + "]";
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public SaleDTO toDTO() {
+        return new SaleDTO(
+            this.id,
+            this.paidAt,
+            this.user.getId(),
+
+            this.tickets.stream()
+                .map(ticket -> ticket.getId())
+                .collect(Collectors.toList())
+        );
     }
 
 }

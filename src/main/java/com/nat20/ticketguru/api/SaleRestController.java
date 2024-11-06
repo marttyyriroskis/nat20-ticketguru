@@ -1,24 +1,27 @@
 package com.nat20.ticketguru.api;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,34 +29,46 @@ import org.springframework.web.server.ResponseStatusException;
 import com.nat20.ticketguru.domain.Sale;
 import com.nat20.ticketguru.domain.Ticket;
 import com.nat20.ticketguru.domain.User;
+import com.nat20.ticketguru.dto.BasketDTO;
 import com.nat20.ticketguru.dto.SaleDTO;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.repository.UserRepository;
+import com.nat20.ticketguru.service.SaleService;
+import com.nat20.ticketguru.service.TicketSaleService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/sales")
 @Validated
-public class RestSaleController {
+public class SaleRestController {
 
     private final SaleRepository saleRepository;
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
+    private final TicketSaleService ticketSaleService;
+    private final SaleService saleService;
 
-    public RestSaleController(SaleRepository saleRepository, UserRepository userRepository, TicketRepository ticketRepository) {
+    public SaleRestController(SaleRepository saleRepository,
+            UserRepository userRepository, TicketRepository ticketRepository,
+            TicketSaleService ticketSaleService,
+            SaleService saleService) {
         this.saleRepository = saleRepository;
         this.userRepository = userRepository;
         this.ticketRepository = ticketRepository;
+        this.ticketSaleService = ticketSaleService;
+        this.saleService = saleService;
     }
 
     @GetMapping("")
+    @PreAuthorize("hasAuthority('VIEW_SALES')")
     public ResponseEntity<List<SaleDTO>> getAllSales() {
         List<Sale> sales = new ArrayList<>();
         saleRepository.findAll().forEach(sales::add);
 
         List<SaleDTO> saleDTOs = sales.stream()
+                .filter(sale -> sale.getDeletedAt() == null)
                 .map(sale -> new SaleDTO(sale.getId(),
                 sale.getPaidAt(),
                 sale.getUser().getId(),
@@ -64,9 +79,13 @@ public class RestSaleController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VIEW_SALES')")
     public ResponseEntity<SaleDTO> getSale(@PathVariable("id") Long id) {
         Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
+        if (sale.getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found");
+        }
         SaleDTO saleDTO = new SaleDTO(sale.getId(),
                 sale.getPaidAt(),
                 sale.getUser().getId(),
@@ -76,6 +95,7 @@ public class RestSaleController {
     }
 
     @PostMapping("")
+    @PreAuthorize("hasAuthority('CREATE_SALES')")
     public ResponseEntity<SaleDTO> createSale(@Valid @RequestBody SaleDTO saleDTO) {
         // check User
         Optional<User> existingUser = userRepository.findById(saleDTO.userId());
@@ -121,13 +141,21 @@ public class RestSaleController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EDIT_SALES')")
     public ResponseEntity<SaleDTO> editSale(@Valid @RequestBody SaleDTO editedSaleDTO, @PathVariable("id") Long id) {
-        // check that Id exists
+        // check that sale with the Id exists
         Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
+        // check if sale has been soft-deleted
+        if (sale.getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found");
+        }
         User existingUser = userRepository.findById(editedSaleDTO.userId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
-
+        // check if user has been soft-deleted
+        if (existingUser.getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
         // check Tickets
         List<Ticket> validTickets = new ArrayList<>();
         for (Long ticketId : editedSaleDTO.ticketIds()) {
@@ -135,10 +163,14 @@ public class RestSaleController {
             if (!ticket.isPresent()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket");
             }
-            // TODO maybe need to add more validation here? 
-            validTickets.add(ticket.get());
-            // set ticket association with sale in ticket
-            ticket.get().setSale(sale);
+            // check ticket for soft-delete status
+            if (ticket.get().getDeletedAt() == null) {
+                // TODO maybe need to add more validation here?
+                validTickets.add(ticket.get());
+                // set ticket association with sale in ticket
+                ticket.get().setSale(sale);
+            }
+
         }
         sale.setUser(existingUser);
         sale.setTickets(validTickets);
@@ -159,37 +191,68 @@ public class RestSaleController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE_SALES')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteSale(@PathVariable("id") Long id) {
+    public void deleteSale(@PathVariable("id") Long id
+    ) {
         Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
-        // remove sale association from tickets before delete (we want to preserve the tickets in the database)
-        for (Ticket ticket : sale.getTickets()) {
-            ticket.setSale(null);
+        if (sale.getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found");
         }
-        // remove sale association from user before delete (we want to preserve the users in the database)
-        User user = sale.getUser();
-        if (user != null) {
-            user.getSales().remove(sale);
-            userRepository.save(user);
-        }
-        saleRepository.deleteById(id);
+        sale.setDeletedAt(LocalDateTime.now());
+        saleRepository.save(sale);
     }
 
-    // Exception handler for validation errors
-    // If validation fails, a MethodArgumentNotValidException is thrown,
-    // which then returns the failed field(s) and the validation failure message(s)
-    // as a BAD_REQUEST response
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors()
-                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-        return errors;
+    @PostMapping("/confirm")
+    @PreAuthorize("hasAuthority('CONFIRM_SALES')")
+    public ResponseEntity<?> confirmSaleFromBasket(@Valid @RequestBody BasketDTO basketDTO, @AuthenticationPrincipal User user) {
+        try {
+            SaleDTO sale = ticketSaleService.processSale(basketDTO, user.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(sale);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
-    // Source:
-    // https://dev.to/shujaat34/exception-handling-and-validation-in-spring-boot-3of9
-    // The source details a Global Exception handler, that we could implement later
-    // to handle all the endpoints
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('VIEW_SALES')")
+    public ResponseEntity<List<Sale>> searchSales(
+            @RequestParam(required = false) String start,
+            @RequestParam(required = false) String end,
+            @RequestParam(required = false) Long userId) {
+
+        LocalDateTime startDateTime = parseToDateTime(start);
+        LocalDateTime endDateTime = parseToDateTime(end);
+
+        if (startDateTime == null && endDateTime == null && userId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one search parameter must be provided.");
+        }
+        try {
+            List<Sale> sales = saleService.searchSales(startDateTime, endDateTime, userId);
+            return ResponseEntity.ok(sales);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    private LocalDateTime parseToDateTime(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) {
+            return null;
+        }
+        try {
+            // parse as LocalDateTime
+            return LocalDateTime.parse(dateStr);
+        } catch (DateTimeParseException e) {
+            try {
+                // parse as LocalDate
+                LocalDate localDate = LocalDate.parse(dateStr);
+                return localDate.atStartOfDay(); // convert to start of day LocalDateTime object
+            } catch (DateTimeParseException ex) {
+                // does not parse as either
+                return null;
+            }
+        }
+    }
+
 }

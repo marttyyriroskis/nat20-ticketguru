@@ -1,64 +1,45 @@
 package com.nat20.ticketguru.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+public enum Permission {
+    // Sales permissions
+    VIEW_SALES,
+    EDIT_SALES,
+    CREATE_SALES,
+    DELETE_SALES,
+    CONFIRM_SALES,
+    // Events permissions
+    VIEW_EVENTS,
+    EDIT_EVENTS,
+    CREATE_EVENTS,
+    DELETE_EVENTS,
+    // Ticket type permissions
+    VIEW_TICKET_TYPES,
+    EDIT_TICKET_TYPES,
+    CREATE_TICKET_TYPES,
+    DELETE_TICKET_TYPES,
+    // Ticket permissions
+    VIEW_TICKETS,
+    EDIT_TICKETS,
+    CREATE_TICKETS,
+    DELETE_TICKETS,
+    USE_TICKETS,
+    // Role permissions
+    VIEW_ROLES,
+    CREATE_ROLES,
+    EDIT_ROLES,
+    DELETE_ROLES,
+    GRANT_PERMISSIONS,
+    REVOKE_PERMISSIONS,
+    // User permissions
+    VIEW_USERS,
+    CREATE_USERS,
+    EDIT_USERS,
+    DELETE_USERS,
+    // Venue Permissions
+    VIEW_VENUES,
+    CREATE_VENUES,
+    EDIT_VENUES,
+    DELETE_VENUES,
 
-import java.util.HashSet;
-import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-@Entity
-@Table(name = "permissions")
-public class Permission {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-
-    private String title;
-
-    @JsonIgnore
-    @ManyToMany(mappedBy = "permissions")
-    private Set<Role> roles = new HashSet<>();
-
-    public Permission() {
-    }
-
-    public Permission(String title) {
-        this.title = title;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    @Override
-    public String toString() {
-        return "Permission [id=" + id + ", title=" + title + "]";
-    }
-
+    // add others as needed
 }

@@ -1,22 +1,26 @@
 package com.nat20.ticketguru.domain;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nat20.ticketguru.dto.RoleDTO;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -26,19 +30,19 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String title;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-        name = "role_permissions",
-        joinColumns = @JoinColumn(name = "role_id"),
-        inverseJoinColumns = @JoinColumn(name = "permission_id")
-    )
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    @ElementCollection(targetClass = Permission.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
     private Set<Permission> permissions = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
     @JsonIgnore
-    private List<User> users;
+    private Set<User> users = new HashSet<>();
 
     public Role() {
     }
@@ -47,7 +51,7 @@ public class Role {
         this.title = title;
     }
 
-    public Role(String title, List<User> users) {
+    public Role(String title, Set<User> users) {
         this.title = title;
         this.users = users;
     }
@@ -68,11 +72,31 @@ public class Role {
         this.title = title;
     }
 
-    public List<User> getUsers() {
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void restore() {
+        this.deletedAt = null;
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
+
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 
@@ -84,12 +108,12 @@ public class Role {
         this.permissions = permissions;
     }
 
-    public void addPermission(Permission permission) {
-        this.permissions.add(permission);
+    public void addPermissions(Permission... permissions) {
+        this.permissions.addAll(Arrays.asList(permissions));
     }
 
-    public void removePermission(Permission permission) {
-        this.permissions.remove(permission);
+    public void removePermissions(Permission... permissions) {
+        this.permissions.removeAll(Arrays.asList(permissions));
     }
 
     public boolean hasPermission(Permission permission) {
@@ -99,6 +123,18 @@ public class Role {
     @Override
     public String toString() {
         return "Role [id=" + id + ", title=" + title + "]";
+    }
+
+    public RoleDTO toDTO() {
+        return new RoleDTO(
+                this.title,
+                this.permissions.stream()
+                        .map(Permission::toString)
+                        .collect(Collectors.toList()),
+                this.users.stream()
+                        .map(User::getId)
+                        .collect(Collectors.toList())
+        );
     }
 
 }

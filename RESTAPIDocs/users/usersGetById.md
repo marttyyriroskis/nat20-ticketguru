@@ -8,7 +8,7 @@ Allow retrieving a user's details by their unique identifier.
 
 **Auth required** : YES
 
-**Permissions required** : Admin
+**Permissions required** : `VIEW_USERS` (Unless authenticated user equals the requested user)
 
 ### Path Parameters:
 
@@ -38,8 +38,9 @@ Accept: application/json
   "firstName": "User1",
   "lastName": "Cashier",
   "role": {
-    "id": 1,
-    "title": "cashier"
+    "title": "cashier",
+    "permissionIds": [1, 2],
+    "userIds": [1]
   }
 }
 ```
@@ -59,3 +60,7 @@ Accept: application/json
   "message": "User not found"
 }
 ```
+
+**Condition**: If the user is not an admin, nor the requested user.
+
+**Code** : `403 FORBIDDEN`

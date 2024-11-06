@@ -2,16 +2,20 @@ package com.nat20.ticketguru.dto;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
-public record TicketDTO (
-    @NotNull(message = "Barcode must not be null") String barcode,
+public record TicketDTO(
+        Long id,
+        @NotBlank(message = "Barcode must not be empty")
+        String barcode,
+        LocalDateTime usedAt,
+        @PositiveOrZero(message = "Price must be positive or zero")
+        double price,
+        LocalDateTime deletedAt,
+        @NotNull(message = "TicketType ID must not be null")
+        Long ticketTypeId,
+        Long saleId) {
 
-    LocalDateTime usedAt,
-
-    @NotNull(message = "Price must not be null") double price,
-
-    @NotNull(message = "Ticket ID must not be null") Long ticketTypeId,
-
-    Long saleId
-) {}
+}

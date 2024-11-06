@@ -1,14 +1,14 @@
 # Delete Sale
 
-Allow deleting `Sale` details of the given `id`. When a Sale is deleted, the association between the sale and its tickets is also removed, but the ticket entities themselves remain in the database.
+Allow deleting `Sale` details of the given `id`. When a Sale is deleted, it's deletedAt field is set to the time of deletion. The entity stays in the database, but is not visible or available to REST requests.
 
 **URL** : `/api/sales/{id}`
 
 **Method** : `DELETE`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `DELETE_SALES`
 
 **Path Parameters** : `{id}`
 

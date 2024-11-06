@@ -15,10 +15,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+
+import com.nat20.ticketguru.dto.EventDTO;
 
 @Entity
 @Table(name = "events")
@@ -29,33 +28,32 @@ public class Event {
     @Column(name = "id")
     private Long id;
 
-    @NotBlank(message = "Name must not be empty")
-    @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters long")
+    @Size(min = 1, max = 100)
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Size(min = 1, max = 500, message = "Description must be between 1 and 500 characters long")
-    @Column(name = "description")
+    @Size(min = 1, max = 500)
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Positive(message = "Total tickets must be positive")
     @Column(name = "total_tickets", nullable = false)
-    private int total_tickets;
+    private int totalTickets;
 
-    @Future(message = "The event start date must be in the future")
-    @Column(name = "begins_at")
-    private LocalDateTime begins_at;
+    @Column(name = "begins_at", nullable = false)
+    private LocalDateTime beginsAt;
 
-    @Future(message = "The event end date must be in the future")
-    @Column(name = "ends_at")
-    private LocalDateTime ends_at;
+    @Column(name = "ends_at", nullable = false)
+    private LocalDateTime endsAt;
 
-    @Column(name = "ticket_sale_begins")
-    private LocalDateTime ticket_sale_begins;
+    @Column(name = "ticket_sale_begins", nullable = true)
+    private LocalDateTime ticketSaleBegins;
 
     @ManyToOne
     @JoinColumn(name = "venue_id", nullable = true)
     private Venue venue;
+
+    @Column(name = "deletedAt", nullable = true)
+    private LocalDateTime deletedAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
     @JsonIgnore
@@ -64,15 +62,16 @@ public class Event {
     public Event() {
     }
 
-    public Event(String name, String description, int total_tickets, LocalDateTime begins_at,
-            LocalDateTime ends_at, LocalDateTime ticket_sale_begins, Venue venue) {
+    public Event(String name, String description, int totalTickets, LocalDateTime beginsAt,
+            LocalDateTime endsAt, LocalDateTime ticketSaleBegins, Venue venue, LocalDateTime deletedAt) {
         this.name = name;
         this.description = description;
-        this.total_tickets = total_tickets;
-        this.begins_at = begins_at;
-        this.ends_at = ends_at;
-        this.ticket_sale_begins = ticket_sale_begins;
+        this.totalTickets = totalTickets;
+        this.beginsAt = beginsAt;
+        this.endsAt = endsAt;
+        this.ticketSaleBegins = ticketSaleBegins;
         this.venue = venue;
+        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -99,36 +98,36 @@ public class Event {
         this.description = description;
     }
 
-    public int getTotal_tickets() {
-        return this.total_tickets;
+    public int getTotalTickets() {
+        return this.totalTickets;
     }
 
-    public void setTotal_tickets(int total_tickets) {
-        this.total_tickets = total_tickets;
+    public void setTotalTickets(int totalTickets) {
+        this.totalTickets = totalTickets;
     }
 
-    public LocalDateTime getBegins_at() {
-        return this.begins_at;
+    public LocalDateTime getBeginsAt() {
+        return this.beginsAt;
     }
 
-    public void setBegins_at(LocalDateTime begins_at) {
-        this.begins_at = begins_at;
+    public void setBeginsAt(LocalDateTime beginsAt) {
+        this.beginsAt = beginsAt;
     }
 
-    public LocalDateTime getEnds_at() {
-        return this.ends_at;
+    public LocalDateTime getEndsAt() {
+        return this.endsAt;
     }
 
-    public void setEnds_at(LocalDateTime ends_at) {
-        this.ends_at = ends_at;
+    public void setEndsAt(LocalDateTime endsAt) {
+        this.endsAt = endsAt;
     }
 
-    public LocalDateTime getTicket_sale_begins() {
-        return this.ticket_sale_begins;
+    public LocalDateTime getTicketSaleBegins() {
+        return this.ticketSaleBegins;
     }
 
-    public void setTicket_sale_begins(LocalDateTime ticket_sale_begins) {
-        this.ticket_sale_begins = ticket_sale_begins;
+    public void setTicketSaleBegins(LocalDateTime ticketSaleBegins) {
+        this.ticketSaleBegins = ticketSaleBegins;
     }
 
     public Venue getVenue() {
@@ -139,17 +138,46 @@ public class Event {
         this.venue = venue;
     }
 
+    public LocalDateTime getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void restore() {
+        this.deletedAt = null;
+    }
+
+    public EventDTO toDTO() {
+        return new EventDTO(
+                this.id,
+                this.name,
+                this.description,
+                this.totalTickets,
+                this.beginsAt,
+                this.endsAt,
+                this.ticketSaleBegins,
+                this.venue.getId());
+    }
+
     @Override
     public String toString() {
         return "{"
                 + " id='" + getId() + "'"
                 + ", name='" + getName() + "'"
                 + ", description='" + getDescription() + "'"
-                + ", total_tickets='" + getTotal_tickets() + "'"
-                + ", begins_at='" + getBegins_at() + "'"
-                + ", ends_at='" + getEnds_at() + "'"
-                + ", ticket_sale_begins='" + getTicket_sale_begins() + "'"
+                + ", totalTickets='" + getTotalTickets() + "'"
+                + ", beginsAt='" + getBeginsAt() + "'"
+                + ", endsAt='" + getEndsAt() + "'"
+                + ", ticketSaleBegins='" + getTicketSaleBegins() + "'"
                 + ", venue='" + getVenue() + "'"
+                + ", deletedAt='" + getDeletedAt() + "'"
                 + "}";
     }
 }

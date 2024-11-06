@@ -8,7 +8,7 @@ Allow retrieving a list of all users.
 
 **Auth required** : YES
 
-**Permissions required** : Admin
+**Permissions required** : `VIEW_USERS`
 
 #### Example Request
 
@@ -52,16 +52,16 @@ Accept: application/json
 
 ## Error Responses
 
-**Condition** : If there are no users available or the server cannot process the request.
+**Condition** : If there are no users available.
 
-**Code** : `500 INTERNAL SERVER ERROR`
+**Code** : `204 NO CONTENT`
 
 **Content example** :
 
 ```json
 {
-  "status": 500,
-  "error": "Internal Server Error",
-  "message": "An error occurred while retrieving users."
+  "status": 204,
+  "error": "No content",
+  "message": "No users available"
 }
 ```

@@ -1,8 +1,10 @@
 package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nat20.ticketguru.dto.TicketDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,8 +14,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
@@ -22,21 +24,22 @@ public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @NotBlank(message = "Barcode must not be empty")
+    @NotBlank
     //Size annotation if the barcode should always be the same length
-    @Column(name = "barcode", updatable = false)
     private String barcode;
 
     @Column(name = "used_at")
     private LocalDateTime usedAt;
 
-    @PositiveOrZero(message = "Price must be positive or zero")
-    @Column(name = "price", nullable = false)
+    @PositiveOrZero
     private double price;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "ticket_type_id")
     @JsonIgnore
@@ -44,25 +47,23 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "sale_id")
-    @JsonIgnore // prevent infinite loops
+    @JsonIgnore
     private Sale sale;
 
     public Ticket() {
-        // Generate barcode from timestamp
-        this.barcode = String.valueOf(System.currentTimeMillis());
+        this.barcode = generateBarcode();
     }
 
-    public Ticket(String eventCode) { // TODO: Figure out how the barcode should be generated
-        // Generate barcode from timestamp and event code
-        // Event code = event id?
-        this.barcode = eventCode + "-" + System.currentTimeMillis();
+    public Ticket(String eventCode) {
+        this.barcode = generateBarcode(eventCode);
     }
 
-    public Ticket(LocalDateTime usedAt, @PositiveOrZero(message = "Price must be positive or zero") double price, TicketType ticketType,
-            Sale sale) {
-        this.barcode = String.valueOf(System.currentTimeMillis());
+    public Ticket(LocalDateTime usedAt, double price, LocalDateTime deletedAt,
+            TicketType ticketType, Sale sale) {
+        this.barcode = generateBarcode();
         this.usedAt = usedAt;
         this.price = price;
+        this.deletedAt = deletedAt;
         this.ticketType = ticketType;
         this.sale = sale;
     }
@@ -83,11 +84,10 @@ public class Ticket {
         this.barcode = barcode;
     }
 
-    /* TODO: Implement markAsUsed() method, e.g.:
-        public void markAsUsed() {
+    public Ticket use() {
         this.usedAt = LocalDateTime.now();
-        }
-        */
+        return this;
+    }
 
     public LocalDateTime getUsedAt() {
         return usedAt;
@@ -103,6 +103,14 @@ public class Ticket {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void delete() {
+        deletedAt = LocalDateTime.now();
     }
 
     public TicketType getTicketType() {
@@ -121,27 +129,22 @@ public class Ticket {
         this.sale = sale;
     }
 
-    // ticketTypeId is not persistent
-    @Transient
-    private Long ticketTypeId;
-
-    public Long getTicketTypeId() {
-        return ticketType != null ? ticketType.getId() : null; // Return the ticketType ID if ticketType is not null
-    }
-
-    // saleId is not persistent
-    @Transient
-    private Long saleId;
-
-    public Long getSaleId() {
-        return sale != null ? sale.getId() : null; // Return the sale ID if sale is not null
-    }
-
-    // omit sale and ticketType from toString to prevent infinite loops, use saleId and ticketTypeId instead
     @Override
     public String toString() {
-        return "Ticket [id=" + id + ", barcode=" + barcode + ", usedAt=" + usedAt + ", price=" + price + ", ticketTypeId="
-                + ticketTypeId + ", saleId=" + saleId + "]";
+        return "Ticket [id=" + id + ", barcode=" + barcode + ", usedAt=" + usedAt + ", price=" + price + ", deletedAt="
+                + deletedAt + "]";
+    }
+
+    public TicketDTO toDTO() {
+        return new TicketDTO(id, barcode, usedAt, price, deletedAt, ticketType.getId(), sale.getId());
+    }
+
+    private String generateBarcode() {
+        return UUID.randomUUID().toString() + System.currentTimeMillis();
+    }
+
+    private String generateBarcode(String eventCode) {
+        return eventCode + generateBarcode();
     }
 
 }

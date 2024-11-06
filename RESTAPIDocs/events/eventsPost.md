@@ -1,71 +1,66 @@
 # Add a new Event
 
-Create a new `Event` entity
+Create a new `Event` entity.
 
 **URL** : `/api/events`
 
 **Method** : `POST`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `CREATE_EVENTS`
 
 **Data constraints** :
 
-Provide all required parameters for the `Event`to be created.
+Provide all required parameters for the `Event` to be created.
 
-| Field                | Type                     | Required | Description                                                                       |
-| -------------------- | ------------------------ | -------- | --------------------------------------------------------------------------------- |
-| `name`               | String                   | Yes      | The name of the event (1-100 char).                                               |
-| `description`        | String                   | No       | A description of the event (1-500 char).                                          |
-| `total_tickets`      | Integer                  | Yes      | The total number of tickets available for the event.                              |
-| `begins_at`          | String (ISO 8601 format) | No       | The start date and time of the event.                                             |
-| `ends_at`            | String (ISO 8601 format) | No       | The end date and time of the event.                                               |
-| `ticket_sale_begins` | String (ISO 8601 format) | No       | The date and time when ticket sales begin.                                        |
-| `venue`              | Object                   | No       | An object representing the venue. It may be null or contain the venue `id` (Long) |
+| Field              | Type                     | Required | Description                                                      |
+| ------------------ | ------------------------ | -------- | ---------------------------------------------------------------- |
+| `name`             | String                   | Yes      | The name of the event (1-100 char).                              |
+| `description`      | String                   | Yes      | A description of the event (1-500 char).                         |
+| `totalTickets`     | Integer                  | Yes      | The total number of tickets available for the event.             |
+| `beginsAt`         | String (ISO 8601 format) | Yes      | The start date and time of the event.                            |
+| `endsAt`           | String (ISO 8601 format) | Yes      | The end date and time of the event.                              |
+| `ticketSaleBegins` | String (ISO 8601 format) | No      | The date and time when ticket sales begin.                       |
+| `venueId`          | Long                     | Yes      | A long representing the venue. Must contain the `venueId` (Long) |
 
-**Data example** All required fields must be sent. `name` and `total_tickets` must not be null.
+#### Example Request
+
+```json
+POST /api/events
+```
+
+All required fields must be sent. `name`, `description`, `totalTickets`, `beginsAt` and `endsAt` must not be null.
 
 ```json
 {
   "name": "Vuoden harmain päivä",
   "description": "Vedetään märkää niin että ikenet turpoo.",
-  "total_tickets": 10000,
-  "begins_at": "2025-11-12T09:18:26.535823",
-  "ends_at": "2025-11-12T21:18:26.535823",
-  "ticket_sale_begins": "2025-09-29T09:18:26.535823",
-  "venue": {
-    "id": 2
-  }
+  "totalTickets": 10000,
+  "beginsAt": "2025-11-12T09:18:26.535823",
+  "endsAt": "2025-11-12T21:18:26.535823",
+  "ticketSaleBegins": "2025-09-29T09:18:26.535823",
+  "venueId": 2
 }
 ```
 
 ## Success Responses
 
-**Condition** : Data provided is valid and `name` and `total_tickets` must not be null. `Venue` `id` is valid.
+**Condition** : Data provided is valid. `venueId` is valid.
 
-**Code** : `200 OK`
+**Code** : `201 CREATED`
 
 **Content example**
 
 ```json
 {
-  "id": 2,
   "name": "Vuoden harmain päivä",
   "description": "Vedetään märkää niin että ikenet turpoo.",
-  "total_tickets": 10000,
-  "begins_at": "2024-11-12T09:18:26.535823",
-  "ends_at": "2024-11-12T21:18:26.535823",
-  "ticket_sale_begins": "2024-09-29T09:18:26.535823",
-  "venue": {
-    "id": 2,
-    "name": "Helsingin jäähalli",
-    "address": "Nordenskiöldinkatu 11-13",
-    "zipcode": {
-      "zipcode": "00250",
-      "city": "Helsinki"
-    }
-  }
+  "totalTickets": 10000,
+  "beginsAt": "2025-11-12T09:18:26.535823",
+  "endsAt": "2025-11-12T21:18:26.535823",
+  "ticketSaleBegins": "2025-09-29T09:18:26.535823",
+  "venueId": 2
 }
 ```
 
@@ -73,14 +68,14 @@ Provide all required parameters for the `Event`to be created.
 
 **Condition** : If the provided `Venue` does not exist.
 
-**Code** : `400 BAD REQUEST`
+**Code** : `404 NOT FOUND`
 
 **Content example** :
 
 ```json
 {
-  "status": 400,
-  "error": "Bad Request",
+  "status": 404,
+  "error": "Not found",
   "message": "Venue does not exist!"
 }
 ```
@@ -93,8 +88,11 @@ Provide all required parameters for the `Event`to be created.
 
 ```json
 {
-  "total_tickets": "Total tickets must not be empty",
-  "name": "Name must not be empty"
+  "name": "Event name cannot be null",
+  "description": "Event description cannot be null",
+  "beginsAt": "Event start date cannot be null",
+  "endsAt": "Event end date cannot be null",
+  "venueId": "Event venue id cannot be null"
 }
 ```
 
@@ -106,16 +104,15 @@ Provide all required parameters for the `Event`to be created.
 
 ```json
 {
-  "total_tickets": "Total tickets must be positive",
-  "begins_at": "Begin date must be future or present",
-  "name": "Name must not be empty",
-  "description": "Description must be between 1 and 500 characters long",
-  "ends_at": "End date must be future or present",
-  "ticket_sale_begins": "Ticket sale begin date must be future or present"
+  "name": "Event name cannot be empty and must be between 1 and 100 characters long",
+  "description": "Event escription cannot be empty and must be between 1 and 500 characters long",
+  "totalTickets": "Amount of tickets must be positive",
+  "beginsAt": "The event start date must be in the future",
+  "endsAt": "The event end date must be in the future"
 }
 ```
 
 #### Notes
 
-- To remove the association with a venue, set the `venue` field to `null`.
+- To remove the association with a venue, set the `venueId` field to `null`.
 - Ensure that all date and time fields are in ISO 8601 format, and set into the future or present.

@@ -34,3 +34,7 @@ build/
 
 ## Eclipse ##
 .metadata/
+
+## Environment ##
+.env
+application-local.properties

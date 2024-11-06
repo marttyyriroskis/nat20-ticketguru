@@ -9,7 +9,9 @@ Below you can find a table of contents to the REST API request calls. Please not
 1. GET request to get all resources in the table (**getAll**)
 2. GET request to get a specific resource from the table specified by its id (**getById**)
 
-## Endpoints
+## Endpoints and their permissions
+
+In order to be able to use APIs, you need to be authenticated and have the correct role with the correct permissions. See roles and permissions in the table below.
 
 ### Events (/api/events)
 
@@ -19,13 +21,37 @@ Below you can find a table of contents to the REST API request calls. Please not
 - [eventsPost](events/eventsPost.md)
 - [eventsPut](events/eventsPut.md)
 
-### Permissions (/api/permissions)
+<details>
+<summary>Events permissions</summary>
 
-- [all](permissions/all.md)
+| Permission    | Request | SALESPERSON | COORDINATOR | ADMIN |
+| ------------- | ------- | ----------- | ----------- | ----- |
+| VIEW_EVENTS   | GET     | YES         | YES         | YES   |
+| CREATE_EVENTS | POST    | NO          | YES         | YES   |
+| EDIT_EVENTS   | PUT     | NO          | YES         | YES   |
+| DELETE_EVENTS | DELETE  | NO          | NO          | YES   |
+
+</details>
 
 ### Roles (/api/roles)
 
-- [all](permissions/all.md)
+- [roleDelete](role/roleDelete.md)
+- [roleGetAll](role/roleGetAll.md)
+- [roleGetById](role/roleGetById.md)
+- [rolePost](role/rolePost.md)
+- [rolePut](role/rolePut.md)
+
+<details>
+<summary>Roles permissions</summary>
+
+| Permission   | Request | SALESPERSON | COORDINATOR | ADMIN |
+| ------------ | ------- | ----------- | ----------- | ----- |
+| VIEW_ROLES   | GET     | NO          | NO          | YES   |
+| CREATE_ROLES | POST    | NO          | NO          | YES   |
+| EDIT_ROLES   | PUT     | NO          | NO          | YES   |
+| DELETE_ROLES | DELETE  | NO          | NO          | YES   |
+
+</details>
 
 ### Sales (/api/sales)
 
@@ -34,6 +60,21 @@ Below you can find a table of contents to the REST API request calls. Please not
 - [salesGetById](sales/salesGetById.md)
 - [salesPost](sales/salesPost.md)
 - [salesPut](sales/salesPut.md)
+- [salesSearch](sales/salesSearch.md)
+- [salesConfirm](sales/salesConfirm.md)
+
+<details>
+<summary>Sales permissions</summary>
+
+| Permission    | Request | SALESPERSON | COORDINATOR | ADMIN |
+| ------------- | ------- | ----------- | ----------- | ----- |
+| VIEW_SALES    | GET     | YES         | NO          | YES   |
+| CREATE_SALES  | POST    | YES         | NO          | YES   |
+| EDIT_SALES    | PUT     | YES         | NO          | YES   |
+| DELETE_SALES  | DELETE  | NO          | NO          | YES   |
+| CONFIRM_SALES | POST    | YES         | NO          | YES   |
+
+</details>
 
 ### Tickets (/api/tickets)
 
@@ -43,6 +84,18 @@ Below you can find a table of contents to the REST API request calls. Please not
 - [ticketsPost](tickets/ticketsPost.md)
 - [ticketsPut](tickets/ticketsPut.md)
 
+<details>
+<summary>Tickets permissions</summary>
+
+| Permission     | Request | SALESPERSON | COORDINATOR | ADMIN |
+| -------------- | ------- | ----------- | ----------- | ----- |
+| VIEW_TICKETS   | GET     | YES         | NO          | YES   |
+| CREATE_TICKETS | POST    | NO          | NO          | YES   |
+| EDIT_TICKETS   | PUT     | NO          | NO          | YES   |
+| DELETE_TICKETS | DELETE  | YES         | NO          | YES   |
+
+</details>
+
 ### Ticket types (/api/tickettypes)
 
 - [ticketTypesDelete](ticketTypes/ticketTypesDelete.md)
@@ -50,6 +103,18 @@ Below you can find a table of contents to the REST API request calls. Please not
 - [ticketTypesGetById](ticketTys/ticketTypesGetById.md)
 - [ticketTypesPost](ticketTypes/ticketTypesPost.md)
 - [ticketTypesPut](ticketTypes/ticketTypesPut.md)
+
+<details>
+<summary>Ticket types permissions</summary>
+
+| Permission          | Request | SALESPERSON | COORDINATOR | ADMIN |
+| ------------------- | ------- | ----------- | ----------- | ----- |
+| VIEW_TICKET_TYPES   | GET     | YES         | YES         | YES   |
+| CREATE_TICKET_TYPES | POST    | NO          | YES         | YES   |
+| EDIT_TICKET_TYPES   | PUT     | NO          | YES         | YES   |
+| DELETE_TICKET_TYPES | DELETE  | NO          | YES         | YES   |
+
+</details>
 
 ### Users (/api/users)
 
@@ -59,6 +124,18 @@ Below you can find a table of contents to the REST API request calls. Please not
 - [usersPost](users/usersPost.md)
 - [usersPut](users/usersPut.md)
 
+<details>
+<summary>Users permissions</summary>
+
+| Permission   | Request | SALESPERSON | COORDINATOR | ADMIN |
+| ------------ | ------- | ----------- | ----------- | ----- |
+| VIEW_USERS   | GET     | NO          | NO          | YES   |
+| CREATE_USERS | POST    | NO          | NO          | YES   |
+| EDIT_USERS   | PUT     | NO          | NO          | YES   |
+| DELETE_USERS | DELETE  | NO          | NO          | YES   |
+
+</details>
+
 ### Venues (/api/venues)
 
 - [venuesDelete](venues/venuesDelete.md)
@@ -66,6 +143,18 @@ Below you can find a table of contents to the REST API request calls. Please not
 - [venuesGetById](venues/venuesGetById.md)
 - [venuesPost](venues/venuesPost.md)
 - [venuesPut](venues/venuesPut.md)
+
+<details>
+<summary>Venues permissions</summary>
+
+| Permission    | Request | SALESPERSON | COORDINATOR | ADMIN |
+| ------------- | ------- | ----------- | ----------- | ----- |
+| VIEW_VENUES   | GET     | YES         | YES         | YES   |
+| CREATE_VENUES | POST    | NO          | YES         | YES   |
+| EDIT_VENUES   | PUT     | NO          | YES         | YES   |
+| DELETE_VENUES | DELETE  | NO          | YES         | YES   |
+
+</details>
 
 ## ThunderClient API requests
 

@@ -1,69 +1,58 @@
-# Add a new TIcket Type
+# Add a new Ticket Type
 
-Create a new `TicketType` entity
+Create a new `TicketType` entity.
 
-**URL** : `/api/tickettype`
+**URL** : `/api/tickettypes`
 
 **Method** : `POST`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `CREATE_TICKET_TYPES`
 
 **Data constraints** :
 
-Provide all required parameters for the `Ticket Type`to be created.
+Provide all required parameters for the `TicketType` to be created.
 
-| Field             | Type            | Required | Description                                                                    |
-| ----------------- | --------------- | -------- | ------------------------------------------------------------------------------ |
-| `name`            | String          | Yes      | The name of the ticket type (1-100 char).                                      |
-| `retail_price`    | Double          | Yes      | The price of the ticket type.                                                  |
-| `total_available` | Integer OR null | Yes      | The total amount of tickets available of this ticket type OR null if unlimited |
-| `eventId`         | Object          | Yes      | An object representing the event. Must contain the event `id` (Long).          |
+| Field            | Type            | Required | Description                                                                    |
+| ---------------- | --------------- | -------- | ------------------------------------------------------------------------------ |
+| `name`           | String          | Yes      | The name of the ticket type (1-100 char).                                      |
+| `retailPrice`    | Double          | Yes      | The price of the ticket type.                                                  |
+| `totalAvailable` | Integer OR null | Yes      | The total amount of tickets available of this ticket type OR null if unlimited |
+| `eventId`        | Long        | Yes      | A long representing the event. Must contain the event `id` (Long).          |
 
-**Data example** All required fields must be sent. All fields except `total_available` must not be null.
+#### Example Request
+
+```json
+POST /api/tickettypes
+```
+
+All required fields must be sent. `name`, `retailPrice` and `eventId`must not be null.
 
 ```json
 {
   "name": "pensioner",
-  "retail_price": 14.99,
-  "total_available": null,
-  "event": { "id": 1 }
+  "retailPrice": 14.99,
+  "totalAvailable": null,
+  "eventId": 1
 }
 ```
 
 ## Success Responses
 
-**Condition** : Data provided is valid and all fields except `total_available` must not be null. `Event` `id` is valid.
+**Condition** : Data provided is valid. `eventId` is valid.
 
-**Code** : `200 OK`
+**Code** : `201 CREATED`
 
 **Content example**
 
 ```json
 {
-  "id": 4,
+  "id": 5,
   "name": "pensioner",
-  "retail_price": 14.99,
-  "total_available": null,
-  "event": {
-    "id": 1,
-    "name": "Death metal karaoke",
-    "total_tickets": 10,
-    "begins_at": "2055-10-12T12:00:00",
-    "ends_at": "2055-10-12T12:00:00",
-    "ticket_sale_begins": "2055-10-12T12:00:00",
-    "description": "Öriöriöriöriörirprir!!!!!",
-    "venue": {
-      "id": 1,
-      "name": "Bunkkeri",
-      "address": "Bunkkeritie 1",
-      "zipcode": {
-        "zipcode": "00100",
-        "city": "Helsinki"
-      }
-    }
-  }
+  "retailPrice": 14.99,
+  "totalAvailable": null,
+  "eventId": 1
 }
 ```
 
@@ -71,14 +60,14 @@ Provide all required parameters for the `Ticket Type`to be created.
 
 **Condition** : If the provided `Event` does not exist.
 
-**Code** : `400 BAD REQUEST`
+**Code** : `404 NOT FOUND`
 
 **Content example** :
 
 ```json
 {
-  "status": 400,
-  "error": "Bad Request",
+  "status": 404,
+  "error": "Not Found",
   "message": "Event does not exist!"
 }
 ```
@@ -91,8 +80,6 @@ Provide all required parameters for the `Ticket Type`to be created.
 
 ```json
 {
-  "name": "Name must not be empty",
-  "price": "Price must not be null",
   "event": "Event must not be null"
 }
 ```
@@ -105,12 +92,12 @@ Provide all required parameters for the `Ticket Type`to be created.
 
 ```json
 {
-  "name": "Name must be between 1 and 100 characters long",
-  "retail_price": "Price must be positive",
-  "total_available": "Total available must be positive or null"
+  "name": "Ticket type name must be between 1 and 100 characters long",
+  "retailPrice": "Ticket type price must be positive",
+  "totalAvailable": "Total available must be positive or null"
 }
 ```
 
 #### Notes
 
-- To set the amount of available tickets to unlimited, set the `tickets_available` field to `null`.
+- To set the amount of available tickets to unlimited, set the `totalAvailable` field to `null`.

@@ -2,11 +2,10 @@ package com.nat20.ticketguru.api;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,49 +30,76 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/tickets")
 @Validated
-public class RestTicketController {
+public class TicketRestController {
     private final TicketRepository ticketRepository;
     private final TicketTypeRepository ticketTypeRepository;
     private final SaleRepository saleRepository;
 
-    public RestTicketController(TicketRepository ticketRepository, TicketTypeRepository ticketTypeRepository, SaleRepository saleRepository) {
+    public TicketRestController(TicketRepository ticketRepository, TicketTypeRepository ticketTypeRepository, SaleRepository saleRepository) {
         this.ticketRepository = ticketRepository;
         this.ticketTypeRepository = ticketTypeRepository;
         this.saleRepository = saleRepository;
     }
 
     // Get tickets
+    @PreAuthorize("hasAuthority('VIEW_TICKETS')")
     @GetMapping
     public ResponseEntity<List<TicketDTO>> getTickets() {
-        Iterable<Ticket> iterableTickets = ticketRepository.findAll();
+        Iterable<Ticket> iterableTickets = ticketRepository.findAllActive();
         List<Ticket> ticketList = new ArrayList<>();
         iterableTickets.forEach(ticketList::add);
 
         return ResponseEntity.ok(ticketList.stream()
-                .map(ticket -> new TicketDTO(
-                    ticket.getBarcode(),
-                    ticket.getUsedAt(),
-                    ticket.getPrice(),
-                    ticket.getTicketType().getId(),
-                    ticket.getSale().getId()))
-                .collect(Collectors.toList()));
+                .map(Ticket::toDTO)
+                .toList());
     }
-    
+
     // Get ticket by id
+    @PreAuthorize("hasAuthority('VIEW_TICKETS')")
     @GetMapping("/{id}")
     public ResponseEntity<TicketDTO> getTicket(@PathVariable Long id) {
-        Ticket ticket = ticketRepository.findById(id)
+        Ticket ticket = ticketRepository.findByIdActive(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
-        return ResponseEntity.ok(new TicketDTO(
-                    ticket.getBarcode(),
-                    ticket.getUsedAt(),
-                    ticket.getPrice(),
-                    ticket.getTicketType().getId(),
-                    ticket.getSale().getId()));
+        return ResponseEntity.ok(ticket.toDTO());
+    }
+
+    // Get ticket by barcode
+    @PreAuthorize("hasAuthority('VIEW_TICKETS')")
+    @GetMapping("/barcode/{barcode}")
+    public ResponseEntity<TicketDTO> getTicketByBarcode(@PathVariable String barcode) {
+        Ticket ticket = ticketRepository.findByBarcode(barcode);
+
+        if (ticket == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found");
+        }
+
+        return ResponseEntity.ok(ticket.toDTO());
+    }
+
+    // Use ticket
+    @PreAuthorize("hasAuthority('USE_TICKETS')")
+    @PutMapping("/use/{barcode}")
+    public ResponseEntity<TicketDTO> useTicket(@PathVariable String barcode) {
+        Ticket ticket = ticketRepository.findByBarcode(barcode);
+
+        if (ticket == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found");
+        }
+
+        if (ticket.getUsedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ticket already used");
+        }
+
+        ticket.use();
+
+        Ticket updatedTicket = ticketRepository.save(ticket);
+
+        return ResponseEntity.ok(updatedTicket.toDTO());
     }
     
     // Post a new ticket
+    @PreAuthorize("hasAuthority('CREATE_TICKETS')")
     @PostMapping
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
         TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
@@ -81,9 +107,7 @@ public class RestTicketController {
         Sale sale = saleRepository.findById(ticketDTO.saleId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Sale not found"));
 
-        // TODO: Autogenerate barcode
         Ticket newTicket = new Ticket();
-        newTicket.setBarcode(ticketDTO.barcode());
         newTicket.setUsedAt(ticketDTO.usedAt());
         newTicket.setPrice(ticketDTO.price());
         newTicket.setTicketType(ticketType);
@@ -91,64 +115,44 @@ public class RestTicketController {
 
         ticketRepository.save(newTicket);
 
-        TicketDTO newTicketDTO = new TicketDTO(
-                newTicket.getBarcode(),
-                newTicket.getUsedAt(),
-                newTicket.getPrice(),
-                newTicket.getTicketType().getId(),
-                newTicket.getSale().getId()
-        );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(newTicketDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newTicket.toDTO());
     }
 
     // Edit ticket
+    @PreAuthorize("hasAuthority('EDIT_TICKETS')")
     @PutMapping("/{id}")
-    public ResponseEntity<TicketDTO> updateTicket(@PathVariable Long id, @RequestBody TicketDTO ticketDTO) {
-        Optional<Ticket> existingTicket = ticketRepository.findById(id);
-        
-        if (!existingTicket.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<TicketDTO> updateTicket(@Valid @RequestBody TicketDTO ticketDTO, @PathVariable Long id) {
+        Ticket ticket = ticketRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
-        Ticket ticketToUpdate = existingTicket.get();
-
-        ticketToUpdate.setUsedAt(ticketDTO.usedAt());
-        ticketToUpdate.setPrice(ticketDTO.price());
+        ticket.setUsedAt(ticketDTO.usedAt());
+        ticket.setPrice(ticketDTO.price());
 
         TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid TicketType ID"));
         Sale sale = saleRepository.findById(ticketDTO.saleId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Sale ID"));
 
-        ticketToUpdate.setTicketType(ticketType);
-        ticketToUpdate.setSale(sale);
+        ticket.setTicketType(ticketType);
+        ticket.setSale(sale);
 
-        Ticket updatedTicket = ticketRepository.save(ticketToUpdate);
+        Ticket updatedTicket = ticketRepository.save(ticket);
 
-        TicketDTO updatedTicketDTO = new TicketDTO(
-                updatedTicket.getBarcode(),
-                updatedTicket.getUsedAt(),
-                updatedTicket.getPrice(),
-                updatedTicket.getTicketType().getId(),
-                updatedTicket.getSale().getId()
-        );
-
-        return ResponseEntity.ok(updatedTicketDTO);
+        return ResponseEntity.ok(updatedTicket.toDTO());
     }
 
     // Delete ticket
+    @PreAuthorize("hasAuthority('DELETE_TICKETS')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTicket(@PathVariable Long id) {
-        Optional<Ticket> ticketOptional = ticketRepository.findById(id);
+    public ResponseEntity<TicketDTO> deleteTicket(@PathVariable Long id) {
+        Ticket ticket = ticketRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
-        if (!ticketOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ticket not found");
-        }
+        ticket.delete();
 
-        ticketRepository.deleteById(id);
+        ticketRepository.save(ticket);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

@@ -6,9 +6,9 @@ Allow deleting `Event` details of the given `id`.
 
 **Method** : `DELETE`
 
-**Auth required** : NO
+**Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : `DELETE_EVENTS`
 
 **Path Parameters** : `{id}`
 
@@ -16,63 +16,17 @@ Allow deleting `Event` details of the given `id`.
 | --------- | ---- | ----------------------------------------- |
 | `id`      | Long | Unique identifier for the event to delete |
 
-**Data constraints** : `{}`
-
 ## Example Request
 
 ```json
-DELETE api/events/2
-Content-Type: application/json
+DELETE /api/events/2
 ```
 
 ## Success Responses
 
-**Condition** : Id provided belongs to an event in the database
+**Condition** : `id` provided belongs to an `Event` in the database.
 
-**Code** : `200 OK`
-
-**Content example** : Returns  remaining `Event` objects in the database
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Death metal karaoke",
-    "total_tickets": 10,
-    "begins_at": "2055-10-12T12:00:00",
-    "ends_at": "2055-10-12T12:00:00",
-    "ticket_sale_begins": "2055-10-12T12:00:00",
-    "description": "Öriöriöriöriörirprir!!!!!",
-    "venue": {
-      "id": 1,
-      "name": "Bunkkeri",
-      "address": "Bunkkeritie 1",
-      "zipcode": {
-        "zipcode": "00100",
-        "city": "Helsinki"
-      }
-    }
-  },
-  {
-    "id": 3,
-    "name": "A Night at the Museum",
-    "total_tickets": 500,
-    "begins_at": "2055-10-12T12:00:00",
-    "ends_at": "2055-10-12T12:00:00",
-    "ticket_sale_begins": "2055-10-12T12:00:00",
-    "description": "Night-show at the National Museum",
-    "venue": {
-      "id": 1,
-      "name": "Bunkkeri",
-      "address": "Bunkkeritie 1",
-      "zipcode": {
-        "zipcode": "00100",
-        "city": "Helsinki"
-      }
-    }
-  }
-]
-```
+**Code** : `204 NO CONTENT`
 
 ## Error Response
 

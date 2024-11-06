@@ -1,11 +1,8 @@
 package com.nat20.ticketguru.dto;
 
-import java.util.Set;
-
-import jakarta.validation.constraints.NotNull;
+import com.nat20.ticketguru.domain.Permission;
 
 public record PermissionDTO(
-    @NotNull(message = "Title must not be null") String title,
+        Permission permission) {
 
-    Set<Long> roleIds
-) {}
+}
