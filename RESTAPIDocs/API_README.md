@@ -24,55 +24,56 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 <details>
 <summary>Events permissions</summary>
 
-| Permission    | Request | SALESPERSON | COORDINATOR | ADMIN |
-| ------------- | ------- | ----------- | ----------- | ----- |
-| VIEW_EVENTS   | GET     | YES         | YES         | YES   |
-| CREATE_EVENTS | POST    | NO          | YES         | YES   |
-| EDIT_EVENTS   | PUT     | NO          | YES         | YES   |
-| DELETE_EVENTS | DELETE  | NO          | NO          | YES   |
+| Permission    | Request | TICKET INSPECTOR | SALESPERSON | COORDINATOR | ADMIN |
+| ------------- | ------- | ---------------- | ----------- | ----------- | ----- |
+| VIEW_EVENTS   | GET     | NO               | YES         | YES         | YES   |
+| CREATE_EVENTS | POST    | NO               | NO          | YES         | YES   |
+| EDIT_EVENTS   | PUT     | NO               | NO          | YES         | YES   |
+| DELETE_EVENTS | DELETE  | NO               | NO          | NO          | YES   |
 
 </details>
 
 ### Roles (/api/roles)
 
-- [roleDelete](role/roleDelete.md)
-- [roleGetAll](role/roleGetAll.md)
-- [roleGetById](role/roleGetById.md)
-- [rolePost](role/rolePost.md)
-- [rolePut](role/rolePut.md)
+- [rolesDelete](roles/rolesDelete.md)
+- [rolesGetAll](roles/rolesGetAll.md)
+- [rolesGetById](roles/rolesGetById.md)
+- [rolesPermissions](roles/rolesPermissions.md)
+- [rolesPost](roles/rolesPost.md)
+- [rolesPut](roles/rolesPut.md)
 
 <details>
 <summary>Roles permissions</summary>
 
-| Permission   | Request | SALESPERSON | COORDINATOR | ADMIN |
-| ------------ | ------- | ----------- | ----------- | ----- |
-| VIEW_ROLES   | GET     | NO          | NO          | YES   |
-| CREATE_ROLES | POST    | NO          | NO          | YES   |
-| EDIT_ROLES   | PUT     | NO          | NO          | YES   |
-| DELETE_ROLES | DELETE  | NO          | NO          | YES   |
+| Permission   | Request | TICKET INSPECTOR | SALESPERSON | COORDINATOR | ADMIN |
+| ------------ | ------- | ---------------- | ----------- | ----------- | ----- |
+| VIEW_ROLES   | GET     | NO               | NO          | NO          | YES   |
+| CREATE_ROLES | POST    | NO               | NO          | NO          | YES   |
+| EDIT_ROLES   | PUT     | NO               | NO          | NO          | YES   |
+| DELETE_ROLES | DELETE  | NO               | NO          | NO          | YES   |
 
 </details>
 
 ### Sales (/api/sales)
 
+- [salesConfirm](sales/salesConfirm.md)
 - [salesDelete](sales/salesDelete.md)
 - [salesGetAll](sales/salesGetAll.md)
 - [salesGetById](sales/salesGetById.md)
 - [salesPost](sales/salesPost.md)
 - [salesPut](sales/salesPut.md)
 - [salesSearch](sales/salesSearch.md)
-- [salesConfirm](sales/salesConfirm.md)
 
 <details>
 <summary>Sales permissions</summary>
 
-| Permission    | Request | SALESPERSON | COORDINATOR | ADMIN |
-| ------------- | ------- | ----------- | ----------- | ----- |
-| VIEW_SALES    | GET     | YES         | NO          | YES   |
-| CREATE_SALES  | POST    | YES         | NO          | YES   |
-| EDIT_SALES    | PUT     | YES         | NO          | YES   |
-| DELETE_SALES  | DELETE  | NO          | NO          | YES   |
-| CONFIRM_SALES | POST    | YES         | NO          | YES   |
+| Permission    | Request | TICKET INSPECTOR | SALESPERSON | COORDINATOR | ADMIN |
+| ------------- | ------- | ---------------- | ----------- | ----------- | ----- |
+| VIEW_SALES    | GET     | NO               | YES         | NO          | YES   |
+| CREATE_SALES  | POST    | NO               | YES         | NO          | YES   |
+| EDIT_SALES    | PUT     | NO               | YES         | NO          | YES   |
+| DELETE_SALES  | DELETE  | NO               | NO          | NO          | YES   |
+| CONFIRM_SALES | POST    | NO               | YES         | NO          | YES   |
 
 </details>
 
@@ -80,19 +81,21 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 
 - [ticketsDelete](tickets/ticketsDelete.md)
 - [ticketsGetAll](tickets/ticketsGetAll.md)
+- [ticketsGetByBarcode](tickets/ticketsGetByBarcode.md)
 - [ticketsGetById](tickets/ticketsGetById.md)
 - [ticketsPost](tickets/ticketsPost.md)
 - [ticketsPut](tickets/ticketsPut.md)
+- [ticketsUse](tickets/ticketsUse.md)
 
 <details>
 <summary>Tickets permissions</summary>
 
-| Permission     | Request | SALESPERSON | COORDINATOR | ADMIN |
-| -------------- | ------- | ----------- | ----------- | ----- |
-| VIEW_TICKETS   | GET     | YES         | NO          | YES   |
-| CREATE_TICKETS | POST    | NO          | NO          | YES   |
-| EDIT_TICKETS   | PUT     | NO          | NO          | YES   |
-| DELETE_TICKETS | DELETE  | YES         | NO          | YES   |
+| Permission     | Request | TICKET INSPECTOR | SALESPERSON | COORDINATOR | ADMIN |
+| -------------- | ------- | ---------------- | ----------- | ----------- | ----- |
+| VIEW_TICKETS   | GET     | YES              | YES         | NO          | YES   |
+| CREATE_TICKETS | POST    | NO               | NO          | NO          | YES   |
+| EDIT_TICKETS   | PUT     | NO               | NO          | NO          | YES   |
+| DELETE_TICKETS | DELETE  | NO               | YES         | NO          | YES   |
 
 </details>
 
@@ -107,12 +110,12 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 <details>
 <summary>Ticket types permissions</summary>
 
-| Permission          | Request | SALESPERSON | COORDINATOR | ADMIN |
-| ------------------- | ------- | ----------- | ----------- | ----- |
-| VIEW_TICKET_TYPES   | GET     | YES         | YES         | YES   |
-| CREATE_TICKET_TYPES | POST    | NO          | YES         | YES   |
-| EDIT_TICKET_TYPES   | PUT     | NO          | YES         | YES   |
-| DELETE_TICKET_TYPES | DELETE  | NO          | YES         | YES   |
+| Permission          | Request | TICKET INSPECTOR | SALESPERSON | COORDINATOR | ADMIN |
+| ------------------- | ------- | ---------------- | ----------- | ----------- | ----- |
+| VIEW_TICKET_TYPES   | GET     | NO               | YES         | YES         | YES   |
+| CREATE_TICKET_TYPES | POST    | NO               | NO          | YES         | YES   |
+| EDIT_TICKET_TYPES   | PUT     | NO               | NO          | YES         | YES   |
+| DELETE_TICKET_TYPES | DELETE  | NO               | NO          | YES         | YES   |
 
 </details>
 
@@ -127,12 +130,12 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 <details>
 <summary>Users permissions</summary>
 
-| Permission   | Request | SALESPERSON | COORDINATOR | ADMIN |
-| ------------ | ------- | ----------- | ----------- | ----- |
-| VIEW_USERS   | GET     | NO          | NO          | YES   |
-| CREATE_USERS | POST    | NO          | NO          | YES   |
-| EDIT_USERS   | PUT     | NO          | NO          | YES   |
-| DELETE_USERS | DELETE  | NO          | NO          | YES   |
+| Permission   | Request | TICKET INSPECTOR | SALESPERSON | COORDINATOR | ADMIN |
+| ------------ | ------- | ---------------- | ----------- | ----------- | ----- |
+| VIEW_USERS   | GET     | NO               | NO          | NO          | YES   |
+| CREATE_USERS | POST    | NO               | NO          | NO          | YES   |
+| EDIT_USERS   | PUT     | NO               | NO          | NO          | YES   |
+| DELETE_USERS | DELETE  | NO               | NO          | NO          | YES   |
 
 </details>
 
@@ -147,11 +150,11 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 <details>
 <summary>Venues permissions</summary>
 
-| Permission    | Request | SALESPERSON | COORDINATOR | ADMIN |
-| ------------- | ------- | ----------- | ----------- | ----- |
-| VIEW_VENUES   | GET     | YES         | YES         | YES   |
-| CREATE_VENUES | POST    | NO          | YES         | YES   |
-| EDIT_VENUES   | PUT     | NO          | YES         | YES   |
-| DELETE_VENUES | DELETE  | NO          | YES         | YES   |
+| Permission    | Request | TICKET INSPECTOR | SALESPERSON | COORDINATOR | ADMIN |
+| ------------- | ------- | ---------------- | ----------- | ----------- | ----- |
+| VIEW_VENUES   | GET     | NO               | YES         | YES         | YES   |
+| CREATE_VENUES | POST    | NO               | NO          | YES         | YES   |
+| EDIT_VENUES   | PUT     | NO               | NO          | YES         | YES   |
+| DELETE_VENUES | DELETE  | NO               | NO          | YES         | YES   |
 
 </details>
