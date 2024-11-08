@@ -16,6 +16,10 @@ public record TicketDTO(
         LocalDateTime deletedAt,
         @NotNull(message = "TicketType ID must not be null")
         Long ticketTypeId,
-        Long saleId) {
+        Long saleId,
+        TicketTypeDTO ticketType,
+        EventDTO event,
+        VenueDTO venue
+        ) {
 
 }

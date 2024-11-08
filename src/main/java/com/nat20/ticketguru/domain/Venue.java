@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nat20.ticketguru.dto.VenueDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -96,6 +97,10 @@ public class Venue {
 
     public void setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public VenueDTO toDTO() {
+        return new VenueDTO(id, name, address, zipcode.getZipcode());
     }
 
 }
