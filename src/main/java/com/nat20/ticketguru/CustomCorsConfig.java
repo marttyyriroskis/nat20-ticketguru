@@ -22,7 +22,7 @@ public class CustomCorsConfig {
         config.setExposedHeaders(List.of("Authorization", "Content-Type"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/tickets/**", config); // Specify endpoint(s)
+        source.registerCorsConfiguration("/api/**", config); // Specify endpoint(s)
 
         return source;
 
