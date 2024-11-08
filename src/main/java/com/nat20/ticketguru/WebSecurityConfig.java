@@ -54,7 +54,7 @@ public class WebSecurityConfig {
                 )
                 .formLogin(formlogin -> 
                     formlogin
-                        .loginPage("/login")
+                        //.loginPage("/login")
                         .successHandler(new SavedRequestAwareAuthenticationSuccessHandler()) // redirect to page the user tried to access before login
                         .permitAll())
                 .logout(logout -> logout.permitAll());
