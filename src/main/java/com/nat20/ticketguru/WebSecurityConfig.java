@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
@@ -51,12 +52,11 @@ public class WebSecurityConfig {
                                 .frameOptions(frameOptions -> frameOptions
                                 .disable())
                 )
-                .formLogin(
-                        formlogin -> formlogin
-                                //.loginPage("/login") TODO: login.html
-                                .defaultSuccessUrl("/index", true)
-                                .permitAll()
-                )
+                .formLogin(formlogin -> 
+                    formlogin
+                        .loginPage("/login")
+                        .successHandler(new SavedRequestAwareAuthenticationSuccessHandler()) // redirect to page the user tried to access before login
+                        .permitAll())
                 .logout(logout -> logout.permitAll());
 
         return http.build();
