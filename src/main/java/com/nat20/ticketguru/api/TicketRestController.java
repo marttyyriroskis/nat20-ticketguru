@@ -1,6 +1,5 @@
 package com.nat20.ticketguru.api;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -14,15 +13,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Sale;
-import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.domain.Ticket;
-import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.domain.TicketType;
 import com.nat20.ticketguru.dto.TicketDTO;
+import com.nat20.ticketguru.repository.SaleRepository;
+import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.repository.TicketTypeRepository;
 
 import jakarta.validation.Valid;
@@ -31,6 +31,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/tickets")
 @Validated
 public class TicketRestController {
+
     private final TicketRepository ticketRepository;
     private final TicketTypeRepository ticketTypeRepository;
     private final SaleRepository saleRepository;
@@ -41,13 +42,22 @@ public class TicketRestController {
         this.saleRepository = saleRepository;
     }
 
-    // Get tickets
+    // Get all tickets, or tickets for specified Ids
     @PreAuthorize("hasAuthority('VIEW_TICKETS')")
     @GetMapping
-    public ResponseEntity<List<TicketDTO>> getTickets() {
-        Iterable<Ticket> iterableTickets = ticketRepository.findAllActive();
-        List<Ticket> ticketList = new ArrayList<>();
-        iterableTickets.forEach(ticketList::add);
+    public ResponseEntity<List<TicketDTO>> getTickets(@RequestParam(required = false) List<Long> ids) {
+        List<Ticket> ticketList;
+        if (ids != null && !ids.isEmpty()) {
+            // get tickets by the list of Id's
+            try {
+                ticketList = ticketRepository.findAllByIdIn(ids);
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            }
+        } else {
+            // get all tickets
+            ticketList = ticketRepository.findAllActive();
+        }
 
         return ResponseEntity.ok(ticketList.stream()
                 .map(Ticket::toDTO)
@@ -59,7 +69,7 @@ public class TicketRestController {
     @GetMapping("/{id}")
     public ResponseEntity<TicketDTO> getTicket(@PathVariable Long id) {
         Ticket ticket = ticketRepository.findByIdActive(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
         return ResponseEntity.ok(ticket.toDTO());
     }
@@ -97,15 +107,15 @@ public class TicketRestController {
 
         return ResponseEntity.ok(updatedTicket.toDTO());
     }
-    
+
     // Post a new ticket
     @PreAuthorize("hasAuthority('CREATE_TICKETS')")
     @PostMapping
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
         TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Ticket Type not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket Type not found"));
         Sale sale = saleRepository.findById(ticketDTO.saleId())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Sale not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
 
         Ticket newTicket = new Ticket();
         newTicket.setUsedAt(ticketDTO.usedAt());
@@ -123,7 +133,7 @@ public class TicketRestController {
     @PutMapping("/{id}")
     public ResponseEntity<TicketDTO> updateTicket(@Valid @RequestBody TicketDTO ticketDTO, @PathVariable Long id) {
         Ticket ticket = ticketRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
         ticket.setUsedAt(ticketDTO.usedAt());
         ticket.setPrice(ticketDTO.price());
@@ -146,7 +156,7 @@ public class TicketRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<TicketDTO> deleteTicket(@PathVariable Long id) {
         Ticket ticket = ticketRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
         ticket.delete();
 
