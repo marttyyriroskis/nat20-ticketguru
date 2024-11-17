@@ -106,6 +106,7 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 - [ticketTypesGetById](ticketTys/ticketTypesGetById.md)
 - [ticketTypesPost](ticketTypes/ticketTypesPost.md)
 - [ticketTypesPut](ticketTypes/ticketTypesPut.md)
+- [ticketTypesSearch](ticketTypes/ticketTypesSearch.md)
 
 <details>
 <summary>Ticket types permissions</summary>
