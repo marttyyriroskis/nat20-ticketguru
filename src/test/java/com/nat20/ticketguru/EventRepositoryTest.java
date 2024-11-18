@@ -35,7 +35,7 @@ public class EventRepositoryTest {
 
 
     @Test
-    public void testSearchEvent() {
+    public void testInvalidEventName() {
 
         // Arrange
         Zipcode zipcode = new Zipcode();
@@ -44,8 +44,171 @@ public class EventRepositoryTest {
         Zipcode savedZipcode = zipcodeRepository.save(zipcode);
 
         Venue venue = new Venue(); 
-        venue.setId(0L);
-        venue.setName("");
+        venue.setId(1L);
+        venue.setName("Kaatokäytävä");
+        venue.setAddress("mikonkatu 1");
+        venue.setZipcode(savedZipcode);
+        venue.setDeletedAt(null);
+        Venue savedVenue = venueRepository.save(venue); 
+
+        Event event = new Event(
+            "", // venue Name is empty
+            "An amazing live concert",
+            200,
+            LocalDateTime.of(2024, 11, 14, 20, 0),
+            LocalDateTime.of(2024, 11, 14, 23, 0),
+            LocalDateTime.of(2024, 10, 1, 10, 0),
+            savedVenue,
+            null
+        );
+
+        // Act
+        Event savedEvent = eventRepository.save(event);
+
+        Event fetchedEvent = eventRepository.findById(savedEvent.getId()).orElse(null);
+
+
+
+        // Assert
+        
+        assertEquals("Concert", fetchedEvent.getName(), "Event name should match");
+        
+    }
+
+    @Test
+    public void testInvalidEventDescription() {
+
+        // Arrange
+        Zipcode zipcode = new Zipcode();
+        zipcode.setCity("Vantaa");
+        zipcode.setZipcode("01000");
+        Zipcode savedZipcode = zipcodeRepository.save(zipcode);
+
+        Venue venue = new Venue(); 
+        venue.setId(1L);
+        venue.setName("Kaatokäytävä");
+        venue.setAddress("mikonkatu 1");
+        venue.setZipcode(savedZipcode);
+        venue.setDeletedAt(null);
+        Venue savedVenue = venueRepository.save(venue); 
+
+        Event event = new Event(
+            "Concert",
+            "", // Event description is empty
+            200,
+            LocalDateTime.of(2024, 11, 14, 20, 0),
+            LocalDateTime.of(2024, 11, 14, 23, 0),
+            LocalDateTime.of(2024, 10, 1, 10, 0),
+            savedVenue,
+            null
+        );
+
+        // Act
+        Event savedEvent = eventRepository.save(event);
+
+        Event fetchedEvent = eventRepository.findById(savedEvent.getId()).orElse(null);
+
+
+
+        // Assert
+        assertEquals("An amazing live concert", fetchedEvent.getDescription(), "Event description should match");
+        
+    }
+
+    @Test
+    public void testInvalidEventTotalTickets() {
+
+        // Arrange
+        Zipcode zipcode = new Zipcode();
+        zipcode.setCity("Vantaa");
+        zipcode.setZipcode("01000");
+        Zipcode savedZipcode = zipcodeRepository.save(zipcode);
+
+        Venue venue = new Venue(); 
+        venue.setId(1L);
+        venue.setName("Kaatokäytävä");
+        venue.setAddress("mikonkatu 1");
+        venue.setZipcode(savedZipcode);
+        venue.setDeletedAt(null);
+        Venue savedVenue = venueRepository.save(venue); 
+
+        Event event = new Event(
+            "Concert",
+            "An amazing live concert",
+            0, // Total tickets can be any number
+            LocalDateTime.of(2024, 11, 14, 20, 0),
+            LocalDateTime.of(2024, 11, 14, 23, 0),
+            LocalDateTime.of(2024, 10, 1, 10, 0),
+            savedVenue,
+            null
+        );
+
+        // Act
+        Event savedEvent = eventRepository.save(event);
+
+        Event fetchedEvent = eventRepository.findById(savedEvent.getId()).orElse(null);
+
+
+
+        // Assert
+        
+        assertEquals(0, fetchedEvent.getTotalTickets(), "Total tickets should match");
+        
+    }
+
+    @Test
+    public void testInvalidEventDate() {
+
+        // Arrange
+        Zipcode zipcode = new Zipcode();
+        zipcode.setCity("Vantaa");
+        zipcode.setZipcode("01000");
+        Zipcode savedZipcode = zipcodeRepository.save(zipcode);
+
+        Venue venue = new Venue(); 
+        venue.setId(1L);
+        venue.setName("Kaatokäytävä");
+        venue.setAddress("mikonkatu 1");
+        venue.setZipcode(savedZipcode);
+        venue.setDeletedAt(null);
+        Venue savedVenue = venueRepository.save(venue); 
+
+        Event event = new Event(
+            "Concert",
+            "An amazing live concert",
+            200,
+            LocalDateTime.of(2001, 9, 11, 20, 0),
+            LocalDateTime.of(2024, 15, 14, 23, 0), // valid values for month are 1-12
+            LocalDateTime.of(2024, 10, 1, 10, 0),
+            savedVenue,
+            null
+        );
+
+        // Act
+        Event savedEvent = eventRepository.save(event);
+
+        Event fetchedEvent = eventRepository.findById(savedEvent.getId()).orElse(null);
+
+
+
+        // Assert
+
+        assertEquals(LocalDateTime.of(2024, 11, 14, 20, 0), fetchedEvent.getBeginsAt(), "Event start time should match");
+        
+    }
+
+    @Test
+    public void testInvalidEventVenue() {
+
+        // Arrange
+        Zipcode zipcode = new Zipcode();
+        zipcode.setCity("Vantaa");
+        zipcode.setZipcode("01000");
+        Zipcode savedZipcode = zipcodeRepository.save(zipcode);
+
+        Venue venue = new Venue(); 
+        venue.setId(1L);
+        venue.setName(""); // venue Name is empty
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
         venue.setDeletedAt(null);
@@ -71,17 +234,51 @@ public class EventRepositoryTest {
 
         // Assert
         assertNotNull(fetchedEvent, "Event id should not be null");
-        assertEquals("Concert", fetchedEvent.getName(), "Event name should match");
-        assertEquals("An amazing live concert", fetchedEvent.getDescription(), "Event description should match");
-        assertEquals(200, fetchedEvent.getTotalTickets(), "Total tickets should match");
-        assertEquals(LocalDateTime.of(2024, 11, 14, 20, 0), fetchedEvent.getBeginsAt(), "Event start time should match");
-        assertEquals(LocalDateTime.of(2024, 11, 14, 23, 0), fetchedEvent.getEndsAt(), "Event end time should match");
-        assertEquals(LocalDateTime.of(2024, 10, 1, 10, 0), fetchedEvent.getTicketSaleBegins(), "Ticket sale begin time should match");
-        assertEquals(1L, fetchedEvent.getVenue().getId(), "Event venue ID should match saved venue");
+        
     }
 
     @Test
-    public void testAddEvent() {
+    public void testInvalidEventZipcode() {
+
+        // Arrange
+        Zipcode zipcode = new Zipcode();
+        zipcode.setCity("Vantaa");
+        zipcode.setZipcode("nollanollayksinollanolla"); // zipcode should be only allowed to be a String of 5 numbers 
+        Zipcode savedZipcode = zipcodeRepository.save(zipcode);
+
+        Venue venue = new Venue(); 
+        venue.setId(1L);
+        venue.setName("Kaatokäytävä");
+        venue.setAddress("mikonkatu 1");
+        venue.setZipcode(savedZipcode);
+        venue.setDeletedAt(null);
+        Venue savedVenue = venueRepository.save(venue); 
+
+        Event event = new Event(
+            "Concert",
+            "An amazing live concert",
+            200,
+            LocalDateTime.of(2024, 11, 14, 20, 0),
+            LocalDateTime.of(2024, 11, 14, 23, 0),
+            LocalDateTime.of(2024, 10, 1, 10, 0),
+            savedVenue,
+            null
+        );
+
+        // Act
+        Event savedEvent = eventRepository.save(event);
+
+        Event fetchedEvent = eventRepository.findById(savedEvent.getId()).orElse(null);
+
+
+
+        // Assert
+        
+        assertEquals("00100", fetchedEvent.getVenue().getZipcode().getZipcode(), "Event venue ID should match saved venue");
+    }
+
+    @Test
+    public void testAddEventId() {
 
         // Arrange
         Zipcode zipcode = new Zipcode();
@@ -90,7 +287,7 @@ public class EventRepositoryTest {
         Zipcode savedZipcode = zipcodeRepository.save(zipcode);
 
         Venue venue = new Venue(); 
-        venue.setId(1L);
+        venue.setId(2L);
         venue.setName("Kaatoluola");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
@@ -112,14 +309,232 @@ public class EventRepositoryTest {
         Event savedEvent = eventRepository.save(event);
 
         // Assert
-        assertNotNull(savedEvent.getId(), "Event id should not be null");
+        
+        assertEquals(4L, savedEvent.getId(), "Event id should match saved event"); // if all tests are ran at once the id is 4, but if only this test is ran it is 1
+    }
+
+    @Test
+    public void testAddEventName() {
+
+        // Arrange
+        Zipcode zipcode = new Zipcode();
+        zipcode.setCity("Vantaa");
+        zipcode.setZipcode("01000");
+        Zipcode savedZipcode = zipcodeRepository.save(zipcode);
+
+        Venue venue = new Venue(); 
+        venue.setId(2L);
+        venue.setName("Kaatoluola");
+        venue.setAddress("mikonkatu 1");
+        venue.setZipcode(savedZipcode);
+        venue.setDeletedAt(null);
+        Venue savedVenue = venueRepository.save(venue); 
+
+        Event event = new Event(
+            "Concert",
+            "An amazing live concert",
+            200,
+            LocalDateTime.of(2024, 11, 14, 20, 0),
+            LocalDateTime.of(2024, 11, 14, 23, 0),
+            LocalDateTime.of(2024, 10, 1, 10, 0),
+            savedVenue,
+            null
+        );
+
+        // Act
+        Event savedEvent = eventRepository.save(event);
+
+        // Assert
+       
         assertEquals("Concert", savedEvent.getName(), "Event name should match");
+        
+    }
+
+    @Test
+    public void testAddEventDescription() {
+
+        // Arrange
+        Zipcode zipcode = new Zipcode();
+        zipcode.setCity("Vantaa");
+        zipcode.setZipcode("01000");
+        Zipcode savedZipcode = zipcodeRepository.save(zipcode);
+
+        Venue venue = new Venue(); 
+        venue.setId(2L);
+        venue.setName("Kaatoluola");
+        venue.setAddress("mikonkatu 1");
+        venue.setZipcode(savedZipcode);
+        venue.setDeletedAt(null);
+        Venue savedVenue = venueRepository.save(venue); 
+
+        Event event = new Event(
+            "Concert",
+            "An amazing live concert",
+            200,
+            LocalDateTime.of(2024, 11, 14, 20, 0),
+            LocalDateTime.of(2024, 11, 14, 23, 0),
+            LocalDateTime.of(2024, 10, 1, 10, 0),
+            savedVenue,
+            null
+        );
+
+        // Act
+        Event savedEvent = eventRepository.save(event);
+
+        // Assert
+        
         assertEquals("An amazing live concert", savedEvent.getDescription(), "Event description should match");
+        
+    }
+
+    @Test
+    public void testAddEventTickets() {
+
+        // Arrange
+        Zipcode zipcode = new Zipcode();
+        zipcode.setCity("Vantaa");
+        zipcode.setZipcode("01000");
+        Zipcode savedZipcode = zipcodeRepository.save(zipcode);
+
+        Venue venue = new Venue(); 
+        venue.setId(2L);
+        venue.setName("Kaatoluola");
+        venue.setAddress("mikonkatu 1");
+        venue.setZipcode(savedZipcode);
+        venue.setDeletedAt(null);
+        Venue savedVenue = venueRepository.save(venue); 
+
+        Event event = new Event(
+            "Concert",
+            "An amazing live concert",
+            200,
+            LocalDateTime.of(2024, 11, 14, 20, 0),
+            LocalDateTime.of(2024, 11, 14, 23, 0),
+            LocalDateTime.of(2024, 10, 1, 10, 0),
+            savedVenue,
+            null
+        );
+
+        // Act
+        Event savedEvent = eventRepository.save(event);
+
+        // Assert
+        
         assertEquals(200, savedEvent.getTotalTickets(), "Total tickets should match");
+        
+    }
+
+    @Test
+    public void testAddEventDate() {
+
+        // Arrange
+        Zipcode zipcode = new Zipcode();
+        zipcode.setCity("Vantaa");
+        zipcode.setZipcode("01000");
+        Zipcode savedZipcode = zipcodeRepository.save(zipcode);
+
+        Venue venue = new Venue(); 
+        venue.setId(2L);
+        venue.setName("Kaatoluola");
+        venue.setAddress("mikonkatu 1");
+        venue.setZipcode(savedZipcode);
+        venue.setDeletedAt(null);
+        Venue savedVenue = venueRepository.save(venue); 
+
+        Event event = new Event(
+            "Concert",
+            "An amazing live concert",
+            200,
+            LocalDateTime.of(2024, 11, 14, 20, 0),
+            LocalDateTime.of(2024, 11, 14, 23, 0),
+            LocalDateTime.of(2024, 10, 1, 10, 0),
+            savedVenue,
+            null
+        );
+
+        // Act
+        Event savedEvent = eventRepository.save(event);
+
+        // Assert
+        
         assertEquals(LocalDateTime.of(2024, 11, 14, 20, 0), savedEvent.getBeginsAt(), "Event start time should match");
         assertEquals(LocalDateTime.of(2024, 11, 14, 23, 0), savedEvent.getEndsAt(), "Event end time should match");
         assertEquals(LocalDateTime.of(2024, 10, 1, 10, 0), savedEvent.getTicketSaleBegins(), "Ticket sale begin time should match");
-        assertEquals(1L, savedEvent.getVenue().getId(), "Event venue ID should match saved venue");
+        
+    }
+
+    @Test
+    public void testAddEventVenue() {
+
+        // Arrange
+        Zipcode zipcode = new Zipcode();
+        zipcode.setCity("Vantaa");
+        zipcode.setZipcode("01000");
+        Zipcode savedZipcode = zipcodeRepository.save(zipcode);
+
+        Venue venue = new Venue(); 
+        venue.setId(2L);
+        venue.setName("Kaatoluola");
+        venue.setAddress("mikonkatu 1");
+        venue.setZipcode(savedZipcode);
+        venue.setDeletedAt(null);
+        Venue savedVenue = venueRepository.save(venue); 
+
+        Event event = new Event(
+            "Concert",
+            "An amazing live concert",
+            200,
+            LocalDateTime.of(2024, 11, 14, 20, 0),
+            LocalDateTime.of(2024, 11, 14, 23, 0),
+            LocalDateTime.of(2024, 10, 1, 10, 0),
+            savedVenue,
+            null
+        );
+
+        // Act
+        Event savedEvent = eventRepository.save(event);
+
+        // Assert
+        
+        assertEquals("Kaatoluola", savedEvent.getVenue().getName(), "Event venue Name should match saved venue");
+    }
+
+    @Test
+    public void testAddEventZipcode() {
+
+        // Arrange
+        Zipcode zipcode = new Zipcode();
+        zipcode.setCity("Vantaa");
+        zipcode.setZipcode("01000");
+        Zipcode savedZipcode = zipcodeRepository.save(zipcode);
+
+        Venue venue = new Venue(); 
+        venue.setId(2L);
+        venue.setName("Kaatoluola");
+        venue.setAddress("mikonkatu 1");
+        venue.setZipcode(savedZipcode);
+        venue.setDeletedAt(null);
+        Venue savedVenue = venueRepository.save(venue); 
+
+        Event event = new Event(
+            "Concert",
+            "An amazing live concert",
+            200,
+            LocalDateTime.of(2024, 11, 14, 20, 0),
+            LocalDateTime.of(2024, 11, 14, 23, 0),
+            LocalDateTime.of(2024, 10, 1, 10, 0),
+            savedVenue,
+            null
+        );
+
+        // Act
+        Event savedEvent = eventRepository.save(event);
+
+        // Assert
+        
+        assertEquals("Vantaa", savedEvent.getVenue().getZipcode().getCity(), "Event venue zipcode city should match saved zipcode lol");
+        
+        
     }
 
     @Test
