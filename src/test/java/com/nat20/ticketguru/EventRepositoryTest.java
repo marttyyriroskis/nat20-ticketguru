@@ -33,6 +33,53 @@ public class EventRepositoryTest {
     @Autowired
     private ZipcodeRepository zipcodeRepository;
 
+
+    @Test
+    public void testSearchEvent() {
+
+        // Arrange
+        Zipcode zipcode = new Zipcode();
+        zipcode.setCity("Vantaa");
+        zipcode.setZipcode("01000");
+        Zipcode savedZipcode = zipcodeRepository.save(zipcode);
+
+        Venue venue = new Venue(); 
+        venue.setId(0L);
+        venue.setName("");
+        venue.setAddress("mikonkatu 1");
+        venue.setZipcode(savedZipcode);
+        venue.setDeletedAt(null);
+        Venue savedVenue = venueRepository.save(venue); 
+
+        Event event = new Event(
+            "Concert",
+            "An amazing live concert",
+            200,
+            LocalDateTime.of(2024, 11, 14, 20, 0),
+            LocalDateTime.of(2024, 11, 14, 23, 0),
+            LocalDateTime.of(2024, 10, 1, 10, 0),
+            savedVenue,
+            null
+        );
+
+        // Act
+        Event savedEvent = eventRepository.save(event);
+
+        Event fetchedEvent = eventRepository.findById(savedEvent.getId()).orElse(null);
+
+
+
+        // Assert
+        assertNotNull(fetchedEvent, "Event id should not be null");
+        assertEquals("Concert", fetchedEvent.getName(), "Event name should match");
+        assertEquals("An amazing live concert", fetchedEvent.getDescription(), "Event description should match");
+        assertEquals(200, fetchedEvent.getTotalTickets(), "Total tickets should match");
+        assertEquals(LocalDateTime.of(2024, 11, 14, 20, 0), fetchedEvent.getBeginsAt(), "Event start time should match");
+        assertEquals(LocalDateTime.of(2024, 11, 14, 23, 0), fetchedEvent.getEndsAt(), "Event end time should match");
+        assertEquals(LocalDateTime.of(2024, 10, 1, 10, 0), fetchedEvent.getTicketSaleBegins(), "Ticket sale begin time should match");
+        assertEquals(1L, fetchedEvent.getVenue().getId(), "Event venue ID should match saved venue");
+    }
+
     @Test
     public void testAddEvent() {
 
@@ -72,7 +119,7 @@ public class EventRepositoryTest {
         assertEquals(LocalDateTime.of(2024, 11, 14, 20, 0), savedEvent.getBeginsAt(), "Event start time should match");
         assertEquals(LocalDateTime.of(2024, 11, 14, 23, 0), savedEvent.getEndsAt(), "Event end time should match");
         assertEquals(LocalDateTime.of(2024, 10, 1, 10, 0), savedEvent.getTicketSaleBegins(), "Ticket sale begin time should match");
-        assertEquals(savedVenue.getId(), savedEvent.getVenue().getId(), "Event venue ID should match saved venue");
+        assertEquals(1L, savedEvent.getVenue().getId(), "Event venue ID should match saved venue");
     }
 
     @Test
