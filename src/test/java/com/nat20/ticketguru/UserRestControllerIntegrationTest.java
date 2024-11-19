@@ -1,0 +1,89 @@
+package com.nat20.ticketguru;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.nat20.ticketguru.domain.Permission;
+import com.nat20.ticketguru.domain.Role;
+import com.nat20.ticketguru.domain.User;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class UserRestControllerIntegrationTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    void adminUserCanCreateNewUser() throws Exception {
+        User adminUser = new User("admin@test.com", "Admin", "Admin", "hashedPassword");
+        Role adminRole = new Role("ADMIN");
+        adminRole.addPermissions(Permission.values());
+        adminUser.setRole(adminRole);
+
+        // Mock authentication context
+        SecurityContextHolder.getContext().setAuthentication(
+            new UsernamePasswordAuthenticationToken(
+                adminUser,
+                null,
+                adminUser.getAuthorities()
+            )
+        );
+
+        mockMvc.perform(post("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "email": "newtestuser@test.com",
+                            "firstName": "New",
+                            "lastName": "User",
+                            "password": "newtestuserpassword",
+                            "roleId": 2
+                        }
+                        """))
+                .andExpect(status().isCreated());
+    }
+
+
+    @Test
+    void nonAdminUserCannotCreateNewUser() throws Exception {
+        User salespersonUser = new User("salesperson@test.com", "Salesperson", "User", "hashedPassword");
+        Role salespersonRole = new Role("SALESPERSON");
+        salespersonRole.addPermissions(Permission.VIEW_SALES, Permission.CREATE_SALES); // Example permissions
+        salespersonUser.setRole(salespersonRole);
+
+        // Mock authentication context
+        SecurityContextHolder.getContext().setAuthentication(
+            new UsernamePasswordAuthenticationToken(
+                salespersonUser,
+                null,
+                salespersonUser.getAuthorities()
+            )
+        );
+
+        mockMvc.perform(post("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "email": "newtestuser2@test.com",
+                            "firstName": "Newer",
+                            "lastName": "User",
+                            "password": "newtestuserpassword",
+                            "roleId": 2
+                        }
+                        """))
+                .andExpect(status().isForbidden());
+    }
+
+}
