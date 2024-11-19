@@ -50,7 +50,7 @@ Content-Type: application/json
 
 ## Success Response
 
-**Condition** : Data provided is valid. Given `ticketTypeId`s exist. User is authenticated and has permission to `CREATE_SALES`.
+**Condition** : Data provided is valid. Given `ticketTypeId`s exist. User is authenticated and has permission to `CONFIRM_SALES`.
 
 **Code** : `201 CREATED`
 
