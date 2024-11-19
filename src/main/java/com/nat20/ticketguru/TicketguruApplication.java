@@ -11,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.nat20.ticketguru.domain.Event;
@@ -41,6 +42,7 @@ public class TicketguruApplication {
     }
 
     @Bean
+    @Profile("!test") // do not run when 'test' profile is active
     public CommandLineRunner demo(TicketRepository ticketRepository,
             UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository,
             SaleRepository saleRepository, EventRepository eventRepository, VenueRepository venueRepository,
