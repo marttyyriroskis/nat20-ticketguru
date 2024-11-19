@@ -7,12 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -27,7 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 import jakarta.transaction.Transactional;
 
 @Transactional
-@SpringBootTest(properties = "spring.profiles.active=test", webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(properties = "spring.profiles.active=test")
 @AutoConfigureMockMvc()
 public class BarcodeIntegrationTest {
 
@@ -47,7 +45,6 @@ public class BarcodeIntegrationTest {
 
     // Post two duplicate Tickets, then check their barcodes are dissimilar
     @Test
-    @WithMockUser(username = "admin@test.com", password = "admin", roles = {"ADMIN"})
     public void testDuplicateBarcodeNotAllowed() throws Exception {
         String ticketPayload = """
             {
