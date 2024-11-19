@@ -15,7 +15,7 @@ public class CustomCorsConfig {
     public CorsConfigurationSource getCorsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5500", "http://127.0.0.1:5500", "https://ticket-client.hellmanstudios.fi")); // TODO: Specify allowed origin(s)
+        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5500", "http://127.0.0.1:5500", "https://ticket-client.hellmanstudios.fi")); // Specify allowed origin(s)
         config.setAllowedMethods(List.of("GET", "PUT", "OPTIONS")); // Allow specified HTTP methods
         config.setAllowedHeaders(List.of("*")); // Allow all headers
         config.setAllowCredentials(true);

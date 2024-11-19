@@ -27,7 +27,6 @@ public class Ticket {
     private Long id;
 
     @NotBlank
-    //Size annotation if the barcode should always be the same length
     private String barcode;
 
     @Column(name = "used_at")
