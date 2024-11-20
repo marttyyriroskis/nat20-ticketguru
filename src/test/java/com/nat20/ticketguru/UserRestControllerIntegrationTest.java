@@ -15,7 +15,10 @@ import com.nat20.ticketguru.domain.Permission;
 import com.nat20.ticketguru.domain.Role;
 import com.nat20.ticketguru.domain.User;
 
+import jakarta.transaction.Transactional;
 
+
+@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserRestControllerIntegrationTest {
@@ -43,10 +46,10 @@ public class UserRestControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
-                            "email": "newtestuser@test.com",
-                            "firstName": "New",
-                            "lastName": "User",
-                            "password": "newtestuserpassword",
+                            "email": "newtestuser1@test.com",
+                            "firstName": "New1",
+                            "lastName": "User1",
+                            "password": "newtestuserpassword1",
                             "roleId": 2
                         }
                         """))
