@@ -77,7 +77,6 @@ public class TicketguruApplication {
                             Permission.CONFIRM_SALES,
                             Permission.VIEW_TICKETS,
                             Permission.DELETE_TICKETS,
-                            Permission.USE_TICKETS,
                             Permission.VIEW_TICKET_TYPES,
                             Permission.VIEW_VENUES);
                     coordinatorRole.addPermissions(
