@@ -19,8 +19,8 @@ import jakarta.transaction.Transactional;
 
 
 @Transactional
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(properties = "spring.profiles.active=test")
+@AutoConfigureMockMvc()
 public class UserRestControllerIntegrationTest {
 
     @Autowired
