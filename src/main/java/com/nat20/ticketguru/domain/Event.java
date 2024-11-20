@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Size;
 
 import com.nat20.ticketguru.dto.EventDTO;
@@ -40,9 +41,11 @@ public class Event {
     private int totalTickets;
 
     @Column(name = "begins_at", nullable = false)
+    @Future
     private LocalDateTime beginsAt;
 
     @Column(name = "ends_at", nullable = false)
+    @Future
     private LocalDateTime endsAt;
 
     @Column(name = "ticket_sale_begins", nullable = true)
