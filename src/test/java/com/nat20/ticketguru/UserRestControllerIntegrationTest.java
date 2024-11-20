@@ -7,19 +7,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.nat20.ticketguru.domain.Permission;
 import com.nat20.ticketguru.domain.Role;
 import com.nat20.ticketguru.domain.User;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import jakarta.transaction.Transactional;
 
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@Transactional
+@SpringBootTest(properties = "spring.profiles.active=test")
+@AutoConfigureMockMvc()
 public class UserRestControllerIntegrationTest {
 
     @Autowired
@@ -45,10 +46,10 @@ public class UserRestControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
-                            "email": "newtestuser@test.com",
-                            "firstName": "New",
-                            "lastName": "User",
-                            "password": "newtestuserpassword",
+                            "email": "newtestuser1@test.com",
+                            "firstName": "New1",
+                            "lastName": "User1",
+                            "password": "newtestuserpassword1",
                             "roleId": 2
                         }
                         """))
