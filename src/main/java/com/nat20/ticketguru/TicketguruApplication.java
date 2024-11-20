@@ -48,19 +48,15 @@ public class TicketguruApplication {
             SaleRepository saleRepository, EventRepository eventRepository, VenueRepository venueRepository,
             TicketTypeRepository ticketTypeRepository, @Value("${app.skipPrompt:false}") boolean skipPrompt) {
 
-        return new CommandLineRunner() {
-            @Override
-            public void run(String[] args) throws Exception {
+        return (String[] args) -> {
+            if (skipPrompt) {
+                log.info("Ticket Guru is now up and running 👌");
+                return;
+            }
 
-                if (skipPrompt) {
-                    log.info("Ticket Guru is now up and running 👌");
-                    return;
-                }
+            System.out.println("Would you like to initialize the database with some sample data? (yes/no)");
 
-                System.out.println("Would you like to initialize the database with some sample data? (yes/no)");
-
-                Scanner scanner = new Scanner(System.in);
-
+            try (Scanner scanner = new Scanner(System.in)) {
                 if (scanner.nextLine().equals("yes")) {
 
                     log.info("Creating a few role test entries");
@@ -211,7 +207,6 @@ public class TicketguruApplication {
                 }
 
                 System.out.println("Ticket Guru is now up and running. 👌");
-                scanner.close();
             }
         };
     }
