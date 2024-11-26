@@ -21,6 +21,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "roles")
@@ -30,6 +31,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
     @Column(unique = true)
     private String title;
 
@@ -76,16 +78,8 @@ public class Role {
         return deletedAt;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
-    }
-
     public void delete() {
         this.deletedAt = LocalDateTime.now();
-    }
-
-    public void restore() {
-        this.deletedAt = null;
     }
 
     public boolean isDeleted() {

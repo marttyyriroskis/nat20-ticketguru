@@ -3,9 +3,6 @@ package com.nat20.ticketguru.domain;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat20.ticketguru.dto.UserDTO;
 
@@ -47,11 +44,10 @@ public class User implements UserDetails {
     private String hashedPassword;
 
     @ManyToOne
-    @JoinColumn(name = "roleid")
+    @JoinColumn(name = "role_id")
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Sale> sales;
 
     @Column(name = "deleted_at")
@@ -134,16 +130,8 @@ public class User implements UserDetails {
         return deletedAt;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
-    }
-
     public void delete() {
         deletedAt = LocalDateTime.now();
-    }
-
-    public void restore() {
-        deletedAt = null;
     }
 
     public boolean isDeleted() {
@@ -177,7 +165,16 @@ public class User implements UserDetails {
     }
 
     public UserDTO toDTO() {
-        return new UserDTO(id, email, firstName, lastName, role.toDTO());
+        return new UserDTO(
+                this.email,
+                this.firstName,
+                this.lastName,
+                this.role.toDTO(),
+
+                this.sales.stream()
+                        .map(Sale::getId)
+                        .collect(Collectors.toList())
+        );
     }
 
     // Have to implement all UserDetails methods:
