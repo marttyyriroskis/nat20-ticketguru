@@ -2,11 +2,11 @@ package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat20.ticketguru.dto.RoleDTO;
 
 import jakarta.persistence.CascadeType;
@@ -43,7 +43,6 @@ public class Role {
     private Set<Permission> permissions = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
-    @JsonIgnore
     private Set<User> users = new HashSet<>();
 
     public Role() {
@@ -122,12 +121,16 @@ public class Role {
     public RoleDTO toDTO() {
         return new RoleDTO(
                 this.title,
-                this.permissions.stream()
-                        .map(Permission::toString)
-                        .collect(Collectors.toList()),
-                this.users.stream()
-                        .map(User::getId)
-                        .collect(Collectors.toList())
+                this.permissions == null
+                        ? Collections.emptyList()
+                        : this.permissions.stream()
+                                .map(Permission::toString)
+                                .collect(Collectors.toList()),
+                this.users == null
+                        ? Collections.emptyList()
+                        : this.users.stream()
+                                .map(User::getId)
+                                .collect(Collectors.toList())
         );
     }
 

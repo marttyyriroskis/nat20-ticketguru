@@ -1,6 +1,7 @@
 package com.nat20.ticketguru.domain;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -171,9 +172,11 @@ public class User implements UserDetails {
                 this.lastName,
                 this.role.toDTO(),
 
-                this.sales.stream()
-                        .map(Sale::getId)
-                        .collect(Collectors.toList())
+                this.sales == null
+                        ? Collections.emptyList() // Handle null sales; otherwise collect to list
+                        : this.sales.stream()
+                                .map(Sale::getId)
+                                .collect(Collectors.toList())
         );
     }
 

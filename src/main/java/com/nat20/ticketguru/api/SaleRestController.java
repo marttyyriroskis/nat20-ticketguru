@@ -3,9 +3,7 @@ package com.nat20.ticketguru.api;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,9 +62,7 @@ public class SaleRestController {
     @PreAuthorize("hasAuthority('VIEW_SALES')")
     public ResponseEntity<List<SaleDTO>> getAllSales() {
 
-        Iterable<Sale> iterableSales = saleRepository.findAllActive();
-        List<Sale> sales = new ArrayList<>();
-        iterableSales.forEach(sales::add);
+        List<Sale> sales = saleRepository.findAllActive();
 
         return ResponseEntity.ok(sales.stream()
                 .map(Sale::toDTO)
@@ -87,36 +83,26 @@ public class SaleRestController {
     @PreAuthorize("hasAuthority('CREATE_SALES')")
     public ResponseEntity<SaleDTO> createSale(@Valid @RequestBody SaleDTO saleDTO) {
 
-        // check User
-        User user = userRepository.findById(saleDTO.userId())
+        User user = userRepository.findByIdActive(saleDTO.userId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         Sale newSale = new Sale();
-        newSale.setUser(user);        
+        newSale.setUser(user);
 
-        // check Tickets
-        List<Ticket> validTickets = new ArrayList<>();
-        List<Long> requestTickets = saleDTO.ticketIds();
-        for (Long ticketId : requestTickets) {
-            Optional<Ticket> ticket = ticketRepository.findById(ticketId);
-            if (!ticket.isPresent()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket");
-            }
-            // TODO maybe need to add more validation here? 
-            validTickets.add(ticket.get());
-            // set ticket association with sale in ticket
-            ticket.get().setSale(newSale);
-        }
+        List<Ticket> validTickets = saleDTO.ticketIds().stream()
+                .map(ticketId -> {
+                    Ticket ticket = ticketRepository.findByIdActive(ticketId)
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket"));
+                    ticket.setSale(newSale);
+                    return ticket;
+                })
+                .toList();
 
-        if (validTickets.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No valid tickets in Sale");
-        }
-        
         newSale.setTickets(validTickets);
 
-        saleRepository.save(newSale);
+        Sale addedSale = saleRepository.save(newSale);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(newSale.toDTO());
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedSale.toDTO());
     }
 
     @PutMapping("/{id}")
@@ -126,31 +112,24 @@ public class SaleRestController {
         Sale sale = saleRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
 
-        User existingUser = userRepository.findById(editedSaleDTO.userId())
+        User existingUser = userRepository.findByIdActive(editedSaleDTO.userId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid User ID"));
 
-        // check Tickets
-        List<Ticket> validTickets = new ArrayList<>();
-        for (Long ticketId : editedSaleDTO.ticketIds()) {
-            Optional<Ticket> ticket = ticketRepository.findById(ticketId);
-            if (!ticket.isPresent()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket");
-            }
-            // check ticket for soft-delete status
-            if (ticket.get().getDeletedAt() == null) {
-                // TODO maybe need to add more validation here?
-                validTickets.add(ticket.get());
-                // set ticket association with sale in ticket
-                ticket.get().setSale(sale);
-            }
-        }
+        List<Ticket> validTickets = editedSaleDTO.ticketIds().stream()
+                .map(ticketId -> {
+                    Ticket ticket = ticketRepository.findByIdActive(ticketId)
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket"));
+                    ticket.setSale(sale);
+                    return ticket;
+                })
+                .toList();
 
         sale.setUser(existingUser);
         sale.setTickets(validTickets);
 
-        saleRepository.save(sale);
+        Sale editedSale = saleRepository.save(sale);
 
-        return ResponseEntity.ok(sale.toDTO());
+        return ResponseEntity.ok(editedSale.toDTO());
     }
 
     @DeleteMapping("/{id}")

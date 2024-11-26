@@ -2,6 +2,7 @@ package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat20.ticketguru.dto.EventDTO;
 
 @Entity
@@ -58,7 +58,6 @@ public class Event {
     @Column(name = "ticket_sale_begins")
     private LocalDateTime ticketSaleBegins;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "venue_id")
     private Venue venue;
@@ -67,10 +66,17 @@ public class Event {
     private LocalDateTime deletedAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
-    @JsonIgnore
     private List<TicketType> ticketTypes = new ArrayList<>();
 
     public Event() {
+    }
+
+    public Event(String name, String description, int totalTickets, LocalDateTime beginsAt, LocalDateTime endsAt) {
+        this.name = name;
+        this.description = description;
+        this.totalTickets = totalTickets;
+        this.beginsAt = beginsAt;
+        this.endsAt = endsAt;
     }
 
     public Event(String name, String description, int totalTickets, LocalDateTime beginsAt, LocalDateTime endsAt, Venue venue) {
@@ -164,9 +170,11 @@ public class Event {
                 this.ticketSaleBegins,
                 this.venue.getId(),
 
-                this.ticketTypes.stream()
-                        .map(TicketType::getId)
-                        .collect(Collectors.toList())
+                this.ticketTypes == null
+                        ? Collections.emptyList()
+                        : this.ticketTypes.stream()
+                                .map(TicketType::toDTO)
+                                .collect(Collectors.toList())
         );
     }
 

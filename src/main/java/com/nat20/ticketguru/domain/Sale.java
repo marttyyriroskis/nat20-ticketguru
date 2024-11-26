@@ -44,6 +44,7 @@ public class Sale {
     @Transient
     private Long userId;
 
+    @NotNull
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Ticket> tickets = new ArrayList<>();
 

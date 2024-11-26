@@ -3,7 +3,6 @@ package com.nat20.ticketguru.dto;
 import java.util.List;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record VenueDTO(
@@ -15,7 +14,7 @@ public record VenueDTO(
                 @Size(min = 1, max = 100)
                 String address,
                 
-                @NotNull
+                @NotEmpty
                 String zipcode,
 
                 List<Long> eventIds

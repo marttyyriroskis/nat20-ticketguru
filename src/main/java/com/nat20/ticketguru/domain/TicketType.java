@@ -1,10 +1,9 @@
 package com.nat20.ticketguru.domain;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -51,8 +50,7 @@ public class TicketType {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticket_type")
-    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketType")
     private List<Ticket> tickets;
 
     public TicketType() {
@@ -120,9 +118,11 @@ public class TicketType {
             this.totalAvailable,
             this.event.getId(),
 
-            this.tickets.stream()
-                    .map(Ticket::getId)
-                    .collect(Collectors.toList())
+            this.tickets == null
+                    ? Collections.emptyList()
+                    : this.tickets.stream()
+                            .map(Ticket::getId)
+                            .collect(Collectors.toList())
         );
     }
 

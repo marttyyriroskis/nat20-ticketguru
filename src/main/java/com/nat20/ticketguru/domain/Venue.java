@@ -1,10 +1,10 @@
 package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat20.ticketguru.dto.VenueDTO;
 
 import jakarta.persistence.CascadeType;
@@ -46,7 +46,6 @@ public class Venue {
     private LocalDateTime deletedAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
-    @JsonIgnore
     private List<Event> events;
 
     public Venue() {
@@ -104,9 +103,11 @@ public class Venue {
                 this.address,
                 this.zipcode.getZipcode(),
 
-                this.events.stream()
-                        .map(Event::getId)
-                        .collect(Collectors.toList())
+                this.events == null
+                        ? Collections.emptyList()
+                        : this.events.stream()
+                                .map(Event::getId)
+                                .collect(Collectors.toList())
         );
     }
 

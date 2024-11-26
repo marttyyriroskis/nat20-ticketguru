@@ -1,6 +1,5 @@
 package com.nat20.ticketguru.api;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -47,9 +46,7 @@ public class TicketRestController {
     @PreAuthorize("hasAuthority('VIEW_TICKETS')")
     public ResponseEntity<List<TicketDTO>> getTickets() {
 
-        Iterable<Ticket> iterableTickets = ticketRepository.findAllActive();
-        List<Ticket> ticketList = new ArrayList<>();
-        iterableTickets.forEach(ticketList::add);
+        List<Ticket> ticketList = ticketRepository.findAllActive();
 
         return ResponseEntity.ok(ticketList.stream()
                 .map(Ticket::toDTO)
@@ -108,9 +105,10 @@ public class TicketRestController {
     @PreAuthorize("hasAuthority('CREATE_TICKETS')")
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
 
-        TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
+        TicketType ticketType = ticketTypeRepository.findByIdActive(ticketDTO.ticketTypeId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Ticket Type not found"));
-        Sale sale = saleRepository.findById(ticketDTO.saleId())
+                
+        Sale sale = saleRepository.findByIdActive(ticketDTO.saleId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Sale not found"));
 
         Ticket newTicket = new Ticket();
@@ -119,9 +117,9 @@ public class TicketRestController {
         newTicket.setTicketType(ticketType);
         newTicket.setSale(sale);
 
-        ticketRepository.save(newTicket);
+        Ticket addedTicket = ticketRepository.save(newTicket);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(newTicket.toDTO());
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedTicket.toDTO());
     }
 
     // Edit ticket
@@ -132,14 +130,14 @@ public class TicketRestController {
         Ticket ticket = ticketRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
-        ticket.setUsedAt(ticketDTO.usedAt());
-        ticket.setPrice(ticketDTO.price());
-
-        TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
+        TicketType ticketType = ticketTypeRepository.findByIdActive(ticketDTO.ticketTypeId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid TicketType ID"));
-        Sale sale = saleRepository.findById(ticketDTO.saleId())
+
+        Sale sale = saleRepository.findByIdActive(ticketDTO.saleId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Sale ID"));
 
+        ticket.setUsedAt(ticketDTO.usedAt());
+        ticket.setPrice(ticketDTO.price());
         ticket.setTicketType(ticketType);
         ticket.setSale(sale);
 

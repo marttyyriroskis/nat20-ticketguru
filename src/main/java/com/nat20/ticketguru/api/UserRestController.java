@@ -1,8 +1,5 @@
 package com.nat20.ticketguru.api;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,10 +39,7 @@ import java.util.List;
 @Validated
 public class UserRestController {
 
-    @Autowired
     private final UserRepository userRepository;
-
-    @Autowired
     private final RoleRepository roleRepository;
 
     public UserRestController(UserRepository userRepository, RoleRepository roleRepository) {
@@ -58,15 +52,10 @@ public class UserRestController {
      * 
      * @return all users
      */
-    @PreAuthorize("hasAuthority('VIEW_USERS')")
     @GetMapping
+    @PreAuthorize("hasAuthority('VIEW_USERS')")
     public ResponseEntity<Iterable<UserDTO>> getUsers() {
         List<User> users = userRepository.findAllActive();
-
-        if (users.isEmpty()) {
-            throw new ResponseStatusException(
-                HttpStatus.NO_CONTENT, "No users available");
-        }
 
         return ResponseEntity.ok(users.stream()
             .map(User::toDTO)
@@ -78,24 +67,22 @@ public class UserRestController {
      * 
      * @param id the id of the user requested
      * @return the user requested
+     * @exception ResponseStatusException if unauthorized
      * @exception ResponseStatusException if user not found
      */
-    @PreAuthorize("hasAuthority('VIEW_USERS')")
     @GetMapping("/{id}")
-    public UserDTO getUser(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    @PreAuthorize("hasAuthority('VIEW_USERS')")
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long id, @AuthenticationPrincipal User user) {
 
         if (user.getId() != id && !user.getRole().getTitle().equals("ADMIN")) {
             throw new ResponseStatusException(
                 HttpStatus.FORBIDDEN, "You are not authorized to view this user");
         }
 
-        Optional<User> optionalUser = userRepository.findByIdActive(id);
-        if (!optionalUser.isPresent()) {
-            throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "User not found");
-        }
-        UserDTO responseUser = optionalUser.get().toDTO();
-        return responseUser;
+        User getUser = userRepository.findByIdActive(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        return ResponseEntity.ok(getUser.toDTO());
     }
 
     /**
@@ -105,8 +92,8 @@ public class UserRestController {
      * @return the user added
      * @exception ResponseStatusException if role not found
      */
-    @PreAuthorize("hasAuthority('CREATE_USERS')")
     @PostMapping
+    @PreAuthorize("hasAuthority('CREATE_USERS')")
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserCreateDTO ucDTO) {
 
         if (userRepository.findByEmail(ucDTO.getEmail()).isPresent()) {
@@ -122,7 +109,6 @@ public class UserRestController {
                     () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Role not found"));
 
             user.setRole(existingRole);
-
         }
 
         if (ucDTO.getPassword() != null) {
@@ -141,11 +127,11 @@ public class UserRestController {
      * @param editedUser the requested updates for the user
      * @return the updated user
      */
-    @PreAuthorize("hasAuthority('EDIT_USERS')")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EDIT_USERS')")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserCreateDTO editedUser) {
         
-        User user = userRepository.findById(id).orElseThrow(
+        User user = userRepository.findByIdActive(id).orElseThrow(
             () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         if (editedUser.getEmail() != null) {
@@ -160,7 +146,7 @@ public class UserRestController {
         user.setLastName(editedUser.getLastName());
 
         if (editedUser.getRoleId() != null) {
-            Role existingRole = roleRepository.findById(
+            Role existingRole = roleRepository.findByIdActive(
                 editedUser.getRoleId()).orElseThrow(
                     () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Role not found"));
             user.setRole(existingRole);
@@ -182,16 +168,17 @@ public class UserRestController {
      * @return 204 No Content
      * @exception ResponseStatusException if user not found
      */
-    @PreAuthorize("hasAuthority('DELETE_USERS')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE_USERS')")
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
+
         User user = userRepository.findByIdActive(id).orElseThrow(
             () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         
         user.delete(); // Mark as deleted (soft delete)
         userRepository.save(user);
 
-        return ResponseEntity.status(204).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

@@ -2,11 +2,10 @@ package com.nat20.ticketguru.dto;
 
 import java.time.LocalDateTime;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public record TicketDTO(
-        @NotEmpty
         String barcode,
 
         LocalDateTime usedAt,
@@ -15,8 +14,8 @@ public record TicketDTO(
         double price,
 
         Long saleId,
-        TicketTypeDTO ticketType,
-        EventDTO event,
-        VenueDTO venue) {
+
+        @NotNull
+        Long ticketTypeId) {
 
 }

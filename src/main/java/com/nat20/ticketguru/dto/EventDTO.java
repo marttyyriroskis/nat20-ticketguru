@@ -32,8 +32,7 @@ public record EventDTO(
 
         LocalDateTime ticketSaleBegins,
 
-        @NotNull(message = "Event venue id cannot be null")
         Long venueId,
         
-        List<Long> ticketTypeIds) {
+        List<TicketTypeDTO> ticketTypeDTOs) {
 }

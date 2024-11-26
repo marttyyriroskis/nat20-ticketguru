@@ -1,7 +1,7 @@
 package com.nat20.ticketguru.api;
 
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,9 +43,7 @@ public class EventRestController {
     @PreAuthorize("hasAuthority('VIEW_EVENTS')")
     public ResponseEntity<List<EventDTO>> getAllEvents() {
 
-        Iterable<Event> iterableEvents = eventRepository.findAllActive();
-        List<Event> events = new ArrayList<>();
-        iterableEvents.forEach(events::add);
+        List<Event> events = eventRepository.findAllActive();
 
         return ResponseEntity.ok(events.stream()
                 .map(Event::toDTO)
@@ -68,8 +66,9 @@ public class EventRestController {
     @PreAuthorize("hasAuthority('CREATE_EVENTS')")
     public ResponseEntity<EventDTO> createEvent(@Valid @RequestBody EventDTO eventDTO) {
 
-        //Venue venue = venueRepository.findById(eventDTO.venueId())
-        //      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found"));
+        Venue venue = Optional.ofNullable(eventDTO.venueId())
+                .flatMap(venueRepository::findByIdActive)
+                .orElse(null);
 
         Event event = new Event();
         event.setName(eventDTO.name());
@@ -77,10 +76,11 @@ public class EventRestController {
         event.setTotalTickets(eventDTO.totalTickets());
         event.setBeginsAt(eventDTO.beginsAt());
         event.setEndsAt(eventDTO.endsAt());
+        event.setVenue(venue);
 
-        eventRepository.save(event);
+        Event addedEvent = eventRepository.save(event);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(event.toDTO());
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedEvent.toDTO());
     }
 
     // Edit event with PUT request
@@ -98,14 +98,14 @@ public class EventRestController {
         event.setEndsAt(eventDTO.endsAt());
         event.setTicketSaleBegins(eventDTO.ticketSaleBegins());
 
-        Venue venue = venueRepository.findById(eventDTO.venueId())
+        Venue venue = venueRepository.findByIdActive(eventDTO.venueId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Venue ID"));
 
         event.setVenue(venue);
         
-        eventRepository.save(event);
+        Event editedEvent = eventRepository.save(event);
 
-        return ResponseEntity.ok(event.toDTO());
+        return ResponseEntity.ok(editedEvent.toDTO());
     }
 
     // Delete event with DELETE Request
