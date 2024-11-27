@@ -9,14 +9,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-@Subselect("SELECT * FROM event_ticket_summary") // prevents hibernate from trying to make it into a table
+// subselect instead of table prevents hibernate from trying to make it into a table which conflicts with the material view
+@Subselect("SELECT * FROM event_ticket_summary")
+// read-only
 @Immutable
 public class TicketSummary {
 
     @Id
-    private Long ticketTypeId;
+    private Long ticketTypeId; // is null for event-level totals
 
-    private Long eventId;
+    private Long eventId; // is null for grand totals
     private Long ticketsSold;
     private Long ticketsTotal;
     private BigDecimal totalRevenue;

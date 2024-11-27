@@ -1,5 +1,7 @@
 package com.nat20.ticketguru.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -30,14 +32,14 @@ public class TicketSummaryService {
         jdbcTemplate.execute("REFRESH MATERIALIZED VIEW CONCURRENTLY event_ticket_summary");
     }
 
-    public int countAvailableTickets(Long ticketTypeId) {
+    public int countAvailableTicketsForTicketType(Long ticketTypeId) {
         TicketType ticketType = ticketTypeRepository.findById(ticketTypeId)
                 .orElseThrow(() -> new IllegalArgumentException("TicketType not found"));
 
         TicketSummary summary = ticketSummaryRepository.findByTicketTypeId(ticketTypeId)
-                .orElseThrow(() -> new IllegalArgumentException("TicketType not found"));
+                .orElseThrow(() -> new IllegalArgumentException("TicketSummary not found"));
 
-        Event event = eventRepository.findById(ticketType.getId())
+        Event event = eventRepository.findById(ticketType.getEvent().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Event not found"));
 
         int totalAvailable;
@@ -49,6 +51,22 @@ public class TicketSummaryService {
         }
 
         return totalAvailable - summary.getTicketsSold().intValue();
+    }
+
+    public int countAvailableTicketsForEvent(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+
+        List<TicketSummary> ticketSummaries = ticketSummaryRepository.findByEventId(eventId);
+
+        // No tickets have been sold, so all tickets are available
+        if (ticketSummaries.isEmpty()) {
+            return event.getTotalTickets();
+        }
+        TicketSummary totals = ticketSummaries.stream()
+                .filter(summary -> summary.getTicketTypeId() == null) // event-level totals
+                .findAny().get();
+        return event.getTotalTickets() - totals.getTicketsSold().intValue();
     }
 
 }

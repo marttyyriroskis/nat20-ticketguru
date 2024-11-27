@@ -220,8 +220,8 @@ public class TicketguruApplication {
                                 ticket_types tt ON tt.event_id = e.id
                         LEFT JOIN
                                 tickets t ON t.ticket_type_id = tt.id
-                        GROUP BY
-                                e.id, tt.id
+                        GROUP BY ROLLUP
+                                (e.id, tt.id)
                         WITH DATA;
                                         """;
 
