@@ -17,4 +17,7 @@ public interface TicketTypeRepository extends CrudRepository<TicketType, Long> {
     @Query(value = "SELECT * FROM ticket_types WHERE id = :id AND deleted_at IS NULL", nativeQuery = true)
     Optional<TicketType> findByIdActive(@Param("id") Long id);
 
+    @Query(value = "SELECT * FROM ticket_types WHERE event_id = :event_id AND deleted_at IS NULL", nativeQuery = true)
+    List<TicketType> findByEventIdActive(@Param("event_id") Long eventId);
+
 }

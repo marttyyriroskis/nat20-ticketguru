@@ -1,6 +1,8 @@
 package com.nat20.ticketguru.api;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -86,7 +89,7 @@ public class TicketTypeRestController {
 
         TicketType ticketType = ticketTypeRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found"));
-        
+
         Event event = eventRepository.findByIdActive(ticketTypeDTO.eventId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Event ID"));
 
@@ -113,5 +116,18 @@ public class TicketTypeRestController {
         ticketTypeRepository.save(ticketType);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // Search ticket types by eventId
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
+    public ResponseEntity<List<TicketTypeDTO>> searchTicketTypes(@RequestParam Long eventId) {
+        eventRepository.findByIdActive(eventId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event does not exist!"));
+
+        List<TicketType> ticketTypes = ticketTypeRepository.findByEventIdActive(eventId);
+        return ResponseEntity.ok(ticketTypes.stream()
+                .map(TicketType::toDTO)
+                .toList());
     }
 }
