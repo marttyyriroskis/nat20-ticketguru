@@ -160,7 +160,7 @@ public class SaleRestController {
 
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('VIEW_SALES')")
-    public ResponseEntity<List<Sale>> searchSales(
+    public ResponseEntity<List<SaleDTO>> searchSales(
             @RequestParam(required = false) String start,
             @RequestParam(required = false) String end,
             @RequestParam(required = false) Long userId) {
@@ -173,7 +173,7 @@ public class SaleRestController {
         }
         try {
             List<Sale> sales = saleService.searchSales(startDateTime, endDateTime, userId);
-            return ResponseEntity.ok(sales);
+            return ResponseEntity.ok(sales.stream().map(Sale::toDTO).toList());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
