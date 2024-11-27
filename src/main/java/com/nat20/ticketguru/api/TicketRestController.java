@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,13 +42,21 @@ public class TicketRestController {
         this.saleRepository = saleRepository;
     }
 
-    // Get tickets
+    // Get all tickets, or tickets for specified Ids
     @GetMapping
     @PreAuthorize("hasAuthority('VIEW_TICKETS')")
-    public ResponseEntity<List<TicketDTO>> getTickets() {
-
-        List<Ticket> ticketList = ticketRepository.findAllActive();
-
+    public ResponseEntity<List<TicketDTO>> getTickets(@RequestParam(required = false) List<Long> ids) {
+        List<Ticket> ticketList;
+        if (ids != null && !ids.isEmpty()) {
+            // get tickets by the list of Id's
+            try {
+                ticketList = ticketRepository.findAllByIdIn(ids);
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            }
+        } else {
+            ticketList = ticketRepository.findAllActive();
+        }
         return ResponseEntity.ok(ticketList.stream()
                 .map(Ticket::toDTO)
                 .toList());
@@ -99,17 +108,17 @@ public class TicketRestController {
 
         return ResponseEntity.ok(updatedTicket.toDTO());
     }
-    
-    // Post a new ticket
+
+// Post a new ticket
     @PostMapping
     @PreAuthorize("hasAuthority('CREATE_TICKETS')")
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
 
         TicketType ticketType = ticketTypeRepository.findByIdActive(ticketDTO.ticketTypeId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Ticket Type not found"));
-                
-        Sale sale = saleRepository.findByIdActive(ticketDTO.saleId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Sale not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket Type not found"));
+
+        e = saleRepository.findByIdActive(ticketDTO.saleId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
 
         Ticket newTicket = new Ticket();
         newTicket.setUsedAt(ticketDTO.usedAt());
