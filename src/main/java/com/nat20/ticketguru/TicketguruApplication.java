@@ -12,6 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.nat20.ticketguru.domain.Event;
@@ -46,7 +47,8 @@ public class TicketguruApplication {
     public CommandLineRunner demo(TicketRepository ticketRepository,
             UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository,
             SaleRepository saleRepository, EventRepository eventRepository, VenueRepository venueRepository,
-            TicketTypeRepository ticketTypeRepository, @Value("${app.skipPrompt:false}") boolean skipPrompt) {
+            TicketTypeRepository ticketTypeRepository, @Value("${app.skipPrompt:false}") boolean skipPrompt,
+            JdbcTemplate jdbcTemplate) {
 
         return (String[] args) -> {
             if (skipPrompt) {
@@ -202,6 +204,32 @@ public class TicketguruApplication {
                     log.info("\n\nSales:\n");
                     log.info(savedSale2.toString());
                     log.info("\n\n\n");
+
+                    // create materialized view for ticket availability using SQL statements
+                    String createMaterializedViewSQL = """
+                        CREATE MATERIALIZED VIEW IF NOT EXISTS event_ticket_summary AS  
+                        SELECT
+                                e.id AS event_id,
+                                tt.id AS ticket_type_id,
+                                count(t.id) FILTER (WHERE t.sale_id IS NOT NULL AND t.deleted_at IS NULL) AS tickets_sold,
+                                count(t.id) FILTER (WHERE t.deleted_at IS NULL) AS tickets_total,
+                                sum(t.price) FILTER (WHERE t.sale_id IS NOT NULL AND t.deleted_at IS NULL)::numeric(10,2) AS total_revenue
+                        FROM
+                                events e
+                        JOIN
+                                ticket_types tt ON tt.event_id = e.id
+                        LEFT JOIN
+                                tickets t ON t.ticket_type_id = tt.id
+                        GROUP BY
+                                e.id, tt.id
+                        WITH DATA;
+                                        """;
+
+                    String createIndex = "CREATE UNIQUE INDEX idx_ticket_summary ON event_ticket_summary (ticket_type_id);";
+
+                    jdbcTemplate.execute(createMaterializedViewSQL);
+                    jdbcTemplate.execute(createIndex);
+                    jdbcTemplate.execute("REFRESH MATERIALIZED VIEW CONCURRENTLY event_ticket_summary;");
                 }
 
                 System.out.println("Ticket Guru is now up and running. 👌");
