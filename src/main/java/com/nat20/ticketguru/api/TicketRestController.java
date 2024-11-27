@@ -117,7 +117,7 @@ public class TicketRestController {
         TicketType ticketType = ticketTypeRepository.findByIdActive(ticketDTO.ticketTypeId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket Type not found"));
 
-        e = saleRepository.findByIdActive(ticketDTO.saleId())
+        Sale sale = saleRepository.findByIdActive(ticketDTO.saleId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
 
         Ticket newTicket = new Ticket();
