@@ -128,12 +128,13 @@ public class Ticket {
 
     public TicketDTO toDTO() {
         return new TicketDTO(
-                barcode,
-                usedAt,
-                price,
-                sale.getId(),
-                ticketType.getId() //, ticketType.getEvent().toDTO(), ticketType.getEvent().getVenue().toDTO()
-                );
+                this.id,
+                this.barcode,
+                this.usedAt,
+                this.price,
+                this.sale.getId(),
+                this.ticketType.getId() //, ticketType.getEvent().toDTO(), ticketType.getEvent().getVenue().toDTO()
+        );
     }
 
     private String generateBarcode() {

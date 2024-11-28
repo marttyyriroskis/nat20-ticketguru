@@ -6,6 +6,8 @@ import java.util.List;
 import jakarta.validation.constraints.NotNull;
 
 public record SaleDTO(
+        Long id,
+
         @NotNull(message = "Paid at cannot be null")
         LocalDateTime paidAt,
 

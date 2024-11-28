@@ -86,6 +86,7 @@ public class TicketSaleService {
 
     public SaleDTO mapToSaleDTO(Sale sale, List<Ticket> tickets) {
         SaleDTO saleDTO = new SaleDTO(
+                sale.getId(),
                 sale.getPaidAt(),
                 sale.getUserId(),
                 tickets.stream()

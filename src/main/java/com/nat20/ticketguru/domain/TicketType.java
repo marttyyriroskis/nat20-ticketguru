@@ -114,6 +114,7 @@ public class TicketType {
 
     public TicketTypeDTO toDTO() {
         return new TicketTypeDTO(
+                this.id,
                 this.name,
                 this.retailPrice,
                 this.totalTickets,
@@ -130,6 +131,7 @@ public class TicketType {
     // overloaded method
     public TicketTypeDTO toDTO(Integer availableTickets) {
         return new TicketTypeDTO(
+                this.id,
                 this.name,
                 this.retailPrice,
                 this.totalTickets,
