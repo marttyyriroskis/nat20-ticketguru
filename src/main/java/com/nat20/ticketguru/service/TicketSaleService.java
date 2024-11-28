@@ -17,6 +17,8 @@ import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.repository.TicketTypeRepository;
 import com.nat20.ticketguru.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class TicketSaleService {
 
@@ -38,6 +40,7 @@ public class TicketSaleService {
         this.ticketSummaryService = ticketSummaryService;
     }
 
+    @Transactional
     public List<Ticket> generateTickets(TicketItemDTO ticketItemDTO) {
         ticketSummaryService.refreshMateralizedView();
         TicketType ticketType = ticketTypeRepository.findById(ticketItemDTO.ticketTypeId())
@@ -61,11 +64,11 @@ public class TicketSaleService {
         return tickets;
     }
 
+    @Transactional
     public SaleDTO processSale(BasketDTO basketDTO, Long userId) {
         ticketSummaryService.refreshMateralizedView();
         Sale sale = new Sale();
         sale.setUser(userRepository.findById(userId).get());
-        saleRepository.save(sale);
 
         // TODO: check ticket availability
         List<Ticket> tickets = basketDTO.ticketItems().stream()
@@ -73,7 +76,9 @@ public class TicketSaleService {
                 .peek(ticket -> ticket.setSale(sale))
                 .collect(Collectors.toList());
 
+        saleRepository.save(sale);
         ticketRepository.saveAll(tickets);
+
         // update material view for ticket availability
         ticketSummaryService.refreshMateralizedView();
         return mapToSaleDTO(sale, tickets);

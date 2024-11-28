@@ -2,6 +2,7 @@ package com.nat20.ticketguru.service;
 
 import java.util.List;
 
+import org.h2.command.ddl.RefreshMaterializedView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -17,17 +18,18 @@ import com.nat20.ticketguru.repository.TicketTypeRepository;
 @Service
 public class TicketSummaryService {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final TicketSummaryRepository ticketSummaryRepository;
+    private final TicketTypeRepository ticketTypeRepository;
+    private final EventRepository eventRepository;
 
-    @Autowired
-    private TicketSummaryRepository ticketSummaryRepository;
-
-    @Autowired
-    private TicketTypeRepository ticketTypeRepository;
-
-    @Autowired
-    private EventRepository eventRepository;
+    public TicketSummaryService(JdbcTemplate jdbcTemplate, TicketSummaryRepository ticketSummaryRepository,
+            TicketTypeRepository ticketTypeRepository, EventRepository eventRepository) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.ticketSummaryRepository = ticketSummaryRepository;
+        this.ticketTypeRepository = ticketTypeRepository;
+        this.eventRepository = eventRepository;
+    }
 
     public void refreshMateralizedView() {
         jdbcTemplate.execute("REFRESH MATERIALIZED VIEW CONCURRENTLY event_ticket_summary");
@@ -36,6 +38,8 @@ public class TicketSummaryService {
     public int countAvailableTicketsForTicketType(Long ticketTypeId) {
         TicketType ticketType = ticketTypeRepository.findById(ticketTypeId)
                 .orElseThrow(() -> new IllegalArgumentException("TicketType not found"));
+
+        refreshMateralizedView();
 
         TicketSummary summary = ticketSummaryRepository.findByTicketTypeId(ticketTypeId)
                 .orElseThrow(() -> new IllegalArgumentException("TicketSummary not found"));
@@ -52,6 +56,8 @@ public class TicketSummaryService {
     public int countAvailableTicketsForEvent(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+
+        refreshMateralizedView();
 
         List<TicketSummary> ticketSummaries = ticketSummaryRepository.findByEventId(eventId);
 
