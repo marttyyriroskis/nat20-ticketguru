@@ -39,18 +39,13 @@ public class TicketSummaryService {
         TicketSummary summary = ticketSummaryRepository.findByTicketTypeId(ticketTypeId)
                 .orElseThrow(() -> new IllegalArgumentException("TicketSummary not found"));
 
-        Event event = eventRepository.findById(ticketType.getEvent().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+        int eventAvailable = countAvailableTicketsForEvent(summary.getEventId());
 
-        int totalAvailable;
-
-        if (ticketType.getTotalAvailable() == null) {
-            totalAvailable = event.getTotalTickets();
-        } else {
-            totalAvailable = ticketType.getTotalAvailable();
+        if (ticketType.getTotalAvailable() != null) {
+            return Math.min(eventAvailable, ticketType.getTotalAvailable() - summary.getTicketsSold().intValue());
         }
 
-        return totalAvailable - summary.getTicketsSold().intValue();
+        return eventAvailable;
     }
 
     public int countAvailableTicketsForEvent(Long eventId) {
