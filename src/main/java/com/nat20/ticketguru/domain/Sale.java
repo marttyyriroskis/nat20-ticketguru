@@ -20,6 +20,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "sales")
@@ -29,12 +30,13 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@CreatedDate //needs JPA auditing to work. lets set the time manually for now
-    @Column(name = "paid_at", updatable = false, nullable = false)
+    @NotNull
+    @Column(name = "paid_at", updatable = false)
     private LocalDateTime paidAt;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Only allow deserialization, not serialization
     private User user;
 
@@ -42,10 +44,7 @@ public class Sale {
     @Transient
     private Long userId;
 
-    public Long getUserId() {
-        return user != null ? user.getId() : null; // Return the user ID if user is not null
-    }
-
+    @NotNull
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Ticket> tickets = new ArrayList<>();
 
@@ -56,7 +55,7 @@ public class Sale {
     }
 
     public Sale(LocalDateTime paidAt, List<Ticket> tickets, User user) {
-        this.paidAt = paidAt; // allows manually setting the time
+        this.paidAt = paidAt;
         this.tickets = tickets;
         this.user = user;
     }
@@ -85,6 +84,10 @@ public class Sale {
         this.user = user;
     }
 
+    public Long getUserId() {
+        return user != null ? user.getId() : null; // Return the user ID if user is not null
+    }
+
     public List<Ticket> getTickets() {
         return tickets;
     }
@@ -93,29 +96,27 @@ public class Sale {
         this.tickets = tickets;
     }
 
-    @Override
-    public String toString() {
-        return "Sale [id=" + id + ", paidAt=" + paidAt + ", tickets=" + tickets + ", userId=" + userId + "]";
-    }
-
     public LocalDateTime getDeletedAt() {
         return deletedAt;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
+    public void delete() {
+        deletedAt = LocalDateTime.now();
     }
 
     public SaleDTO toDTO() {
         return new SaleDTO(
-            this.id,
             this.paidAt,
             this.user.getId(),
 
             this.tickets.stream()
-                .map(ticket -> ticket.getId())
+                .map(Ticket::getId)
                 .collect(Collectors.toList())
         );
     }
 
+    @Override
+    public String toString() {
+        return "Sale [id=" + id + ", paidAt=" + paidAt + ", tickets=" + tickets + ", userId=" + userId + "]";
+    }
 }

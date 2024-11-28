@@ -54,7 +54,7 @@ _"Lipunmyyjänä haluan tulostaa myydyt liput viimeistelläkseni ostotapahtuman.
 **Hyväksymiskriteerit:**
 
 - Lipunmyyjä voi tulostaa myydyt liput
-- Tulostetussa lipussa on kaikki olennaiset tiedot: myyntitapahtuma, ostoajankohta, summa, tapahtuma, lippu tyyppi, lipun hinta ja lipun yksilöllinen koodi
+- Tulostetussa lipussa on kaikki olennaiset tiedot: tapahtuma, tapahtumapaikka, lipputyyppi, lipun hinta ja lipun yksilöllinen koodi
 
 #### Käyttäjätarina 4
 

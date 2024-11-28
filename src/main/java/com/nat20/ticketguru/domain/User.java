@@ -1,10 +1,16 @@
 package com.nat20.ticketguru.domain;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat20.ticketguru.dto.UserDTO;
@@ -19,15 +25,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
-import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
@@ -47,11 +44,10 @@ public class User implements UserDetails {
     private String hashedPassword;
 
     @ManyToOne
-    @JoinColumn(name = "roleid")
+    @JoinColumn(name = "role_id")
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Sale> sales;
 
     @Column(name = "deleted_at")
@@ -134,16 +130,8 @@ public class User implements UserDetails {
         return deletedAt;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
-    }
-
     public void delete() {
         deletedAt = LocalDateTime.now();
-    }
-
-    public void restore() {
-        deletedAt = null;
     }
 
     public boolean isDeleted() {
@@ -177,7 +165,17 @@ public class User implements UserDetails {
     }
 
     public UserDTO toDTO() {
-        return new UserDTO(id, email, firstName, lastName, role.toDTO());
+        return new UserDTO(
+                this.email,
+                this.firstName,
+                this.lastName,
+                this.role.toDTO(),
+                this.sales == null
+                        ? Collections.emptyList() // Handle null sales; otherwise collect to list
+                        : this.sales.stream()
+                                .map(Sale::getId)
+                                .collect(Collectors.toList())
+        );
     }
 
     // Have to implement all UserDetails methods:

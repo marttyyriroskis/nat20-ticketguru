@@ -136,35 +136,34 @@ public class TestDataInitializer implements CommandLineRunner {
         zipcodeRepository.save(new Zipcode("80100", "Joensuu"));
         zipcodeRepository.save(new Zipcode("90140", "Oulu"));
 
-        venueRepository.save(new Venue("Bunkkeri", "Bunkkeritie 1", zipcodeRepository.findByZipcode("00100"), null));
-        venueRepository.save(new Venue("Helsingin jäähalli", "Nordenskiöldinkatu 11-13",
-                zipcodeRepository.findByZipcode("00250"), null));
-        venueRepository.save(new Venue("National Museum", "Museokatu 1", zipcodeRepository.findByZipcode("00100"), null));
+        venueRepository.save(new Venue("Bunkkeri", "Bunkkeritie 1", zipcodeRepository.findByZipcode("00100")));
+        venueRepository.save(new Venue("Helsingin jäähalli", "Nordenskiöldinkatu 11-13", zipcodeRepository.findByZipcode("00250")));
+        venueRepository.save(new Venue("National Museum", "Museokatu 1", zipcodeRepository.findByZipcode("00100")));
 
         eventRepository.save(new Event("Death metal karaoke", "Öriöriöriöriörirprir!!!!!", 10,
                 LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
-                LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get(), null));
+                venueRepository.findById(1L).get()));
         eventRepository.save(new Event("Disney On Ice", "Mikki-hiiret jäällä. Suih suih vaan!", 10000,
                 LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
-                LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(2L).get(), null));
+                venueRepository.findById(2L).get()));
         eventRepository.save(new Event("A Night at the Museum", "Night-show at the National Museum", 500,
                 LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
-                LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get(), null));
+                venueRepository.findById(1L).get()));
 
-        ticketTypeRepository.save(new TicketType("adult", 29.99, null, eventRepository.findById(1L).get(), null));
-        ticketTypeRepository.save(new TicketType("student", 14.99, null, eventRepository.findById(1L).get(), null));
-        ticketTypeRepository.save(new TicketType("pensioner", 14.99, null, eventRepository.findById(1L).get(), null));
-        ticketTypeRepository.save(new TicketType("vip", 79.99, 20, eventRepository.findById(1L).get(), null));
+        ticketTypeRepository.save(new TicketType("adult", 29.99, null, eventRepository.findById(1L).get()));
+                    ticketTypeRepository.save(new TicketType("student", 14.99, null, eventRepository.findById(1L).get()));
+                    ticketTypeRepository.save(new TicketType("pensioner", 14.99, null, eventRepository.findById(1L).get()));
+                    ticketTypeRepository.save(new TicketType("vip", 79.99, 20, eventRepository.findById(1L).get()));
 
         Sale sale1 = new Sale(LocalDateTime.now(), new ArrayList<>(), userRepository.findById(1L).get());
         Sale sale2 = new Sale(LocalDateTime.now(), new ArrayList<>(), userRepository.findById(2L).get());
         saleRepository.save(sale1);
         saleRepository.save(sale2);
 
-        ticketRepository.save(new Ticket(null, 10.0, LocalDateTime.of(2024, 3, 12, 9, 0), ticketTypeRepository.findById(1L).get(), saleRepository.findById(2L).get()));
-        ticketRepository.save(new Ticket(null, 20.0, null, ticketTypeRepository.findById(2L).get(), saleRepository.findById(1L).get()));
-        ticketRepository.save(new Ticket(null, 30.0, null, ticketTypeRepository.findById(3L).get(), saleRepository.findById(2L).get()));
-        ticketRepository.save(new Ticket(null, 40.0, null, ticketTypeRepository.findById(4L).get(), saleRepository.findById(1L).get()));
+        ticketRepository.save(new Ticket(10.0, ticketTypeRepository.findById(1L).get(), saleRepository.findById(2L).get()));
+        ticketRepository.save(new Ticket(20.0, ticketTypeRepository.findById(2L).get(), saleRepository.findById(1L).get()));
+        ticketRepository.save(new Ticket(30.0, ticketTypeRepository.findById(3L).get(), saleRepository.findById(2L).get()));
+        ticketRepository.save(new Ticket(40.0, ticketTypeRepository.findById(4L).get(), saleRepository.findById(1L).get()));
 
         Ticket ticket1 = ticketRepository.findById(1L).get();
         Ticket ticket2 = ticketRepository.findById(2L).get();

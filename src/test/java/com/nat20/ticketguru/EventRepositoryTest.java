@@ -51,7 +51,6 @@ public class EventRepositoryTest {
         venue.setName("Kaatokäytävä");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
@@ -60,9 +59,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act & Assert
@@ -86,7 +83,6 @@ public class EventRepositoryTest {
         venue.setName("Kaatokäytävä");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
@@ -95,9 +91,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act & Assert
@@ -121,18 +115,15 @@ public class EventRepositoryTest {
         venue.setName("Kaatokäytävä");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
             "Concert",
             "An amazing live concert",
-            0, // Total tickets can be any number
+            1, // Total tickets can be any number
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act
@@ -144,7 +135,7 @@ public class EventRepositoryTest {
 
         // Assert
         
-        assertEquals(0, fetchedEvent.getTotalTickets(), "Total tickets should match");
+        assertEquals(1, fetchedEvent.getTotalTickets(), "Total tickets should match");
         
     }
 
@@ -162,7 +153,6 @@ public class EventRepositoryTest {
         venue.setName("Kaatokäytävä");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
@@ -171,9 +161,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2001, 9, 11, 20, 0), // Invalid past date
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act & Assert
@@ -197,7 +185,6 @@ public class EventRepositoryTest {
         venue.setName(""); // venue Name is empty
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
@@ -206,9 +193,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act
@@ -237,7 +222,6 @@ public class EventRepositoryTest {
         venue.setName("Kaatokäytävä");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
@@ -246,9 +230,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act
@@ -277,7 +259,6 @@ public class EventRepositoryTest {
         venue.setName("Kaatoluola");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
@@ -286,9 +267,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act
@@ -313,7 +292,6 @@ public class EventRepositoryTest {
         venue.setName("Kaatoluola");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
@@ -322,9 +300,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act
@@ -350,7 +326,6 @@ public class EventRepositoryTest {
         venue.setName("Kaatoluola");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
@@ -359,9 +334,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act
@@ -387,7 +360,6 @@ public class EventRepositoryTest {
         venue.setName("Kaatoluola");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
@@ -396,9 +368,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act
@@ -424,7 +394,6 @@ public class EventRepositoryTest {
         venue.setName("Kaatoluola");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
@@ -433,9 +402,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act
@@ -445,7 +412,6 @@ public class EventRepositoryTest {
         
         assertEquals(LocalDateTime.of(2025, 11, 14, 20, 0), savedEvent.getBeginsAt(), "Event start time should match");
         assertEquals(LocalDateTime.of(2025, 11, 14, 23, 0), savedEvent.getEndsAt(), "Event end time should match");
-        assertEquals(LocalDateTime.of(2025, 10, 1, 10, 0), savedEvent.getTicketSaleBegins(), "Ticket sale begin time should match");
         
     }
 
@@ -463,7 +429,6 @@ public class EventRepositoryTest {
         venue.setName("Kaatoluola");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
@@ -472,9 +437,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act
@@ -499,7 +462,6 @@ public class EventRepositoryTest {
         venue.setName("Kaatoluola");
         venue.setAddress("mikonkatu 1");
         venue.setZipcode(savedZipcode);
-        venue.setDeletedAt(null);
         Venue savedVenue = venueRepository.save(venue); 
 
         Event event = new Event(
@@ -508,9 +470,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         // Act
@@ -536,7 +496,6 @@ public class EventRepositoryTest {
          venue.setName("Kaatoluola");
          venue.setAddress("mikonkatu 1");
          venue.setZipcode(savedZipcode);
-         venue.setDeletedAt(null);
          Venue savedVenue = venueRepository.save(venue); 
  
          Event event = new Event(
@@ -545,9 +504,7 @@ public class EventRepositoryTest {
             200,
             LocalDateTime.of(2025, 11, 14, 20, 0),
             LocalDateTime.of(2025, 11, 14, 23, 0),
-            LocalDateTime.of(2025, 10, 1, 10, 0),
-            savedVenue,
-            null
+            savedVenue
         );
 
         Event savedEvent = eventRepository.save(event);

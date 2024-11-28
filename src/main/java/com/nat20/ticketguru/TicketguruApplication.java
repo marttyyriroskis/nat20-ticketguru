@@ -12,6 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.nat20.ticketguru.domain.Event;
@@ -46,7 +47,8 @@ public class TicketguruApplication {
     public CommandLineRunner demo(TicketRepository ticketRepository,
             UserRepository userRepository, RoleRepository roleRepository, ZipcodeRepository zipcodeRepository,
             SaleRepository saleRepository, EventRepository eventRepository, VenueRepository venueRepository,
-            TicketTypeRepository ticketTypeRepository, @Value("${app.skipPrompt:false}") boolean skipPrompt) {
+            TicketTypeRepository ticketTypeRepository, @Value("${app.skipPrompt:false}") boolean skipPrompt,
+            JdbcTemplate jdbcTemplate) {
 
         return (String[] args) -> {
             if (skipPrompt) {
@@ -77,7 +79,6 @@ public class TicketguruApplication {
                             Permission.CONFIRM_SALES,
                             Permission.VIEW_TICKETS,
                             Permission.DELETE_TICKETS,
-                            Permission.USE_TICKETS,
                             Permission.VIEW_TICKET_TYPES,
                             Permission.VIEW_VENUES);
                     coordinatorRole.addPermissions(
@@ -141,27 +142,26 @@ public class TicketguruApplication {
                     zipcodeRepository.save(new Zipcode("90140", "Oulu"));
 
                     log.info("Creating a few venue test entries");
-                    venueRepository.save(new Venue("Bunkkeri", "Bunkkeritie 1", zipcodeRepository.findByZipcode("00100"), null));
-                    venueRepository.save(new Venue("Helsingin jäähalli", "Nordenskiöldinkatu 11-13",
-                            zipcodeRepository.findByZipcode("00250"), null));
-                    venueRepository.save(new Venue("National Museum", "Museokatu 1", zipcodeRepository.findByZipcode("00100"), null));
+                    venueRepository.save(new Venue("Bunkkeri", "Bunkkeritie 1", zipcodeRepository.findByZipcode("00100")));
+                    venueRepository.save(new Venue("Helsingin jäähalli", "Nordenskiöldinkatu 11-13", zipcodeRepository.findByZipcode("00250")));
+                    venueRepository.save(new Venue("National Museum", "Museokatu 1", zipcodeRepository.findByZipcode("00100")));
 
                     log.info("Creating a few event test entries");
-                    eventRepository.save(new Event("Death metal karaoke", "Öriöriöriöriörirprir!!!!!", 10,
+                    eventRepository.save(new Event("Death metal karaoke", "Öriöriöriöriörirprir!!!!!", 100,
                             LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
-                            LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get(), null));
+                            venueRepository.findById(1L).get()));
                     eventRepository.save(new Event("Disney On Ice", "Mikki-hiiret jäällä. Suih suih vaan!", 10000,
                             LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
-                            LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(2L).get(), null));
+                            venueRepository.findById(2L).get()));
                     eventRepository.save(new Event("A Night at the Museum", "Night-show at the National Museum", 500,
                             LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
-                            LocalDateTime.of(2055, 10, 12, 12, 00), venueRepository.findById(1L).get(), null));
+                            venueRepository.findById(1L).get()));
 
                     log.info("Creating a few ticket type test entries");
-                    ticketTypeRepository.save(new TicketType("adult", 29.99, null, eventRepository.findById(1L).get(), null));
-                    ticketTypeRepository.save(new TicketType("student", 14.99, null, eventRepository.findById(1L).get(), null));
-                    ticketTypeRepository.save(new TicketType("pensioner", 14.99, null, eventRepository.findById(1L).get(), null));
-                    ticketTypeRepository.save(new TicketType("vip", 79.99, 20, eventRepository.findById(1L).get(), null));
+                    ticketTypeRepository.save(new TicketType("adult", 29.99, null, eventRepository.findById(1L).get()));
+                    ticketTypeRepository.save(new TicketType("student", 14.99, null, eventRepository.findById(1L).get()));
+                    ticketTypeRepository.save(new TicketType("pensioner", 14.99, null, eventRepository.findById(1L).get()));
+                    ticketTypeRepository.save(new TicketType("vip", 79.99, 20, eventRepository.findById(1L).get()));
 
                     log.info("Creating a few ticket test entries");
                     Sale sale1 = new Sale(LocalDateTime.now(), new ArrayList<>(), userRepository.findById(1L).get());
@@ -169,10 +169,10 @@ public class TicketguruApplication {
                     saleRepository.save(sale1);
                     saleRepository.save(sale2);
 
-                    ticketRepository.save(new Ticket(null, 10.0, LocalDateTime.of(2024, 3, 12, 9, 0), ticketTypeRepository.findById(1L).get(), saleRepository.findById(2L).get()));
-                    ticketRepository.save(new Ticket(null, 20.0, null, ticketTypeRepository.findById(2L).get(), saleRepository.findById(1L).get()));
-                    ticketRepository.save(new Ticket(null, 30.0, null, ticketTypeRepository.findById(3L).get(), saleRepository.findById(2L).get()));
-                    ticketRepository.save(new Ticket(null, 40.0, null, ticketTypeRepository.findById(4L).get(), saleRepository.findById(1L).get()));
+                    ticketRepository.save(new Ticket(10.0, ticketTypeRepository.findById(1L).get(), saleRepository.findById(2L).get()));
+                    ticketRepository.save(new Ticket(20.0, ticketTypeRepository.findById(2L).get(), saleRepository.findById(1L).get()));
+                    ticketRepository.save(new Ticket(30.0, ticketTypeRepository.findById(3L).get(), saleRepository.findById(2L).get()));
+                    ticketRepository.save(new Ticket(40.0, ticketTypeRepository.findById(4L).get(), saleRepository.findById(1L).get()));
 
                     log.info("Creating a few sale test entries");
                     Ticket ticket1 = ticketRepository.findById(1L).get();
@@ -204,6 +204,32 @@ public class TicketguruApplication {
                     log.info("\n\nSales:\n");
                     log.info(savedSale2.toString());
                     log.info("\n\n\n");
+
+                    // create materialized view for ticket availability using SQL statements
+                    String createMaterializedViewSQL = """
+                        CREATE MATERIALIZED VIEW IF NOT EXISTS event_ticket_summary AS  
+                        SELECT
+                                e.id AS event_id,
+                                tt.id AS ticket_type_id,
+                                count(t.id) FILTER (WHERE t.sale_id IS NOT NULL AND t.deleted_at IS NULL) AS tickets_sold,
+                                count(t.id) FILTER (WHERE t.deleted_at IS NULL) AS tickets_total,
+                                sum(t.price) FILTER (WHERE t.sale_id IS NOT NULL AND t.deleted_at IS NULL)::numeric(10,2) AS total_revenue
+                        FROM
+                                events e
+                        JOIN
+                                ticket_types tt ON tt.event_id = e.id
+                        LEFT JOIN
+                                tickets t ON t.ticket_type_id = tt.id
+                        GROUP BY 
+                                e.id, tt.id
+                        WITH DATA;
+                                        """;
+
+                    String createIndex = "CREATE UNIQUE INDEX idx_ticket_summary ON event_ticket_summary (ticket_type_id);";
+
+                    jdbcTemplate.execute(createMaterializedViewSQL);
+                    jdbcTemplate.execute(createIndex);
+                    jdbcTemplate.execute("REFRESH MATERIALIZED VIEW CONCURRENTLY event_ticket_summary;");
                 }
 
                 System.out.println("Ticket Guru is now up and running. 👌");

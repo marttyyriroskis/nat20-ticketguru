@@ -1,9 +1,12 @@
 package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nat20.ticketguru.dto.EventDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -16,9 +19,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-
-import com.nat20.ticketguru.dto.EventDTO;
 
 @Entity
 @Table(name = "events")
@@ -26,55 +30,62 @@ public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
+    @NotEmpty
     @Size(min = 1, max = 100)
-    @Column(name = "name", nullable = false)
     private String name;
 
+    @NotEmpty
     @Size(min = 1, max = 500)
-    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "total_tickets", nullable = false)
+    @NotNull
+    @Positive
+    @Column(name = "total_tickets")
     private int totalTickets;
 
-    @Column(name = "begins_at", nullable = false)
+    @NotNull
     @Future
+    @Column(name = "begins_at")
     private LocalDateTime beginsAt;
 
-    @Column(name = "ends_at", nullable = false)
+    @NotNull
     @Future
+    @Column(name = "ends_at")
     private LocalDateTime endsAt;
 
-    @Column(name = "ticket_sale_begins", nullable = true)
+    @Column(name = "ticket_sale_begins")
     private LocalDateTime ticketSaleBegins;
 
     @ManyToOne
-    @JoinColumn(name = "venue_id", nullable = true)
+    @JoinColumn(name = "venue_id")
     private Venue venue;
 
-    @Column(name = "deletedAt", nullable = true)
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
-    @JsonIgnore
-    private List<TicketType> ticketType;
+    private List<TicketType> ticketTypes = new ArrayList<>();
 
     public Event() {
     }
 
-    public Event(String name, String description, int totalTickets, LocalDateTime beginsAt,
-            LocalDateTime endsAt, LocalDateTime ticketSaleBegins, Venue venue, LocalDateTime deletedAt) {
+    public Event(String name, String description, int totalTickets, LocalDateTime beginsAt, LocalDateTime endsAt) {
         this.name = name;
         this.description = description;
         this.totalTickets = totalTickets;
         this.beginsAt = beginsAt;
         this.endsAt = endsAt;
-        this.ticketSaleBegins = ticketSaleBegins;
+    }
+
+    public Event(String name, String description, int totalTickets, LocalDateTime beginsAt, LocalDateTime endsAt, Venue venue) {
+        this.name = name;
+        this.description = description;
+        this.totalTickets = totalTickets;
+        this.beginsAt = beginsAt;
+        this.endsAt = endsAt;
         this.venue = venue;
-        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -145,28 +156,25 @@ public class Event {
         return this.deletedAt;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
-    }
-
     public void delete() {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public void restore() {
-        this.deletedAt = null;
-    }
-
     public EventDTO toDTO() {
         return new EventDTO(
-                this.id,
                 this.name,
                 this.description,
                 this.totalTickets,
                 this.beginsAt,
                 this.endsAt,
                 this.ticketSaleBegins,
-                this.venue.getId());
+                this.venue.getId(),
+                this.ticketTypes == null
+                        ? Collections.emptyList()
+                        : this.ticketTypes.stream()
+                                .map(TicketType::toDTO)
+                                .collect(Collectors.toList())
+        );
     }
 
     @Override

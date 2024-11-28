@@ -1,9 +1,11 @@
 package com.nat20.ticketguru.domain;
 
-import java.util.List;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nat20.ticketguru.dto.TicketTypeDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -11,38 +13,37 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-
-import com.nat20.ticketguru.dto.TicketTypeDTO;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "ticket_types")
 public class TicketType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @NotNull(message = "Ticket type name cannot be null")
-    @Size(min = 1, max = 100, message = "Ticket type name must be between 1 and 100 characters long")
-    @Column(name = "name", nullable = false)
+    @NotEmpty
+    @Size(min = 1, max = 100)
     private String name;
 
-    @Positive(message = "Ticket type price must be positive")
-    @Column(name = "retail_price", nullable = false)
+    @NotNull
+    @Positive
+    @Column(name = "retail_price")
     private double retailPrice;
 
-    @Positive(message = "Total available must be positive or null")
-    @Column(name = "total_available", nullable = true)
-    private Integer totalAvailable;
+    @Positive
+    @Column(name = "total_tickets")
+    private Integer totalTickets;
 
-    @NotNull(message = "Event must not be null")
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
@@ -51,18 +52,16 @@ public class TicketType {
     private LocalDateTime deletedAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketType")
-    @JsonIgnore
     private List<Ticket> tickets;
 
     public TicketType() {
     }
 
-    public TicketType(String name, double retailPrice, Integer totalAvailable, Event event, LocalDateTime deletedAt) {
+    public TicketType(String name, double retailPrice, Integer totalTickets, Event event) {
         this.name = name;
         this.retailPrice = retailPrice;
-        this.totalAvailable = totalAvailable;
+        this.totalTickets = totalTickets;
         this.event = event;
-        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -89,12 +88,12 @@ public class TicketType {
         this.retailPrice = retailPrice;
     }
 
-    public Integer getTotalAvailable() {
-        return totalAvailable;
+    public Integer getTotalTickets() {
+        return totalTickets;
     }
 
-    public void setTotalAvailable(Integer totalAvailable) {
-        this.totalAvailable = totalAvailable;
+    public void setTotalTickets(Integer totalTickets) {
+        this.totalTickets = totalTickets;
     }
 
     public Event getEvent() {
@@ -109,36 +108,50 @@ public class TicketType {
         return this.deletedAt;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
-    }
-
     public void delete() {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public void restore() {
-        this.deletedAt = null;
-    }
-
     public TicketTypeDTO toDTO() {
         return new TicketTypeDTO(
-            this.id,
-            this.name,
-            this.retailPrice,
-            this.totalAvailable,
-            this.event.getId());
+                this.name,
+                this.retailPrice,
+                this.totalTickets,
+                null,
+                this.event.getId(),
+                this.tickets == null
+                        ? Collections.emptyList()
+                        : this.tickets.stream()
+                                .map(Ticket::getId)
+                                .collect(Collectors.toList())
+        );
+    }
+
+    // overloaded method
+    public TicketTypeDTO toDTO(Integer availableTickets) {
+        return new TicketTypeDTO(
+                this.name,
+                this.retailPrice,
+                this.totalTickets,
+                availableTickets,
+                this.event.getId(),
+                this.tickets == null
+                        ? Collections.emptyList()
+                        : this.tickets.stream()
+                                .map(Ticket::getId)
+                                .collect(Collectors.toList())
+        );
     }
 
     @Override
     public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", name='" + getName() + "'" +
-            ", retailPrice='" + getRetailPrice() + "'" +
-            ", totalAvailable='" + getTotalAvailable() + "'" +
-            ", event='" + getEvent() + "'" +
-            ", deletedAt='" + getDeletedAt() + "'" +
-            "}";
+        return "{"
+                + " id='" + getId() + "'"
+                + ", name='" + getName() + "'"
+                + ", retailPrice='" + getRetailPrice() + "'"
+                + ", totalAvailable='" + getTotalTickets() + "'"
+                + ", event='" + getEvent() + "'"
+                + ", deletedAt='" + getDeletedAt() + "'"
+                + "}";
     }
 }

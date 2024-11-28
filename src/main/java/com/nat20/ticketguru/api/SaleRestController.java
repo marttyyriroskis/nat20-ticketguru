@@ -3,10 +3,7 @@ package com.nat20.ticketguru.api;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +50,7 @@ public class SaleRestController {
             UserRepository userRepository, TicketRepository ticketRepository,
             TicketSaleService ticketSaleService,
             SaleService saleService) {
+
         this.saleRepository = saleRepository;
         this.userRepository = userRepository;
         this.ticketRepository = ticketRepository;
@@ -60,147 +58,93 @@ public class SaleRestController {
         this.saleService = saleService;
     }
 
-    @GetMapping("")
+    @GetMapping
     @PreAuthorize("hasAuthority('VIEW_SALES')")
     public ResponseEntity<List<SaleDTO>> getAllSales() {
-        List<Sale> sales = new ArrayList<>();
-        saleRepository.findAll().forEach(sales::add);
 
-        List<SaleDTO> saleDTOs = sales.stream()
-                .filter(sale -> sale.getDeletedAt() == null)
-                .map(sale -> new SaleDTO(sale.getId(),
-                sale.getPaidAt(),
-                sale.getUser().getId(),
-                sale.getTickets().stream()
-                        .map(Ticket::getId).collect(Collectors.toList())))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(saleDTOs);
+        List<Sale> sales = saleRepository.findAllActive();
+
+        return ResponseEntity.ok(sales.stream()
+                .map(Sale::toDTO)
+                .toList());
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('VIEW_SALES')")
-    public ResponseEntity<SaleDTO> getSale(@PathVariable("id") Long id) {
-        Sale sale = saleRepository.findById(id)
+    public ResponseEntity<SaleDTO> getSale(@PathVariable Long id) {
+
+        Sale sale = saleRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
-        if (sale.getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found");
-        }
-        SaleDTO saleDTO = new SaleDTO(sale.getId(),
-                sale.getPaidAt(),
-                sale.getUser().getId(),
-                sale.getTickets().stream()
-                        .map(Ticket::getId).collect(Collectors.toList()));
-        return ResponseEntity.ok(saleDTO);
+
+        return ResponseEntity.ok(sale.toDTO());
     }
 
-    @PostMapping("")
+    @PostMapping
     @PreAuthorize("hasAuthority('CREATE_SALES')")
     public ResponseEntity<SaleDTO> createSale(@Valid @RequestBody SaleDTO saleDTO) {
-        // check User
-        Optional<User> existingUser = userRepository.findById(saleDTO.userId());
-        if (!existingUser.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
+
+        User user = userRepository.findByIdActive(saleDTO.userId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
         Sale newSale = new Sale();
-        // check Tickets
-        List<Ticket> validTickets = new ArrayList<>();
-        List<Long> requestTickets = saleDTO.ticketIds();
-        for (Long ticketId : requestTickets) {
-            Optional<Ticket> ticket = ticketRepository.findById(ticketId);
-            if (!ticket.isPresent()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket");
-            }
-            // TODO maybe need to add more validation here? 
-            validTickets.add(ticket.get());
-            // set ticket association with sale in ticket
-            ticket.get().setSale(newSale);
-        }
-        if (validTickets.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No valid tickets in Sale");
-        }
+        newSale.setUser(user);
 
-        newSale.setUser(existingUser.get());
+        List<Ticket> validTickets = saleDTO.ticketIds().stream()
+                .map(ticketId -> {
+                    Ticket ticket = ticketRepository.findByIdActive(ticketId)
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket"));
+                    ticket.setSale(newSale);
+                    return ticket;
+                })
+                .toList();
+
         newSale.setTickets(validTickets);
-        if (saleDTO.paidAt() != null) {
-            newSale.setPaidAt(saleDTO.paidAt());
-        }
-        // save the new Sale entity
-        Sale savedSale = saleRepository.save(newSale);
 
-        // package it again into saleDTO for the response body
-        SaleDTO responseDTO = new SaleDTO(
-                savedSale.getId(),
-                savedSale.getPaidAt(),
-                savedSale.getUserId(),
-                savedSale.getTickets().stream()
-                        .map(Ticket::getId)
-                        .collect(Collectors.toList()));
+        Sale addedSale = saleRepository.save(newSale);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedSale.toDTO());
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('EDIT_SALES')")
-    public ResponseEntity<SaleDTO> editSale(@Valid @RequestBody SaleDTO editedSaleDTO, @PathVariable("id") Long id) {
-        // check that sale with the Id exists
-        Sale sale = saleRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
-        // check if sale has been soft-deleted
-        if (sale.getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found");
-        }
-        User existingUser = userRepository.findById(editedSaleDTO.userId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
-        // check if user has been soft-deleted
-        if (existingUser.getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
-        // check Tickets
-        List<Ticket> validTickets = new ArrayList<>();
-        for (Long ticketId : editedSaleDTO.ticketIds()) {
-            Optional<Ticket> ticket = ticketRepository.findById(ticketId);
-            if (!ticket.isPresent()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket");
-            }
-            // check ticket for soft-delete status
-            if (ticket.get().getDeletedAt() == null) {
-                // TODO maybe need to add more validation here?
-                validTickets.add(ticket.get());
-                // set ticket association with sale in ticket
-                ticket.get().setSale(sale);
-            }
+    public ResponseEntity<SaleDTO> editSale(@Valid @RequestBody SaleDTO editedSaleDTO, @PathVariable Long id) {
 
-        }
+        Sale sale = saleRepository.findByIdActive(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
+
+        User existingUser = userRepository.findByIdActive(editedSaleDTO.userId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid User ID"));
+
+        List<Ticket> validTickets = editedSaleDTO.ticketIds().stream()
+                .map(ticketId -> {
+                    Ticket ticket = ticketRepository.findByIdActive(ticketId)
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ticket"));
+                    ticket.setSale(sale);
+                    return ticket;
+                })
+                .toList();
+
         sale.setUser(existingUser);
         sale.setTickets(validTickets);
-        if (editedSaleDTO.paidAt() != null) {
-            sale.setPaidAt(editedSaleDTO.paidAt());
-        }
-        // save the edited Sale entity
-        Sale savedSale = saleRepository.save(sale);
-        // package it again into saleDTO for the response body
-        SaleDTO responseDTO = new SaleDTO(
-                savedSale.getId(),
-                savedSale.getPaidAt(),
-                savedSale.getUserId(),
-                savedSale.getTickets().stream()
-                        .map(Ticket::getId)
-                        .collect(Collectors.toList()));
-        return ResponseEntity.ok(responseDTO);
+
+        Sale editedSale = saleRepository.save(sale);
+
+        return ResponseEntity.ok(editedSale.toDTO());
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('DELETE_SALES')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteSale(@PathVariable("id") Long id
-    ) {
-        Sale sale = saleRepository.findById(id)
+    public ResponseEntity<SaleDTO> deleteSale(@PathVariable Long id) {
+
+        Sale sale = saleRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
-        if (sale.getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found");
-        }
-        sale.setDeletedAt(LocalDateTime.now());
+
+        sale.delete();
+
         saleRepository.save(sale);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping("/confirm")
@@ -210,13 +154,13 @@ public class SaleRestController {
             SaleDTO sale = ticketSaleService.processSale(basketDTO, user.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(sale);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
         }
     }
 
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('VIEW_SALES')")
-    public ResponseEntity<List<Sale>> searchSales(
+    public ResponseEntity<List<SaleDTO>> searchSales(
             @RequestParam(required = false) String start,
             @RequestParam(required = false) String end,
             @RequestParam(required = false) Long userId) {
@@ -229,7 +173,7 @@ public class SaleRestController {
         }
         try {
             List<Sale> sales = saleService.searchSales(startDateTime, endDateTime, userId);
-            return ResponseEntity.ok(sales);
+            return ResponseEntity.ok(sales.stream().map(Sale::toDTO).toList());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

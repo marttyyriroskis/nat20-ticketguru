@@ -4,15 +4,13 @@ import com.nat20.ticketguru.domain.User;
 
 public class UserCreateDTO {
 
-        private Long id;
         private String email;
         private String firstName;
         private String lastName;
         private Long roleId;
         private String password;
 
-        public UserCreateDTO(Long id, String email, String firstName, String lastName, Long roleId, String password) {
-                this.id = id;
+        public UserCreateDTO(String email, String firstName, String lastName, Long roleId, String password) {
                 this.email = email;
                 this.firstName = firstName;
                 this.lastName = lastName;
@@ -22,14 +20,6 @@ public class UserCreateDTO {
 
         public UserCreateDTO() {
 
-        }
-
-        public Long getId() {
-                return id;
-        }   
-
-        public void setId(Long id) {
-                this.id = id;
         }
 
         public String getEmail() {

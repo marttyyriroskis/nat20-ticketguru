@@ -1,9 +1,7 @@
 package com.nat20.ticketguru.api;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,108 +39,87 @@ public class EventRestController {
     }
 
     // Get events
-    @GetMapping("")
+    @GetMapping
     @PreAuthorize("hasAuthority('VIEW_EVENTS')")
     public ResponseEntity<List<EventDTO>> getAllEvents() {
 
-        List<Event> events = new ArrayList<Event>();
-        eventRepository.findAll().forEach(events::add);
+        List<Event> events = eventRepository.findAllActive();
 
-        List<EventDTO> eventDTOs = events.stream()
-                .filter(event -> event.getDeletedAt() == null)
-                .map(event -> event.toDTO())
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(eventDTOs);
+        return ResponseEntity.ok(events.stream()
+                .map(Event::toDTO)
+                .toList());
     }
 
     // Get event by id
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('VIEW_EVENTS')")
-    public ResponseEntity<EventDTO> getEventById(@PathVariable("id") Long eventId) {
+    public ResponseEntity<EventDTO> getEventById(@PathVariable Long id) {
 
-        Optional<Event> event = eventRepository.findById(eventId);
+        Event event = eventRepository.findByIdActive(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-        if (!event.isPresent() || event.get().getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
-        }
-
-        EventDTO eventDTO = event.get().toDTO();
-        return ResponseEntity.ok(eventDTO);
+        return ResponseEntity.ok(event.toDTO());
     }
 
     // Post a new event
-    @PostMapping("")
+    @PostMapping
     @PreAuthorize("hasAuthority('CREATE_EVENTS')")
     public ResponseEntity<EventDTO> createEvent(@Valid @RequestBody EventDTO eventDTO) {
 
-        Optional<Venue> existingVenue = venueRepository.findById(eventDTO.venueId());
+        Venue venue = Optional.ofNullable(eventDTO.venueId())
+                .flatMap(venueRepository::findByIdActive)
+                .orElse(null);
 
-        if (!existingVenue.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue does not exist!");
-        }
+        Event event = new Event();
+        event.setName(eventDTO.name());
+        event.setDescription(eventDTO.description());
+        event.setTotalTickets(eventDTO.totalTickets());
+        event.setBeginsAt(eventDTO.beginsAt());
+        event.setEndsAt(eventDTO.endsAt());
+        event.setVenue(venue);
 
-        Event event = new Event(
-                eventDTO.name(),
-                eventDTO.description(),
-                eventDTO.totalTickets(),
-                eventDTO.beginsAt(),
-                eventDTO.endsAt(),
-                eventDTO.ticketSaleBegins(),
-                existingVenue.get(),
-                null);
+        Event addedEvent = eventRepository.save(event);
 
-        Event savedEvent = eventRepository.save(event);
-
-        EventDTO responseDTO = savedEvent.toDTO();
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedEvent.toDTO());
     }
 
     // Edit event with PUT request
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('EDIT_EVENTS')")
-    public ResponseEntity<EventDTO> editEvent(@Valid @RequestBody EventDTO eventDTO, @PathVariable("id") Long eventId) {
+    public ResponseEntity<EventDTO> editEvent(@Valid @RequestBody EventDTO eventDTO, @PathVariable Long id) {
 
-        Optional<Event> existingEvent = eventRepository.findById(eventId);
-        Optional<Venue> existingVenue = venueRepository.findById(eventDTO.venueId());
+        Event event = eventRepository.findByIdActive(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-        if (!existingEvent.isPresent() || existingEvent.get().getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
-        }
+        event.setName(eventDTO.name());
+        event.setDescription(eventDTO.description());
+        event.setTotalTickets(eventDTO.totalTickets());
+        event.setBeginsAt(eventDTO.beginsAt());
+        event.setEndsAt(eventDTO.endsAt());
+        event.setTicketSaleBegins(eventDTO.ticketSaleBegins());
 
-        if (!existingVenue.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found");
-        }
+        Venue venue = venueRepository.findByIdActive(eventDTO.venueId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Venue ID"));
 
-        Event editedEvent = existingEvent.get();
-        editedEvent.setName(eventDTO.name());
-        editedEvent.setDescription(eventDTO.description());
-        editedEvent.setTotalTickets(eventDTO.totalTickets());
-        editedEvent.setBeginsAt(eventDTO.beginsAt());
-        editedEvent.setEndsAt(eventDTO.endsAt());
-        editedEvent.setTicketSaleBegins(eventDTO.ticketSaleBegins());
-        editedEvent.setVenue(existingVenue.get());
+        event.setVenue(venue);
+        
+        Event editedEvent = eventRepository.save(event);
 
-        Event savedEvent = eventRepository.save(editedEvent);
-
-        EventDTO responseDTO = savedEvent.toDTO();
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+        return ResponseEntity.ok(editedEvent.toDTO());
     }
 
     // Delete event with DELETE Request
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('DELETE_EVENTS')")
-    public ResponseEntity<String> deleteEvent(@PathVariable("id") Long eventId) {
+    public ResponseEntity<String> deleteEvent(@PathVariable Long id) {
 
-        Optional<Event> existingEvent = eventRepository.findById(eventId);
+        Event event = eventRepository.findByIdActive(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-        if (!existingEvent.isPresent() || existingEvent.get().getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
-        }
+        event.delete();
 
-        existingEvent.get().delete();
+        eventRepository.save(event);
 
-        eventRepository.save(existingEvent.get());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
