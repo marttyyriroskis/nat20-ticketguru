@@ -1,9 +1,11 @@
 package com.nat20.ticketguru.domain;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.time.LocalDateTime;
+
+import com.nat20.ticketguru.dto.TicketTypeDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -11,20 +13,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-
-import com.nat20.ticketguru.dto.TicketTypeDTO;
 
 @Entity
 @Table(name = "ticket_types")
 public class TicketType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,8 +40,8 @@ public class TicketType {
     private double retailPrice;
 
     @Positive
-    @Column(name = "total_available")
-    private Integer totalAvailable;
+    @Column(name = "total_tickets")
+    private Integer totalTickets;
 
     @NotNull
     @ManyToOne
@@ -56,10 +57,10 @@ public class TicketType {
     public TicketType() {
     }
 
-    public TicketType(String name, double retailPrice, Integer totalAvailable, Event event) {
+    public TicketType(String name, double retailPrice, Integer totalTickets, Event event) {
         this.name = name;
         this.retailPrice = retailPrice;
-        this.totalAvailable = totalAvailable;
+        this.totalTickets = totalTickets;
         this.event = event;
     }
 
@@ -87,12 +88,12 @@ public class TicketType {
         this.retailPrice = retailPrice;
     }
 
-    public Integer getTotalAvailable() {
-        return totalAvailable;
+    public Integer getTotalTickets() {
+        return totalTickets;
     }
 
-    public void setTotalAvailable(Integer totalAvailable) {
-        this.totalAvailable = totalAvailable;
+    public void setTotalTickets(Integer totalTickets) {
+        this.totalTickets = totalTickets;
     }
 
     public Event getEvent() {
@@ -113,28 +114,44 @@ public class TicketType {
 
     public TicketTypeDTO toDTO() {
         return new TicketTypeDTO(
-            this.name,
-            this.retailPrice,
-            this.totalAvailable,
-            this.event.getId(),
+                this.name,
+                this.retailPrice,
+                this.totalTickets,
+                null,
+                this.event.getId(),
+                this.tickets == null
+                        ? Collections.emptyList()
+                        : this.tickets.stream()
+                                .map(Ticket::getId)
+                                .collect(Collectors.toList())
+        );
+    }
 
-            this.tickets == null
-                    ? Collections.emptyList()
-                    : this.tickets.stream()
-                            .map(Ticket::getId)
-                            .collect(Collectors.toList())
+    // overloaded method
+    public TicketTypeDTO toDTO(Integer availableTickets) {
+        return new TicketTypeDTO(
+                this.name,
+                this.retailPrice,
+                this.totalTickets,
+                availableTickets,
+                this.event.getId(),
+                this.tickets == null
+                        ? Collections.emptyList()
+                        : this.tickets.stream()
+                                .map(Ticket::getId)
+                                .collect(Collectors.toList())
         );
     }
 
     @Override
     public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", name='" + getName() + "'" +
-            ", retailPrice='" + getRetailPrice() + "'" +
-            ", totalAvailable='" + getTotalAvailable() + "'" +
-            ", event='" + getEvent() + "'" +
-            ", deletedAt='" + getDeletedAt() + "'" +
-            "}";
+        return "{"
+                + " id='" + getId() + "'"
+                + ", name='" + getName() + "'"
+                + ", retailPrice='" + getRetailPrice() + "'"
+                + ", totalAvailable='" + getTotalTickets() + "'"
+                + ", event='" + getEvent() + "'"
+                + ", deletedAt='" + getDeletedAt() + "'"
+                + "}";
     }
 }

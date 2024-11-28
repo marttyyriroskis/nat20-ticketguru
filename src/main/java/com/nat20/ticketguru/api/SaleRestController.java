@@ -154,7 +154,7 @@ public class SaleRestController {
             SaleDTO sale = ticketSaleService.processSale(basketDTO, user.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(sale);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
         }
     }
 

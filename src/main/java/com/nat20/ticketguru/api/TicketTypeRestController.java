@@ -10,18 +10,21 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.bind.annotation.PutMapping;
 
+import com.nat20.ticketguru.domain.Event;
+import com.nat20.ticketguru.domain.TicketSummary;
 import com.nat20.ticketguru.domain.TicketType;
 import com.nat20.ticketguru.dto.TicketTypeDTO;
-import com.nat20.ticketguru.domain.Event;
-import com.nat20.ticketguru.repository.TicketTypeRepository;
 import com.nat20.ticketguru.repository.EventRepository;
+import com.nat20.ticketguru.repository.TicketSummaryRepository;
+import com.nat20.ticketguru.repository.TicketTypeRepository;
+import com.nat20.ticketguru.service.TicketSummaryService;
 
 import jakarta.validation.Valid;
 
@@ -32,10 +35,14 @@ public class TicketTypeRestController {
 
     private final TicketTypeRepository ticketTypeRepository;
     private final EventRepository eventRepository;
+    private final TicketSummaryService ticketSummaryService;
+    private final TicketSummaryRepository ticketSummaryRepository;
 
-    public TicketTypeRestController(TicketTypeRepository ticketTypeRepository, EventRepository eventRepository) {
+    public TicketTypeRestController(TicketTypeRepository ticketTypeRepository, EventRepository eventRepository, TicketSummaryService ticketSummaryService, TicketSummaryRepository ticketSummaryRepository) {
         this.ticketTypeRepository = ticketTypeRepository;
         this.eventRepository = eventRepository;
+        this.ticketSummaryService = ticketSummaryService;
+        this.ticketSummaryRepository = ticketSummaryRepository;
     }
 
     // Get all ticket types
@@ -53,12 +60,14 @@ public class TicketTypeRestController {
     // Get ticket type by id
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
-    public ResponseEntity<TicketTypeDTO> getTicketTypeById(@PathVariable Long id) {
+    public ResponseEntity<?> getTicketTypeById(@PathVariable Long id) {
 
         TicketType ticketType = ticketTypeRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found"));
+        Integer availableTickets = ticketSummaryService.countAvailableTicketsForTicketType(id);
+        List<TicketSummary> summaries = ticketSummaryRepository.findAll(); // TODO: remove
 
-        return ResponseEntity.ok(ticketType.toDTO());
+        return ResponseEntity.ok(ticketType.toDTO(availableTickets));
     }
 
     // Add a new ticket type
@@ -72,7 +81,7 @@ public class TicketTypeRestController {
         TicketType ticketType = new TicketType();
         ticketType.setName(ticketTypeDTO.name());
         ticketType.setRetailPrice(ticketTypeDTO.retailPrice());
-        ticketType.setTotalAvailable(ticketTypeDTO.totalAvailable());
+        ticketType.setTotalTickets(ticketTypeDTO.totalTickets());
         ticketType.setEvent(event);
 
         TicketType savedTicketType = ticketTypeRepository.save(ticketType);
@@ -93,7 +102,7 @@ public class TicketTypeRestController {
 
         ticketType.setName(ticketTypeDTO.name());
         ticketType.setRetailPrice(ticketTypeDTO.retailPrice());
-        ticketType.setTotalAvailable(ticketTypeDTO.totalAvailable());
+        ticketType.setTotalTickets(ticketTypeDTO.totalTickets());
         ticketType.setEvent(event);
 
         TicketType savedTicketType = ticketTypeRepository.save(ticketType);
@@ -116,7 +125,7 @@ public class TicketTypeRestController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    // Search ticket types by eventId
+    // Search ticket types by eventId, also gives availableTickets
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
     public ResponseEntity<List<TicketTypeDTO>> searchTicketTypes(@RequestParam Long eventId) {
@@ -125,7 +134,7 @@ public class TicketTypeRestController {
 
         List<TicketType> ticketTypes = ticketTypeRepository.findByEventIdActive(eventId);
         return ResponseEntity.ok(ticketTypes.stream()
-                .map(TicketType::toDTO)
+                .map(ticketType -> ticketSummaryService.toDTOWithAvailableTickets(ticketType))
                 .toList());
     }
 }

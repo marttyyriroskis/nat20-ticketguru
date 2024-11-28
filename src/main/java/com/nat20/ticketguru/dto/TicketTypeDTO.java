@@ -16,8 +16,11 @@ public record TicketTypeDTO(
         @Positive(message = "Ticket type price must be positive")
         double retailPrice,
 
-        @Positive(message = "Total available must be positive or null")
-        Integer totalAvailable,
+        @Positive(message = "Total tickets must be positive or null")
+        Integer totalTickets,
+
+        @Positive(message = "Available tickets must be positive or null")
+        Integer availableTickets,
 
         @NotNull(message = "Event must not be null")
         Long eventId,

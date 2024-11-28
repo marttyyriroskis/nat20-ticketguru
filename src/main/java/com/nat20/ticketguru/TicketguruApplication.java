@@ -147,7 +147,7 @@ public class TicketguruApplication {
                     venueRepository.save(new Venue("National Museum", "Museokatu 1", zipcodeRepository.findByZipcode("00100")));
 
                     log.info("Creating a few event test entries");
-                    eventRepository.save(new Event("Death metal karaoke", "Öriöriöriöriörirprir!!!!!", 10,
+                    eventRepository.save(new Event("Death metal karaoke", "Öriöriöriöriörirprir!!!!!", 100,
                             LocalDateTime.of(2055, 10, 12, 12, 00), LocalDateTime.of(2055, 10, 12, 12, 00),
                             venueRepository.findById(1L).get()));
                     eventRepository.save(new Event("Disney On Ice", "Mikki-hiiret jäällä. Suih suih vaan!", 10000,
@@ -220,8 +220,8 @@ public class TicketguruApplication {
                                 ticket_types tt ON tt.event_id = e.id
                         LEFT JOIN
                                 tickets t ON t.ticket_type_id = tt.id
-                        GROUP BY ROLLUP
-                                (e.id, tt.id)
+                        GROUP BY 
+                                e.id, tt.id
                         WITH DATA;
                                         """;
 

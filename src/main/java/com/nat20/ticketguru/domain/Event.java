@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.nat20.ticketguru.dto.EventDTO;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,8 +23,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-
-import com.nat20.ticketguru.dto.EventDTO;
 
 @Entity
 @Table(name = "events")
@@ -169,7 +169,6 @@ public class Event {
                 this.endsAt,
                 this.ticketSaleBegins,
                 this.venue.getId(),
-
                 this.ticketTypes == null
                         ? Collections.emptyList()
                         : this.ticketTypes.stream()

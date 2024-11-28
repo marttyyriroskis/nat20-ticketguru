@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.nat20.ticketguru.domain.Event;
 import com.nat20.ticketguru.domain.TicketSummary;
 import com.nat20.ticketguru.domain.TicketType;
+import com.nat20.ticketguru.dto.TicketTypeDTO;
 import com.nat20.ticketguru.repository.EventRepository;
 import com.nat20.ticketguru.repository.TicketSummaryRepository;
 import com.nat20.ticketguru.repository.TicketTypeRepository;
@@ -41,8 +42,8 @@ public class TicketSummaryService {
 
         int eventAvailable = countAvailableTicketsForEvent(summary.getEventId());
 
-        if (ticketType.getTotalAvailable() != null) {
-            return Math.min(eventAvailable, ticketType.getTotalAvailable() - summary.getTicketsSold().intValue());
+        if (ticketType.getTotalTickets() != null) {
+            return Math.min(eventAvailable, ticketType.getTotalTickets() - summary.getTicketsSold().intValue());
         }
 
         return eventAvailable;
@@ -58,10 +59,14 @@ public class TicketSummaryService {
         if (ticketSummaries.isEmpty()) {
             return event.getTotalTickets();
         }
-        TicketSummary totals = ticketSummaries.stream()
-                .filter(summary -> summary.getTicketTypeId() == null) // event-level totals
-                .findAny().get();
-        return event.getTotalTickets() - totals.getTicketsSold().intValue();
+        int totalSold = ticketSummaries.stream()
+                .mapToInt(summary -> summary.getTicketsSold().intValue()).sum();
+        return event.getTotalTickets() - totalSold;
+    }
+
+    public TicketTypeDTO toDTOWithAvailableTickets(TicketType ticketType) {
+        Integer availableTickets = countAvailableTicketsForTicketType(ticketType.getId());
+        return ticketType.toDTO(availableTickets);
     }
 
 }
