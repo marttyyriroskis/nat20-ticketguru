@@ -16,9 +16,9 @@ import jakarta.persistence.Id;
 public class TicketSummary {
 
     @Id
-    private Long ticketTypeId; // is null for event-level totals
+    private Long ticketTypeId;
 
-    private Long eventId; // is null for grand totals
+    private Long eventId;
     private Long ticketsSold;
     private Long ticketsTotal;
     private BigDecimal totalRevenue;

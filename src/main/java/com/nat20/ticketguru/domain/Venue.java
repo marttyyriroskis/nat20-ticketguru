@@ -72,7 +72,7 @@ public class Venue {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getAddress() {
         return address;
     }
@@ -89,7 +89,7 @@ public class Venue {
         this.zipcode = zipcode;
     }
 
-     public LocalDateTime getDeletedAt() {
+    public LocalDateTime getDeletedAt() {
         return this.deletedAt;
     }
 
@@ -99,10 +99,10 @@ public class Venue {
 
     public VenueDTO toDTO() {
         return new VenueDTO(
+                this.id,
                 this.name,
                 this.address,
                 this.zipcode.getZipcode(),
-
                 this.events == null
                         ? Collections.emptyList()
                         : this.events.stream()
