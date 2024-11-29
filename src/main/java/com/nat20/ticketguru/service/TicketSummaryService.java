@@ -45,7 +45,7 @@ public class TicketSummaryService {
         int eventAvailable = countAvailableTicketsForEvent(summary.getEventId());
 
         if (ticketType.getTotalTickets() != null) {
-            return Math.min(eventAvailable, ticketType.getTotalTickets() - summary.getTicketsSold().intValue());
+            return Math.min(eventAvailable, ticketType.getTotalTickets() - summary.getTicketsTotal().intValue());
         }
 
         return eventAvailable;
@@ -64,7 +64,7 @@ public class TicketSummaryService {
             return event.getTotalTickets();
         }
         int totalSold = ticketSummaries.stream()
-                .mapToInt(summary -> summary.getTicketsSold().intValue()).sum();
+                .mapToInt(summary -> summary.getTicketsTotal().intValue()).sum();
         return event.getTotalTickets() - totalSold;
     }
 
