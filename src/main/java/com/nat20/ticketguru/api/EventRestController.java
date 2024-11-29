@@ -76,6 +76,7 @@ public class EventRestController {
         event.setTotalTickets(eventDTO.totalTickets());
         event.setBeginsAt(eventDTO.beginsAt());
         event.setEndsAt(eventDTO.endsAt());
+        event.setTicketSaleBegins(eventDTO.ticketSaleBegins());
         event.setVenue(venue);
 
         Event addedEvent = eventRepository.save(event);
