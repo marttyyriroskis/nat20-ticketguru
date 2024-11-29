@@ -24,14 +24,17 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Sale;
 import com.nat20.ticketguru.domain.Ticket;
+import com.nat20.ticketguru.domain.TicketSummary;
 import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.dto.BasketDTO;
 import com.nat20.ticketguru.dto.SaleDTO;
+import com.nat20.ticketguru.dto.TicketSummaryDTO;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.repository.UserRepository;
 import com.nat20.ticketguru.service.SaleService;
 import com.nat20.ticketguru.service.TicketSaleService;
+import com.nat20.ticketguru.service.TicketSummaryService;
 
 import jakarta.validation.Valid;
 
@@ -45,17 +48,20 @@ public class SaleRestController {
     private final TicketRepository ticketRepository;
     private final TicketSaleService ticketSaleService;
     private final SaleService saleService;
+    private final TicketSummaryService ticketSummaryService;
 
     public SaleRestController(SaleRepository saleRepository,
             UserRepository userRepository, TicketRepository ticketRepository,
             TicketSaleService ticketSaleService,
-            SaleService saleService) {
+            SaleService saleService,
+            TicketSummaryService ticketSummaryService) {
 
         this.saleRepository = saleRepository;
         this.userRepository = userRepository;
         this.ticketRepository = ticketRepository;
         this.ticketSaleService = ticketSaleService;
         this.saleService = saleService;
+        this.ticketSummaryService = ticketSummaryService;
     }
 
     @GetMapping
@@ -196,6 +202,15 @@ public class SaleRestController {
                 return null;
             }
         }
+    }
+
+    @GetMapping("/report")
+    @PreAuthorize("hasAuthority('VIEW_SALES')")
+    public ResponseEntity<List<TicketSummaryDTO>> getSalesReport() {
+        List<TicketSummary> report = ticketSummaryService.generateSalesReport();
+        return ResponseEntity.ok(report.stream()
+                .map(TicketSummary::toDTO)
+                .toList());
     }
 
 }

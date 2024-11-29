@@ -73,4 +73,8 @@ public class TicketSummaryService {
         return ticketType.toDTO(availableTickets);
     }
 
+    public List<TicketSummary> generateSalesReport() {
+        refreshMateralizedView();
+        return ticketSummaryRepository.findAll();
+    }
 }
