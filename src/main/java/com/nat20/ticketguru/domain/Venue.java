@@ -1,9 +1,10 @@
 package com.nat20.ticketguru.domain;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat20.ticketguru.dto.VenueDTO;
 
 import jakarta.persistence.CascadeType;
@@ -16,7 +17,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -25,38 +27,34 @@ public class Venue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @NotBlank(message = "Name must not be empty")
+    @NotEmpty
     @Size(min = 1, max = 100)
-    @Column(name = "name")
     private String name;
 
-    @NotBlank(message = "Address must not be empty")
+    @NotEmpty
     @Size(min = 1, max = 100)
-    @Column(name = "address")
     private String address;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "zipcode", nullable = false)
+    @JoinColumn(name = "zipcode")
     private Zipcode zipcode;
 
-    @Column(name = "deletedAt")
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
-    @JsonIgnore
     private List<Event> events;
 
     public Venue() {
     }
 
-    public Venue(String name, String address, Zipcode zipcode, LocalDateTime deletedAt) {
+    public Venue(String name, String address, Zipcode zipcode) {
         this.name = name;
         this.address = address;
         this.zipcode = zipcode;
-        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -91,16 +89,32 @@ public class Venue {
         this.zipcode = zipcode;
     }
 
-     public LocalDateTime getDeletedAt() {
+    public LocalDateTime getDeletedAt() {
         return this.deletedAt;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
+    public void delete() {
+        deletedAt = LocalDateTime.now();
     }
 
     public VenueDTO toDTO() {
-        return new VenueDTO(id, name, address, zipcode.getZipcode());
+        return new VenueDTO(
+                this.id,
+                this.name,
+                this.address,
+                this.zipcode.getZipcode(),
+                this.events == null
+                        ? Collections.emptyList()
+                        : this.events.stream()
+                                .map(Event::getId)
+                                .collect(Collectors.toList())
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "Venue [id=" + id + ", name=" + name + ", address=" + address + ", zipcode=" + zipcode + ", deletedAt="
+                + deletedAt + ", events=" + events + "]";
     }
 
 }

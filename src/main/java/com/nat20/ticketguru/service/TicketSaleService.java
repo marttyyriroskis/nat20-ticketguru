@@ -17,6 +17,8 @@ import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.repository.TicketTypeRepository;
 import com.nat20.ticketguru.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class TicketSaleService {
 
@@ -24,20 +26,32 @@ public class TicketSaleService {
     private final SaleRepository saleRepository;
     private final TicketTypeRepository ticketTypeRepository;
     private final UserRepository userRepository;
+    private final TicketSummaryService ticketSummaryService;
 
     public TicketSaleService(TicketRepository ticketRepository,
             SaleRepository saleRepository,
             TicketTypeRepository ticketTypeRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            TicketSummaryService ticketSummaryService) {
         this.ticketRepository = ticketRepository;
         this.saleRepository = saleRepository;
         this.ticketTypeRepository = ticketTypeRepository;
         this.userRepository = userRepository;
+        this.ticketSummaryService = ticketSummaryService;
     }
 
+    @Transactional
     public List<Ticket> generateTickets(TicketItemDTO ticketItemDTO) {
+        ticketSummaryService.refreshMateralizedView();
         TicketType ticketType = ticketTypeRepository.findById(ticketItemDTO.ticketTypeId())
                 .orElseThrow(() -> new IllegalArgumentException("TicketType with ID " + ticketItemDTO.ticketTypeId() + " does not exist."));
+
+        // check availability
+        int totalAvailable = ticketSummaryService.countAvailableTicketsForTicketType(ticketType.getId());
+        if (totalAvailable < ticketItemDTO.quantity()) {
+            throw new IllegalArgumentException("Trying to generate " + ticketItemDTO.quantity()
+                    + " tickets, but " + totalAvailable + " tickets are available.");
+        }
 
         List<Ticket> tickets = new ArrayList<>();
         for (int i = 0; i < ticketItemDTO.quantity(); i++) {
@@ -46,25 +60,33 @@ public class TicketSaleService {
             ticket.setPrice(ticketItemDTO.price());
             tickets.add(ticket);
         }
+        ticketSummaryService.refreshMateralizedView();
         return tickets;
     }
 
+    @Transactional
     public SaleDTO processSale(BasketDTO basketDTO, Long userId) {
+        ticketSummaryService.refreshMateralizedView();
         Sale sale = new Sale();
         sale.setUser(userRepository.findById(userId).get());
-        saleRepository.save(sale);
 
+        // TODO: check ticket availability
         List<Ticket> tickets = basketDTO.ticketItems().stream()
                 .flatMap(ticketItemDTO -> generateTickets(ticketItemDTO).stream())
                 .peek(ticket -> ticket.setSale(sale))
                 .collect(Collectors.toList());
 
+        saleRepository.save(sale);
         ticketRepository.saveAll(tickets);
+
+        // update material view for ticket availability
+        ticketSummaryService.refreshMateralizedView();
         return mapToSaleDTO(sale, tickets);
     }
 
     public SaleDTO mapToSaleDTO(Sale sale, List<Ticket> tickets) {
-        SaleDTO saleDTO = new SaleDTO(sale.getId(),
+        SaleDTO saleDTO = new SaleDTO(
+                sale.getId(),
                 sale.getPaidAt(),
                 sale.getUserId(),
                 tickets.stream()

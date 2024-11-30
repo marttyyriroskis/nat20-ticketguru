@@ -1,10 +1,6 @@
 package com.nat20.ticketguru.api;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,150 +38,81 @@ public class VenueRestController {
     }
 
     // Get venues
-    @GetMapping("")
+    @GetMapping
     @PreAuthorize("hasAuthority('VIEW_VENUES')")
     public ResponseEntity<List<VenueDTO>> getAllVenues() {
-        List<Venue> venues = new ArrayList<Venue>();
-        venueRepository.findAll().forEach(venues::add);
+        
+        List<Venue> venues = venueRepository.findAllActive();
 
-        List<VenueDTO> venueDTOs = venues.stream()
-                .filter(venue -> venue.getDeletedAt() == null)
-                .map(venue -> new VenueDTO(
-                venue.getId(),
-                venue.getName(),
-                venue.getAddress(),
-                venue.getZipcode().getZipcode()))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(venueDTOs);
+        return ResponseEntity.ok(venues.stream()
+                .map(Venue::toDTO)
+                .toList());
     }
 
     // Get venue by id
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('VIEW_VENUES')")
-    public ResponseEntity<VenueDTO> getVenueById(@PathVariable("id") Long venueId) {
-        Venue venue = venueRepository.findById(venueId)
+    public ResponseEntity<VenueDTO> getVenueById(@PathVariable Long id) {
+
+        Venue venue = venueRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found"));
 
-        if (venue.getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found");
-        } else {
-            VenueDTO venueDTO = new VenueDTO(
-                    venue.getId(),
-                    venue.getName(),
-                    venue.getAddress(),
-                    venue.getZipcode().getZipcode());
-            return ResponseEntity.ok(venueDTO);
-        }
+            return ResponseEntity.ok(venue.toDTO());
     }
 
     // Post a new venue
+    @PostMapping
     @PreAuthorize("hasAuthority('CREATE_VENUES')")
-    @PostMapping("")
     public ResponseEntity<VenueDTO> createVenue(@Valid @RequestBody VenueDTO venueDTO) {
 
-        // check if zipcode is null
-        if (venueDTO.zipcode() == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Zipcode cannot be null!");
-        } // if zipcode is not null, check if it is already exists
-        else {
-            Optional<Zipcode> existingZipcode = zipcodeRepository.findById(venueDTO.zipcode());
+        Zipcode zipcode = zipcodeRepository.findById(venueDTO.zipcode())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Zipcode"));
 
-            if (!existingZipcode.isPresent()) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Zipcode does not exist!");
-            } else {
+        Venue venue = new Venue();
+        venue.setName(venueDTO.name());
+        venue.setAddress(venueDTO.address());
+        venue.setZipcode(zipcode);
 
-                Venue venue = new Venue(
-                        venueDTO.name(),
-                        venueDTO.address(),
-                        existingZipcode.get(),
-                        null);
+        Venue addedVenue = venueRepository.save(venue);
 
-                Venue savedVenue = venueRepository.save(venue);
-
-                VenueDTO responseDTO = new VenueDTO(
-                        savedVenue.getId(),
-                        savedVenue.getName(),
-                        savedVenue.getAddress(),
-                        savedVenue.getZipcode().getZipcode());
-
-                return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
-            }
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedVenue.toDTO());
 
     }
 
     // Edit venue with PUT request
-    @PreAuthorize("hasAuthority('EDIT_VENUES')")
     @PutMapping("/{id}")
-    public ResponseEntity<VenueDTO> editVenue(@Valid @RequestBody VenueDTO venueDTO, @PathVariable("id") Long venueId) {
+    @PreAuthorize("hasAuthority('EDIT_VENUES')")
+    public ResponseEntity<VenueDTO> editVenue(@Valid @RequestBody VenueDTO venueDTO, @PathVariable Long id) {
 
-        Optional<Venue> existingVenue = venueRepository.findById(venueId);
-        if (!existingVenue.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Venue not found");
-        } else {
-            if (existingVenue.get().getDeletedAt() != null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found");
-            } else {
-                Optional<Zipcode> existingZipcode = zipcodeRepository.findById(venueDTO.zipcode());
+        Venue venue = venueRepository.findByIdActive(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found"));
 
-                Venue editedVenue = existingVenue.get();
-                editedVenue.setName(venueDTO.name());
-                editedVenue.setAddress(venueDTO.address());
+        Zipcode zipcode = zipcodeRepository.findById(venueDTO.zipcode())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Zipcode"));
 
-                Zipcode editedZipcode = editedVenue.getZipcode();
-                if (editedZipcode != null) {
+        venue.setName(venueDTO.name());
+        venue.setAddress(venueDTO.address());
+        venue.setZipcode(zipcode);
 
-                    if (!existingZipcode.isPresent()) {
-                        throw new ResponseStatusException(
-                                HttpStatus.BAD_REQUEST, "Invalid zipcode");
-                    }
-                    editedVenue.setZipcode(existingZipcode.get());
-                } else {
-                    throw new ResponseStatusException(
-                            HttpStatus.BAD_REQUEST, "Zipcode cannot be null!");
-                }
-                if (!existingZipcode.isPresent()) {
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Zipcode not not found");
-                }
+        Venue editedVenue = venueRepository.save(venue);
 
-                Venue savedVenue = venueRepository.save(editedVenue);
-
-                VenueDTO responseDTO = new VenueDTO(
-                        savedVenue.getId(),
-                        savedVenue.getName(),
-                        savedVenue.getAddress(),
-                        savedVenue.getZipcode().getZipcode());
-
-                return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
-            }
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(editedVenue.toDTO());
 
     }
 
     // Delete venue with DELETE Request
-    @PreAuthorize("hasAuthority('DELETE_VENUES')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteVenue(@PathVariable("id") Long venueId) {
-        // Finds the venue with the mapped id from the repository; assigns null if not
-        // found
-        Optional<Venue> optionalVenue = venueRepository.findById(venueId);
-        // Checks if the venue is null or not null
-        if (!optionalVenue.isPresent() || optionalVenue.get().getDeletedAt() != null) {
-            // If null (ie. not found), throws exception and error message
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Venue not found");
-        } else {
+    @PreAuthorize("hasAuthority('DELETE_VENUES')")
+    public ResponseEntity<String> deleteVenue(@PathVariable Long id) {
 
-            optionalVenue.get().setDeletedAt(LocalDateTime.now());
-            venueRepository.save(optionalVenue.get());
+        Venue venue = venueRepository.findByIdActive(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found"));
 
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        venue.delete();
 
-        }
+        venueRepository.save(venue);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
 }

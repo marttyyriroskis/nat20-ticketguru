@@ -1,6 +1,5 @@
 package com.nat20.ticketguru.api;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -50,19 +49,12 @@ public class RoleRestController {
      * Get all roles
      *
      * @return all roles
-     * @throws ResponseStatusException if there are no roles
      */
     @PreAuthorize("hasAuthority('VIEW_ROLES')")
     @GetMapping
     public ResponseEntity<List<RoleDTO>> getRoles() {
-        Iterable<Role> iterableRoles = roleRepository.findAllActive();
-
-        if (!iterableRoles.iterator().hasNext()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No roles available");
-        }
-
-        List<Role> roleList = new ArrayList<>();
-        iterableRoles.forEach(roleList::add);
+  
+        List<Role> roleList = roleRepository.findAllActive();
 
         return ResponseEntity.ok(roleList.stream()
                 .map(Role::toDTO)
@@ -168,7 +160,7 @@ public class RoleRestController {
     @PostMapping("/{id}/permissions")
     public ResponseEntity<RoleDTO> addPermissionToRole(@PathVariable Long id, @RequestBody PermissionDTO permissionRequest) {
 
-        Optional<Role> optionalRole = roleRepository.findById(id);
+        Optional<Role> optionalRole = roleRepository.findByIdActive(id);
         if (!optionalRole.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Role not found");
@@ -203,7 +195,7 @@ public class RoleRestController {
     @PreAuthorize("hasAuthority('REVOKE_PERMISSIONS')")
     @DeleteMapping("/{id}/permissions/{permissionId}")
     public ResponseEntity<RoleDTO> removePermissionFromRole(@PathVariable Long id, @RequestParam("permission") Permission permissionToRemove) {
-        Optional<Role> optionalRole = roleRepository.findById(id);
+        Optional<Role> optionalRole = roleRepository.findByIdActive(id);
         if (!optionalRole.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Role not found");

@@ -1,9 +1,6 @@
 package com.nat20.ticketguru.api;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +22,7 @@ import com.nat20.ticketguru.domain.TicketType;
 import com.nat20.ticketguru.dto.TicketTypeDTO;
 import com.nat20.ticketguru.repository.EventRepository;
 import com.nat20.ticketguru.repository.TicketTypeRepository;
+import com.nat20.ticketguru.service.TicketSummaryService;
 
 import jakarta.validation.Valid;
 
@@ -35,131 +33,103 @@ public class TicketTypeRestController {
 
     private final TicketTypeRepository ticketTypeRepository;
     private final EventRepository eventRepository;
+    private final TicketSummaryService ticketSummaryService;
 
-    public TicketTypeRestController(TicketTypeRepository ticketTypeRepository, EventRepository eventRepository) {
+    public TicketTypeRestController(TicketTypeRepository ticketTypeRepository, EventRepository eventRepository, TicketSummaryService ticketSummaryService) {
         this.ticketTypeRepository = ticketTypeRepository;
         this.eventRepository = eventRepository;
+        this.ticketSummaryService = ticketSummaryService;
     }
 
     // Get all ticket types
-    @GetMapping("")
+    @GetMapping
     @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
     public ResponseEntity<List<TicketTypeDTO>> getAllTicketTypes() {
 
-        List<TicketType> ticketTypes = new ArrayList<>();
-        ticketTypeRepository.findAll().forEach(ticketTypes::add);
+        List<TicketType> ticketTypes = ticketTypeRepository.findAllActive();
 
-        List<TicketTypeDTO> ticketTypeDTOs = ticketTypes.stream()
-                .filter(ticketType -> ticketType.getDeletedAt() == null)
-                .map(ticketType -> ticketType.toDTO())
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(ticketTypeDTOs);
+        return ResponseEntity.ok(ticketTypes.stream()
+                .map(TicketType::toDTO)
+                .toList());
     }
 
     // Get ticket type by id
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
-    public ResponseEntity<TicketTypeDTO> getTicketTypeById(@PathVariable("id") Long ticketTypeId) {
+    public ResponseEntity<?> getTicketTypeById(@PathVariable Long id) {
 
-        Optional<TicketType> ticketType = ticketTypeRepository.findById(ticketTypeId);
+        TicketType ticketType = ticketTypeRepository.findByIdActive(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found"));
+        Integer availableTickets = ticketSummaryService.countAvailableTicketsForTicketType(id);
 
-        if (!ticketType.isPresent() || ticketType.get().getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found");
-        }
-
-        TicketTypeDTO ticketTypeDTO = ticketType.get().toDTO();
-        return ResponseEntity.ok(ticketTypeDTO);
-    }
-
-    // Search ticket types by eventId
-    @GetMapping("/search")
-    @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
-    public ResponseEntity<List<TicketTypeDTO>> searchTicketTypes(@RequestParam Long eventId) {
-
-        Optional<Event> existingEvent = eventRepository.findById(eventId);
-
-        if (!existingEvent.isPresent() || existingEvent.get().getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event does not exist!");
-        }
-
-        List<TicketType> ticketTypes = new ArrayList<>();
-        ticketTypeRepository.findByEvent(existingEvent.get()).forEach(ticketTypes::add);
-
-        List<TicketTypeDTO> ticketTypeDTOs = ticketTypes.stream()
-                .filter(ticketType -> ticketType.getDeletedAt() == null)
-                .map(ticketType -> ticketType.toDTO())
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(ticketTypeDTOs);
+        return ResponseEntity.ok(ticketType.toDTO(availableTickets));
     }
 
     // Add a new ticket type
-    @PostMapping("")
+    @PostMapping
     @PreAuthorize("hasAuthority('CREATE_TICKET_TYPES')")
     public ResponseEntity<TicketTypeDTO> createTicketType(@Valid @RequestBody TicketTypeDTO ticketTypeDTO) {
 
-        Optional<Event> existingEvent = eventRepository.findById(ticketTypeDTO.eventId());
+        Event event = eventRepository.findByIdActive(ticketTypeDTO.eventId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Event ID"));
 
-        if (!existingEvent.isPresent() || existingEvent.get().getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event does not exist!");
-        }
-
-        TicketType ticketType = new TicketType(
-                ticketTypeDTO.name(),
-                ticketTypeDTO.retailPrice(),
-                ticketTypeDTO.totalAvailable(),
-                existingEvent.get(),
-                null);
+        TicketType ticketType = new TicketType();
+        ticketType.setName(ticketTypeDTO.name());
+        ticketType.setRetailPrice(ticketTypeDTO.retailPrice());
+        ticketType.setTotalTickets(ticketTypeDTO.totalTickets());
+        ticketType.setEvent(event);
 
         TicketType savedTicketType = ticketTypeRepository.save(ticketType);
 
-        TicketTypeDTO responseDTO = savedTicketType.toDTO();
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedTicketType.toDTO());
     }
 
     // Update a ticket type
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('EDIT_TICKET_TYPES')")
-    public ResponseEntity<TicketTypeDTO> editTicketType(@Valid @RequestBody TicketTypeDTO ticketTypeDTO,
-            @PathVariable("id") Long ticketTypeId) {
+    public ResponseEntity<TicketTypeDTO> editTicketType(@Valid @RequestBody TicketTypeDTO ticketTypeDTO, @PathVariable Long id) {
 
-        Optional<TicketType> existingTicketType = ticketTypeRepository.findById(ticketTypeId);
-        Optional<Event> existingEvent = eventRepository.findById(ticketTypeDTO.eventId());
+        TicketType ticketType = ticketTypeRepository.findByIdActive(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found"));
 
-        if (!existingTicketType.isPresent() || existingTicketType.get().getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found!");
-        }
+        Event event = eventRepository.findByIdActive(ticketTypeDTO.eventId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Event ID"));
 
-        if (!existingEvent.isPresent() || existingEvent.get().getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found!");
-        }
+        ticketType.setName(ticketTypeDTO.name());
+        ticketType.setRetailPrice(ticketTypeDTO.retailPrice());
+        ticketType.setTotalTickets(ticketTypeDTO.totalTickets());
+        ticketType.setEvent(event);
 
-        TicketType editedTicketType = existingTicketType.get();
-        editedTicketType.setName(ticketTypeDTO.name());
-        editedTicketType.setRetailPrice(ticketTypeDTO.retailPrice());
-        editedTicketType.setTotalAvailable(ticketTypeDTO.totalAvailable());
-        editedTicketType.setEvent(existingEvent.get());
+        TicketType savedTicketType = ticketTypeRepository.save(ticketType);
 
-        TicketType savedTicketType = ticketTypeRepository.save(editedTicketType);
-
-        TicketTypeDTO responseDTO = savedTicketType.toDTO();
-        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(savedTicketType.toDTO());
     }
 
     // Delete a ticket type
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('DELETE_TICKET_TYPES')")
-    public ResponseEntity<String> deleteTicketType(@PathVariable("id") Long ticketTypeId) {
+    public ResponseEntity<String> deleteTicketType(@PathVariable Long id) {
 
-        Optional<TicketType> existingTicketType = ticketTypeRepository.findById(ticketTypeId);
-        if (!existingTicketType.isPresent() || existingTicketType.get().getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found");
-        }
+        TicketType ticketType = ticketTypeRepository.findByIdActive(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found"));
 
-        existingTicketType.get().delete();
+        ticketType.delete();
 
-        ticketTypeRepository.save(existingTicketType.get());
+        ticketTypeRepository.save(ticketType);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // Search ticket types by eventId, also gives availableTickets
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
+    public ResponseEntity<List<TicketTypeDTO>> searchTicketTypes(@RequestParam Long eventId) {
+        eventRepository.findByIdActive(eventId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event does not exist!"));
+
+        List<TicketType> ticketTypes = ticketTypeRepository.findByEventIdActive(eventId);
+        return ResponseEntity.ok(ticketTypes.stream()
+                .map(ticketType -> ticketSummaryService.toDTOWithAvailableTickets(ticketType))
+                .toList());
     }
 }

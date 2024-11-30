@@ -3,7 +3,6 @@ package com.nat20.ticketguru.domain;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat20.ticketguru.dto.TicketDTO;
 
 import jakarta.persistence.Column;
@@ -14,7 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
@@ -26,7 +24,6 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     private String barcode;
 
     @Column(name = "used_at")
@@ -41,12 +38,10 @@ public class Ticket {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "ticket_type_id")
-    @JsonIgnore
     private TicketType ticketType;
 
     @ManyToOne
     @JoinColumn(name = "sale_id")
-    @JsonIgnore
     private Sale sale;
 
     public Ticket() {
@@ -57,12 +52,9 @@ public class Ticket {
         this.barcode = generateBarcode(eventCode);
     }
 
-    public Ticket(LocalDateTime usedAt, double price, LocalDateTime deletedAt,
-            TicketType ticketType, Sale sale) {
+    public Ticket(double price, TicketType ticketType, Sale sale) {
         this.barcode = generateBarcode();
-        this.usedAt = usedAt;
         this.price = price;
-        this.deletedAt = deletedAt;
         this.ticketType = ticketType;
         this.sale = sale;
     }
@@ -135,8 +127,14 @@ public class Ticket {
     }
 
     public TicketDTO toDTO() {
-        return new TicketDTO(id, barcode, usedAt, price, deletedAt, ticketType.getId(), sale.getId(), ticketType.toDTO(),
-                ticketType.getEvent().toDTO(), ticketType.getEvent().getVenue().toDTO());
+        return new TicketDTO(
+                this.id,
+                this.barcode,
+                this.usedAt,
+                this.price,
+                this.sale.getId(),
+                this.ticketType.getId() //, ticketType.getEvent().toDTO(), ticketType.getEvent().getVenue().toDTO()
+        );
     }
 
     private String generateBarcode() {

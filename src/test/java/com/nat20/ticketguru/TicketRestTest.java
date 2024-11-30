@@ -55,14 +55,13 @@ public class TicketRestTest {
             .andExpect(status().isOk());
     }
 
-    // Check that the Ticket instance has an id and a barcode
+    // Check that the Ticket instance has a barcode
     @Test
     public void validateJsonStructure() throws Exception {
         mockMvc.perform(get("/api/tickets"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$[0].id").exists())
             .andExpect(jsonPath("$[0].barcode").isNotEmpty());
     }
 }

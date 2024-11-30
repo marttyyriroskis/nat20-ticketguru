@@ -65,9 +65,10 @@ public class TicketRestController {
     }
 
     // Get ticket by id
-    @PreAuthorize("hasAuthority('VIEW_TICKETS')")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VIEW_TICKETS')")
     public ResponseEntity<TicketDTO> getTicket(@PathVariable Long id) {
+
         Ticket ticket = ticketRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
@@ -78,6 +79,7 @@ public class TicketRestController {
     @PreAuthorize("hasAuthority('VIEW_TICKETS')")
     @GetMapping("/barcode/{barcode}")
     public ResponseEntity<TicketDTO> getTicketByBarcode(@PathVariable String barcode) {
+
         Ticket ticket = ticketRepository.findByBarcode(barcode);
 
         if (ticket == null) {
@@ -91,6 +93,7 @@ public class TicketRestController {
     @PreAuthorize("hasAuthority('USE_TICKETS')")
     @PutMapping("/use/{barcode}")
     public ResponseEntity<TicketDTO> useTicket(@PathVariable String barcode) {
+
         Ticket ticket = ticketRepository.findByBarcode(barcode);
 
         if (ticket == null) {
@@ -108,11 +111,11 @@ public class TicketRestController {
         return ResponseEntity.ok(updatedTicket.toDTO());
     }
 
-    // Post a new ticket
-    @PreAuthorize("hasAuthority('CREATE_TICKETS')")
+// Post a new ticket
     @PostMapping
+    @PreAuthorize("hasAuthority('CREATE_TICKETS')")
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
-        TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
+        TicketType ticketType = ticketTypeRepository.findByIdActive(ticketDTO.ticketTypeId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket Type not found"));
         Sale sale = saleRepository.findById(ticketDTO.saleId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
@@ -123,26 +126,27 @@ public class TicketRestController {
         newTicket.setTicketType(ticketType);
         newTicket.setSale(sale);
 
-        ticketRepository.save(newTicket);
+        Ticket addedTicket = ticketRepository.save(newTicket);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(newTicket.toDTO());
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedTicket.toDTO());
     }
 
     // Edit ticket
-    @PreAuthorize("hasAuthority('EDIT_TICKETS')")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EDIT_TICKETS')")
     public ResponseEntity<TicketDTO> updateTicket(@Valid @RequestBody TicketDTO ticketDTO, @PathVariable Long id) {
-        Ticket ticket = ticketRepository.findById(id)
+
+        Ticket ticket = ticketRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+
+        TicketType ticketType = ticketTypeRepository.findByIdActive(ticketDTO.ticketTypeId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid TicketType ID"));
+
+        Sale sale = saleRepository.findByIdActive(ticketDTO.saleId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Sale ID"));
 
         ticket.setUsedAt(ticketDTO.usedAt());
         ticket.setPrice(ticketDTO.price());
-
-        TicketType ticketType = ticketTypeRepository.findById(ticketDTO.ticketTypeId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid TicketType ID"));
-        Sale sale = saleRepository.findById(ticketDTO.saleId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Sale ID"));
-
         ticket.setTicketType(ticketType);
         ticket.setSale(sale);
 
@@ -152,10 +156,11 @@ public class TicketRestController {
     }
 
     // Delete ticket
-    @PreAuthorize("hasAuthority('DELETE_TICKETS')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE_TICKETS')")
     public ResponseEntity<TicketDTO> deleteTicket(@PathVariable Long id) {
-        Ticket ticket = ticketRepository.findById(id)
+
+        Ticket ticket = ticketRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
 
         ticket.delete();
