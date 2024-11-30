@@ -1,6 +1,7 @@
 package com.nat20.ticketguru.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -76,5 +77,15 @@ public class TicketSummaryService {
     public List<TicketSummary> generateSalesReport() {
         refreshMateralizedView();
         return ticketSummaryRepository.findAll();
+    }
+
+    public boolean hasSoldNonDeletedTickets(Long ticketTypeId) {
+        refreshMateralizedView();
+        ticketTypeRepository.findById(ticketTypeId)
+                .orElseThrow(() -> new IllegalArgumentException("TicketType not found"));
+
+        Optional<TicketSummary> summary = ticketSummaryRepository.findByTicketTypeId(ticketTypeId);
+        // no summary = no tickets sold
+        return summary.isPresent() && summary.get().getTicketsSold() != 0;
     }
 }

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Event;
-import com.nat20.ticketguru.domain.TicketSummary;
 import com.nat20.ticketguru.domain.TicketType;
 import com.nat20.ticketguru.dto.TicketTypeDTO;
 import com.nat20.ticketguru.repository.EventRepository;
@@ -48,8 +47,6 @@ public class TicketTypeRestController {
     public ResponseEntity<List<TicketTypeDTO>> getAllTicketTypes() {
 
         List<TicketType> ticketTypes = ticketTypeRepository.findAllActive();
-
-        ticketTypeRepository.findAll().forEach(ticketTypes::add);
 
         return ResponseEntity.ok(ticketTypes.stream()
                 .map(TicketType::toDTO)
@@ -130,12 +127,15 @@ public class TicketTypeRestController {
         TicketType ticketType = ticketTypeRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found"));
 
+        // disallow deleting tickettype if it has any sold and non-deleted tickets
+        if (ticketSummaryService.hasSoldNonDeletedTickets(id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete ticket type because it has sold tickets.");
+        }
         ticketType.delete();
 
         ticketTypeRepository.save(ticketType);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 
 }
