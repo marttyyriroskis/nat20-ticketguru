@@ -106,12 +106,12 @@ public class Sale {
 
     public SaleDTO toDTO() {
         return new SaleDTO(
-            this.paidAt,
-            this.user.getId(),
-
-            this.tickets.stream()
-                .map(Ticket::getId)
-                .collect(Collectors.toList())
+                this.id,
+                this.paidAt,
+                this.user.getId(),
+                this.tickets.stream()
+                        .map(Ticket::getId)
+                        .collect(Collectors.toList())
         );
     }
 

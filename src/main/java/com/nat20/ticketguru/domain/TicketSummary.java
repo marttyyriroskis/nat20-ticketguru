@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 
+import com.nat20.ticketguru.dto.TicketSummaryDTO;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -16,9 +18,9 @@ import jakarta.persistence.Id;
 public class TicketSummary {
 
     @Id
-    private Long ticketTypeId; // is null for event-level totals
+    private Long ticketTypeId;
 
-    private Long eventId; // is null for grand totals
+    private Long eventId;
     private Long ticketsSold;
     private Long ticketsTotal;
     private BigDecimal totalRevenue;
@@ -63,4 +65,13 @@ public class TicketSummary {
         this.totalRevenue = totalRevenue;
     }
 
+    public TicketSummaryDTO toDTO() {
+        return new TicketSummaryDTO(
+                this.ticketTypeId,
+                this.eventId,
+                this.ticketsSold.intValue(),
+                this.ticketsTotal.intValue(),
+                this.totalRevenue != null ? this.totalRevenue.doubleValue() : 0.0
+        );
+    }
 }

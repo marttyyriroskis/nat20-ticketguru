@@ -22,7 +22,6 @@ import com.nat20.ticketguru.domain.TicketSummary;
 import com.nat20.ticketguru.domain.TicketType;
 import com.nat20.ticketguru.dto.TicketTypeDTO;
 import com.nat20.ticketguru.repository.EventRepository;
-import com.nat20.ticketguru.repository.TicketSummaryRepository;
 import com.nat20.ticketguru.repository.TicketTypeRepository;
 import com.nat20.ticketguru.service.TicketSummaryService;
 
@@ -36,13 +35,11 @@ public class TicketTypeRestController {
     private final TicketTypeRepository ticketTypeRepository;
     private final EventRepository eventRepository;
     private final TicketSummaryService ticketSummaryService;
-    private final TicketSummaryRepository ticketSummaryRepository;
 
-    public TicketTypeRestController(TicketTypeRepository ticketTypeRepository, EventRepository eventRepository, TicketSummaryService ticketSummaryService, TicketSummaryRepository ticketSummaryRepository) {
+    public TicketTypeRestController(TicketTypeRepository ticketTypeRepository, EventRepository eventRepository, TicketSummaryService ticketSummaryService) {
         this.ticketTypeRepository = ticketTypeRepository;
         this.eventRepository = eventRepository;
         this.ticketSummaryService = ticketSummaryService;
-        this.ticketSummaryRepository = ticketSummaryRepository;
     }
 
     // Get all ticket types
@@ -67,7 +64,6 @@ public class TicketTypeRestController {
         TicketType ticketType = ticketTypeRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket type not found"));
         Integer availableTickets = ticketSummaryService.countAvailableTicketsForTicketType(id);
-        List<TicketSummary> summaries = ticketSummaryRepository.findAll(); // TODO: remove
 
         return ResponseEntity.ok(ticketType.toDTO(availableTickets));
     }

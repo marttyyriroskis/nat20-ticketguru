@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.nat20.ticketguru.domain.Event;
 import com.nat20.ticketguru.domain.TicketType;
+import com.nat20.ticketguru.domain.Event;
 
 public interface TicketTypeRepository extends CrudRepository<TicketType, Long> {
 

@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 public record VenueDTO(
+                Long id,
+
                 @NotEmpty(message = "Name must not be empty")
                 @Size(min = 1, max = 100)
                 String name,

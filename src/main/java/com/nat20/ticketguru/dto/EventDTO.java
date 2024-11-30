@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public record EventDTO(
+        Long id,
+
         @NotEmpty(message = "Event name cannot be empty")
         @Size(min = 1, max = 100, message = "Event name cannot be empty and must be between 1 and 100 characters long")
         String name,

@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public record TicketDTO(
+        Long id,
+
         String barcode,
 
         LocalDateTime usedAt,

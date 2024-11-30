@@ -162,6 +162,7 @@ public class Event {
 
     public EventDTO toDTO() {
         return new EventDTO(
+                this.id,
                 this.name,
                 this.description,
                 this.totalTickets,

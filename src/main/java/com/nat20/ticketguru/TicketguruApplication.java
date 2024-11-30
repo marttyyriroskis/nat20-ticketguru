@@ -211,7 +211,7 @@ public class TicketguruApplication {
                         SELECT
                                 e.id AS event_id,
                                 tt.id AS ticket_type_id,
-                                count(t.id) FILTER (WHERE t.sale_id IS NOT NULL AND t.deleted_at IS NULL) AS tickets_sold,
+                                count(t.id) FILTER (WHERE t.sale_id IS NOT NULL AND t.deleted_at IS NULL AND t.price != 0) AS tickets_sold,
                                 count(t.id) FILTER (WHERE t.deleted_at IS NULL) AS tickets_total,
                                 sum(t.price) FILTER (WHERE t.sale_id IS NOT NULL AND t.deleted_at IS NULL)::numeric(10,2) AS total_revenue
                         FROM
