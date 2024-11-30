@@ -120,6 +120,7 @@ public class Role {
 
     public RoleDTO toDTO() {
         return new RoleDTO(
+                this.id,
                 this.title,
                 this.permissions == null
                         ? Collections.emptyList()
