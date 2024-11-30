@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Event;
+import com.nat20.ticketguru.domain.TicketType;
 import com.nat20.ticketguru.domain.Venue;
 import com.nat20.ticketguru.dto.EventDTO;
 import com.nat20.ticketguru.repository.EventRepository;
@@ -124,7 +125,8 @@ public class EventRestController {
         if (ticketSummaryService.eventHasSoldNonDeletedTickets(id)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete event because it has sold tickets.");
         }
-
+        // delete ticket types
+        event.getTicketTypes().forEach(TicketType::delete);
         event.delete();
 
         eventRepository.save(event);

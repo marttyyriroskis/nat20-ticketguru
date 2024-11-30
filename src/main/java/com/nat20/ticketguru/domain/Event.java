@@ -160,6 +160,14 @@ public class Event {
         this.deletedAt = LocalDateTime.now();
     }
 
+    public List<TicketType> getTicketTypes() {
+        return ticketTypes;
+    }
+
+    public void setTicketTypes(List<TicketType> ticketTypes) {
+        this.ticketTypes = ticketTypes;
+    }
+
     public EventDTO toDTO() {
         return new EventDTO(
                 this.id,
