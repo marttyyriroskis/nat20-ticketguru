@@ -19,7 +19,7 @@ Allow deleting a user from the system.
 #### Example Request
 
 ```json
-DELETE /api/users/1
+DELETE /api/users/4
 ```
 
 ## Success Responses

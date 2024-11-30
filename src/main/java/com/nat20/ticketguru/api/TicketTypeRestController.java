@@ -1,6 +1,13 @@
 package com.nat20.ticketguru.api;
 
+<<<<<<< HEAD
 import java.util.List;
+=======
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+>>>>>>> main
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.nat20.ticketguru.domain.Event;
+<<<<<<< HEAD
 import com.nat20.ticketguru.domain.TicketSummary;
 import com.nat20.ticketguru.domain.TicketType;
 import com.nat20.ticketguru.dto.TicketTypeDTO;
@@ -25,6 +33,12 @@ import com.nat20.ticketguru.repository.EventRepository;
 import com.nat20.ticketguru.repository.TicketSummaryRepository;
 import com.nat20.ticketguru.repository.TicketTypeRepository;
 import com.nat20.ticketguru.service.TicketSummaryService;
+=======
+import com.nat20.ticketguru.domain.TicketType;
+import com.nat20.ticketguru.dto.TicketTypeDTO;
+import com.nat20.ticketguru.repository.EventRepository;
+import com.nat20.ticketguru.repository.TicketTypeRepository;
+>>>>>>> main
 
 import jakarta.validation.Valid;
 
@@ -50,7 +64,12 @@ public class TicketTypeRestController {
     @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
     public ResponseEntity<List<TicketTypeDTO>> getAllTicketTypes() {
 
+<<<<<<< HEAD
         List<TicketType> ticketTypes = ticketTypeRepository.findAllActive();
+=======
+        List<TicketType> ticketTypes = new ArrayList<>();
+        ticketTypeRepository.findAll().forEach(ticketTypes::add);
+>>>>>>> main
 
         return ResponseEntity.ok(ticketTypes.stream()
                 .map(TicketType::toDTO)
@@ -68,6 +87,28 @@ public class TicketTypeRestController {
         List<TicketSummary> summaries = ticketSummaryRepository.findAll(); // TODO: remove
 
         return ResponseEntity.ok(ticketType.toDTO(availableTickets));
+    }
+
+    // Search ticket types by eventId
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
+    public ResponseEntity<List<TicketTypeDTO>> searchTicketTypes(@RequestParam Long eventId) {
+
+        Optional<Event> existingEvent = eventRepository.findById(eventId);
+
+        if (!existingEvent.isPresent() || existingEvent.get().getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event does not exist!");
+        }
+
+        List<TicketType> ticketTypes = new ArrayList<>();
+        ticketTypeRepository.findByEvent(existingEvent.get()).forEach(ticketTypes::add);
+
+        List<TicketTypeDTO> ticketTypeDTOs = ticketTypes.stream()
+                .filter(ticketType -> ticketType.getDeletedAt() == null)
+                .map(ticketType -> ticketType.toDTO())
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ticketTypeDTOs);
     }
 
     // Add a new ticket type

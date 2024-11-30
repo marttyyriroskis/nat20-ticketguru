@@ -27,9 +27,9 @@ POST /api/users
 Content-Type: application/json
 
 {
-  "email": "newuser@test.com",
-  "firstName": "New",
-  "lastName": "User",
+  "email": "tes11t13311@test.com",
+  "firstName": "User1",
+  "lastName": "Cashier",
   "hashedPassword": "password",
   "roleId" : 1
 }
@@ -45,14 +45,14 @@ Content-Type: application/json
 
 ```json
 {
-  "id": 3,
-  "email": "newuser@test.com",
-  "firstName": "New",
-  "lastName": "User",
+  "id": 4,
+  "email": "tes11t13311@test.com",
+  "firstName": "User1",
+  "lastName": "Cashier",
   "role": {
-    "title": "cashier",
-    "permissionIds": [1],
-    "userIds": [1, 3]
+    "title": "user",
+    "permissions": ["USE_TICKETS", "VIEW_TICKETS"],
+    "userIds": [4]
   }
 }
 ```

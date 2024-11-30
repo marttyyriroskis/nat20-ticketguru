@@ -29,14 +29,17 @@ Provide all required fields for the `Sale`to be edited.
 **Data example** All required fields must be sent. `Tickets` must not be null and must contain at least one valid `id`.
 
 ```json
-PUT api/sales/2
+PUT api/sales/3
 Content-Type: application/json
 
 {
-  "paidAt": "2055-10-06T18:38:31.578603",
-  "userId": 1,
-  "ticketIds": [ 4
-  ]
+    "paidAt": "2024-11-30T11:03:32.862709",
+    "userId": 1,
+    "ticketIds": [
+        1,
+        2,
+        3
+    ]
 }
 ```
 
@@ -50,10 +53,10 @@ Content-Type: application/json
 
 ```json
 {
-  "id": 2,
-  "paidAt": "2055-10-06T18:38:31.578603",
+  "id": 3,
+  "paidAt": "2024-11-30T11:03:32.862709",
   "userId": 1,
-  "ticketIds": [4]
+  "ticketIds": [2, 3]
 }
 ```
 

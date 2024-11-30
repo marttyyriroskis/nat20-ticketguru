@@ -43,13 +43,13 @@ Content-Type: application/json
 [
   {
     "id": 1,
-    "paidAt": "2024-10-23T11:01:13.116922",
+    "paidAt": "2024-11-30T12:33:56.262198",
     "userId": 1,
-    "ticketIds": [1, 2, 4]
+    "ticketIds": [2, 4, 1]
   },
   {
     "id": 2,
-    "paidAt": "2024-10-23T11:01:13.119915",
+    "paidAt": "2024-11-30T12:33:56.267737",
     "userId": 2,
     "ticketIds": [3]
   }

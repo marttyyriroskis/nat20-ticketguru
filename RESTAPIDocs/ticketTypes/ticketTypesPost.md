@@ -35,8 +35,12 @@ All required fields must be sent. `name`, `retailPrice` and `eventId`must not be
   "retailPrice": 29.99,
   "totalTickets": null,
   "availableTickets": 9996,
+<<<<<<< HEAD
   "eventId": 2,
   "ticketIds": [1, 2]
+=======
+  "eventId": 1
+>>>>>>> main
 }
 ```
 
@@ -51,8 +55,8 @@ All required fields must be sent. `name`, `retailPrice` and `eventId`must not be
 ```json
 {
   "id": 5,
-  "name": "pensioner",
-  "retailPrice": 14.99,
+  "name": "adult",
+  "retailPrice": 29.99,
   "totalAvailable": null,
   "eventId": 1
 }

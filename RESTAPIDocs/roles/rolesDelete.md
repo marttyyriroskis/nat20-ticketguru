@@ -19,7 +19,7 @@ Allow deleting a role from the system.
 ### Example Request
 
 ```json
-DELETE /api/roles/1
+DELETE /api/roles/5
 ```
 
 ## Success Responses

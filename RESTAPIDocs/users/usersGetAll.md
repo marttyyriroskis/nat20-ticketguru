@@ -29,22 +29,91 @@ Accept: application/json
 [
   {
     "id": 1,
-    "email": "test1@test.com",
-    "firstName": "User1",
+    "email": "salesperson@test.com",
+    "firstName": "salesperson1",
     "lastName": "Cashier",
     "role": {
-      "id": 1,
-      "title": "cashier"
+      "title": "SALESPERSON",
+      "permissions": [
+        "VIEW_VENUES",
+        "USE_TICKETS",
+        "VIEW_EVENTS",
+        "VIEW_TICKET_TYPES",
+        "VIEW_SALES",
+        "CREATE_SALES",
+        "VIEW_TICKETS",
+        "EDIT_SALES",
+        "CONFIRM_SALES",
+        "DELETE_TICKETS"
+      ],
+      "userIds": [1]
     }
   },
   {
     "id": 2,
-    "email": "test2@test.com",
-    "firstName": "User2",
-    "lastName": "Event Organizer",
+    "email": "admin@test.com",
+    "firstName": "Admin1",
+    "lastName": "Site Admin",
     "role": {
-      "id": 2,
-      "title": "event organizer"
+      "title": "ADMIN",
+      "permissions": [
+        "VIEW_VENUES",
+        "USE_TICKETS",
+        "CREATE_VENUES",
+        "VIEW_ROLES",
+        "VIEW_TICKETS",
+        "CREATE_USERS",
+        "DELETE_ROLES",
+        "EDIT_TICKET_TYPES",
+        "CREATE_TICKETS",
+        "CREATE_TICKET_TYPES",
+        "REVOKE_PERMISSIONS",
+        "DELETE_TICKETS",
+        "DELETE_VENUES",
+        "DELETE_EVENTS",
+        "EDIT_VENUES",
+        "GRANT_PERMISSIONS",
+        "DELETE_TICKET_TYPES",
+        "DELETE_SALES",
+        "EDIT_USERS",
+        "EDIT_EVENTS",
+        "CONFIRM_SALES",
+        "DELETE_USERS",
+        "VIEW_EVENTS",
+        "VIEW_TICKET_TYPES",
+        "CREATE_ROLES",
+        "CREATE_EVENTS",
+        "VIEW_USERS",
+        "VIEW_SALES",
+        "EDIT_TICKETS",
+        "CREATE_SALES",
+        "EDIT_SALES",
+        "EDIT_ROLES"
+      ],
+      "userIds": [2]
+    }
+  },
+  {
+    "id": 3,
+    "email": "coordinator@test.com",
+    "firstName": "Coordinator1",
+    "lastName": "Event Coordinator",
+    "role": {
+      "title": "COORDINATOR",
+      "permissions": [
+        "VIEW_VENUES",
+        "EDIT_VENUES",
+        "VIEW_EVENTS",
+        "VIEW_TICKET_TYPES",
+        "DELETE_TICKET_TYPES",
+        "CREATE_EVENTS",
+        "EDIT_TICKET_TYPES",
+        "CREATE_VENUES",
+        "CREATE_TICKET_TYPES",
+        "EDIT_EVENTS",
+        "DELETE_VENUES"
+      ],
+      "userIds": [3]
     }
   }
 ]

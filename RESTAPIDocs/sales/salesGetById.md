@@ -19,7 +19,7 @@ Allow getting `Sale` details of the given `id`.
 #### Example Request
 
 ```json
-GET /sales/2
+GET /sales/1
 Accept: application/json
 ```
 
@@ -33,10 +33,10 @@ Accept: application/json
 
 ```json
 {
-  "id": 2,
-  "paidAt": "2024-10-23T11:01:13.119915",
-  "userId": 2,
-  "ticketIds": [3]
+  "id": 1,
+  "paidAt": "2024-11-30T12:33:56.262198",
+  "userId": 1,
+  "ticketIds": [2, 4, 1]
 }
 ```
 

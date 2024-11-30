@@ -43,12 +43,13 @@ POST api/sales
 Content-Type: application/json
 
 {
-  "id": 3,
-  "paidAt": "2024-10-04T12:58:29.580761",
-  "userId": 1,
-  "ticketIds": [
-    4
-  ]
+    "id": 3,
+    "paidAt": "2024-11-30T11:03:32.862709",
+    "userId": 1,
+    "ticketIds": [
+        1,
+        2
+    ]
 }
 ```
 

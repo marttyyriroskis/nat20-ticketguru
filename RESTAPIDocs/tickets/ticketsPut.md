@@ -30,7 +30,7 @@ Provide all required parameters in the response body for the `Ticket` to be upda
 #### Example Request
 
 ```json
-PUT /api/tickets/1
+PUT /api/tickets/5
 ```
 
 All required fields must be sent. `price` must not be null.
@@ -38,7 +38,7 @@ All required fields must be sent. `price` must not be null.
 ```json
 {
   "usedAt": null,
-  "price": 200.5,
+  "price": 300.5,
   "ticketTypeId": 1,
   "saleId": 1
 }
@@ -54,12 +54,36 @@ All required fields must be sent. `price` must not be null.
 
 ```json
 {
-  "barcode": "1729253182164",
+  "id": 5,
+  "barcode": "e2caab28-c442-467f-9b56-1e2514a6174c1732968365929",
   "usedAt": null,
-  "price": 200.5,
+  "price": 300.5,
   "deletedAt": null,
   "ticketTypeId": 1,
-  "saleId": 1
+  "saleId": 1,
+  "ticketType": {
+    "id": 1,
+    "name": "adult",
+    "retailPrice": 29.99,
+    "totalAvailable": null,
+    "eventId": 1
+  },
+  "event": {
+    "id": 1,
+    "name": "Death metal karaoke",
+    "description": "Öriöriöriöriörirprir!!!!!",
+    "totalTickets": 10,
+    "beginsAt": "2055-10-12T12:00:00",
+    "endsAt": "2055-10-12T12:00:00",
+    "ticketSaleBegins": "2055-10-12T12:00:00",
+    "venueId": 1
+  },
+  "venue": {
+    "id": 1,
+    "name": "Bunkkeri",
+    "address": "Bunkkeritie 1",
+    "zipcode": "00100"
+  }
 }
 ```
 

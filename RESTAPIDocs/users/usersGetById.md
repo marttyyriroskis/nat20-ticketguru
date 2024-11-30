@@ -34,12 +34,23 @@ Accept: application/json
 ```json
 {
   "id": 1,
-  "email": "test1@test.com",
-  "firstName": "User1",
+  "email": "salesperson@test.com",
+  "firstName": "salesperson1",
   "lastName": "Cashier",
   "role": {
-    "title": "cashier",
-    "permissionIds": [1, 2],
+    "title": "SALESPERSON",
+    "permissions": [
+      "VIEW_VENUES",
+      "USE_TICKETS",
+      "VIEW_EVENTS",
+      "VIEW_TICKET_TYPES",
+      "VIEW_SALES",
+      "CREATE_SALES",
+      "VIEW_TICKETS",
+      "EDIT_SALES",
+      "CONFIRM_SALES",
+      "DELETE_TICKETS"
+    ],
     "userIds": [1]
   }
 }

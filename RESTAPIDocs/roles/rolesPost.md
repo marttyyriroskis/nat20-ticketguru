@@ -23,7 +23,7 @@ POST /api/roles
 Content-Type: application/json
 
 {
-  "title": "new role"
+  "title": "admin"
 }
 ```
 
@@ -37,8 +37,8 @@ Content-Type: application/json
 
 ```json
 {
-  "title": "new role",
-  "permissionIds": [],
+  "title": "admin",
+  "permissions": [],
   "userIds": []
 }
 ```
@@ -55,6 +55,6 @@ Content-Type: application/json
 {
   "status": 409,
   "error": "Conflict",
-  "message": "Role already exists "
+  "message": "Role already exists"
 }
 ```

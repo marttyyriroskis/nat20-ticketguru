@@ -33,9 +33,9 @@ Accept: application/json
 
 ```json
 {
-  "title": "cashier",
-  "permissionIds": [],
-  "userIds": [1]
+  "title": "TICKET_INSPECTOR",
+  "permissions": ["USE_TICKETS", "VIEW_TICKETS"],
+  "userIds": []
 }
 ```
 

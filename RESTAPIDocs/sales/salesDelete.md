@@ -21,7 +21,7 @@ Allow deleting `Sale` details of the given `id`. When a Sale is deleted, it's de
 ## Example Request
 
 ```json
-DELETE api/sales/2
+DELETE api/sales/3
 Content-Type: application/json
 ```
 

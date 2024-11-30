@@ -14,22 +14,19 @@ Create a new `Venue` entity
 
 Provide all required parameters for the `Venue`to be created.
 
-| Field                | Type                     | Required | Description                                                     |
-| -------------------- | ------------------------ | -------- | --------------------------------------------------------------- |
-| `name`               | String                   | Yes      | The name of the venue (1-100 char).                             |
-| `address`            | String                   | Yes      | The address of the venue (1-100 char).                          |
-| `zipcode`            | Object                   | Yes      | An object representing the zipcode. Contains the zipcode `id`.  |
-
+| Field     | Type   | Required | Description                                                    |
+| --------- | ------ | -------- | -------------------------------------------------------------- |
+| `name`    | String | Yes      | The name of the venue (1-100 char).                            |
+| `address` | String | Yes      | The address of the venue (1-100 char).                         |
+| `zipcode` | Object | Yes      | An object representing the zipcode. Contains the zipcode `id`. |
 
 **Data example** All required fields must be sent. `name`, `address` and `zipcode` must not be null.
 
 ```json
 {
-    "name": "Keimon kisahalli",
-    "address": "Kukkakatu 12",
-    "zipcode": {
-            "zipcode": "70200"          
-        }     
+  "name": "Ryyppyluola",
+  "address": "kaljakäytävä 12",
+  "zipcode": "00100"
 }
 ```
 
@@ -43,13 +40,10 @@ Provide all required parameters for the `Venue`to be created.
 
 ```json
 {
-    "id": 4,
-    "name": "Keimon kisahalli",
-    "address": "Kukkakatu 12",
-    "zipcode": {
-        "zipcode": "70200",
-        "city": "Kuopio"
-    }
+  "id": 4,
+  "name": "Ryyppyluola",
+  "address": "kaljakäytävä 12",
+  "zipcode": "00100"
 }
 ```
 
@@ -92,8 +86,7 @@ Provide all required parameters for the `Venue`to be created.
 ```json
 {
   "name": "Name must not be empty",
-  "address": "Address must not be empty",
-  
+  "address": "Address must not be empty"
 }
 ```
 
