@@ -217,9 +217,11 @@ public class TicketguruApplication {
                         FROM
                                 events e
                         JOIN
-                                ticket_types tt ON tt.event_id = e.id
+                                ticket_types tt ON tt.event_id = e.id AND tt.deleted_at IS NULL
                         LEFT JOIN
                                 tickets t ON t.ticket_type_id = tt.id
+                        WHERE
+                                e.deleted_at IS NULL
                         GROUP BY 
                                 e.id, tt.id
                         WITH DATA;
