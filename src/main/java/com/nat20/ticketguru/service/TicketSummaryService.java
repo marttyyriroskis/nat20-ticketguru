@@ -3,7 +3,6 @@ package com.nat20.ticketguru.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.h2.command.ddl.RefreshMaterializedView;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
