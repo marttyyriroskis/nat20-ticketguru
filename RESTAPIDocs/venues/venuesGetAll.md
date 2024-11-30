@@ -30,32 +30,23 @@ Show all Venues the active User can access and with what permission level.
 
 ```json
 [
-    {
-        "id": 1,
-        "name": "Bunkkeri",
-        "address": "Bunkkeritie 1",
-        "zipcode": {
-            "zipcode": "00100",
-            "city": "Helsinki"
-        }
-    },
-    {
-        "id": 2,
-        "name": "Helsingin jäähalli",
-        "address": "Nordenskiöldinkatu 11-13",
-        "zipcode": {
-            "zipcode": "00250",
-            "city": "Helsinki"
-        }
-    },
-    {
-        "id": 3,
-        "name": "National Museum",
-        "address": "Museokatu 1",
-        "zipcode": {
-            "zipcode": "00100",
-            "city": "Helsinki"
-        }
-    }
+  {
+    "id": 1,
+    "name": "Bunkkeri",
+    "address": "Bunkkeritie 1",
+    "zipcode": "00100"
+  },
+  {
+    "id": 2,
+    "name": "Helsingin jäähalli",
+    "address": "Nordenskiöldinkatu 11-13",
+    "zipcode": "00250"
+  },
+  {
+    "id": 3,
+    "name": "National Museum",
+    "address": "Museokatu 1",
+    "zipcode": "00100"
+  }
 ]
 ```

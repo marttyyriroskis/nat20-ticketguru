@@ -21,7 +21,7 @@ Allow deleting `Venue` details of the given `id`.
 ## Example Request
 
 ```json
-DELETE api/venues/2
+DELETE api/venues/4
 Content-Type: application/json
 ```
 
@@ -31,28 +31,28 @@ Content-Type: application/json
 
 **Code** : `200 OK`
 
-**Content example** : Returns  remaining `Venue` objects in the database
+**Content example** : Returns remaining `Venue` objects in the database
 
 ```json
 [
-    {
-        "id": 1,
-        "name": "Bunkkeri",
-        "address": "Bunkkeritie 1",
-        "zipcode": {
-            "zipcode": "00100",
-            "city": "Helsinki"
-        }
-    },
-    {
-        "id": 3,
-        "name": "National Museum",
-        "address": "Museokatu 1",
-        "zipcode": {
-            "zipcode": "00100",
-            "city": "Helsinki"
-        }
+  {
+    "id": 1,
+    "name": "Bunkkeri",
+    "address": "Bunkkeritie 1",
+    "zipcode": {
+      "zipcode": "00100",
+      "city": "Helsinki"
     }
+  },
+  {
+    "id": 3,
+    "name": "National Museum",
+    "address": "Museokatu 1",
+    "zipcode": {
+      "zipcode": "00100",
+      "city": "Helsinki"
+    }
+  }
 ]
 ```
 

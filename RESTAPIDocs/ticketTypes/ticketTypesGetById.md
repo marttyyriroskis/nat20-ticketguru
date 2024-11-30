@@ -12,8 +12,8 @@ Allow getting `TicketType` details of the given `id`.
 
 **Path Parameters** :
 
-| Parameter | Type | Description                            |
-| --------- | ---- | -------------------------------------- |
+| Parameter | Type | Description                                  |
+| --------- | ---- | -------------------------------------------- |
 | `id`      | Long | Unique identifier for the ticket type to get |
 
 #### Example Request

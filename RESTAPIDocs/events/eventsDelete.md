@@ -19,7 +19,7 @@ Allow deleting `Event` details of the given `id`.
 ## Example Request
 
 ```json
-DELETE /api/events/2
+DELETE /api/events/4
 ```
 
 ## Success Responses

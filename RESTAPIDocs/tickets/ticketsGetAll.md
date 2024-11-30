@@ -40,41 +40,105 @@ GET /tickets
 
 **Code** : `200 OK`
 
-**Content** : In this example, the User can see four `Ticket` objects:
+**Content** : In this example, the User can see three `Ticket` objects:
 
 ```json
 [
   {
-    "id": 1,
-    "barcode": "1728287847109",
+    "id": 4,
+    "barcode": "d3e82202-a885-47d0-ae61-fa71d7bc06451732962836371",
     "usedAt": null,
-    "price": 0.0,
-    "ticketType": null,
-    "saleId": 1
+    "price": 40,
+    "deletedAt": null,
+    "ticketTypeId": 4,
+    "saleId": 1,
+    "ticketType": {
+      "id": 4,
+      "name": "vip",
+      "retailPrice": 79.99,
+      "totalAvailable": 20,
+      "eventId": 1
+    },
+    "event": {
+      "id": 1,
+      "name": "Death metal karaoke",
+      "description": "Öriöriöriöriörirprir!!!!!",
+      "totalTickets": 10,
+      "beginsAt": "2055-10-12T12:00:00",
+      "endsAt": "2055-10-12T12:00:00",
+      "ticketSaleBegins": "2055-10-12T12:00:00",
+      "venueId": 1
+    },
+    "venue": {
+      "id": 1,
+      "name": "Bunkkeri",
+      "address": "Bunkkeritie 1",
+      "zipcode": "00100"
+    }
   },
   {
     "id": 2,
-    "barcode": "1728287847226",
+    "barcode": "4d0032ce-4eb7-4626-b5c9-f7b18eaa4cda1732962836327",
     "usedAt": null,
-    "price": 0.0,
-    "ticketType": null,
-    "saleId": 1
+    "price": 20,
+    "deletedAt": null,
+    "ticketTypeId": 2,
+    "saleId": 1,
+    "ticketType": {
+      "id": 2,
+      "name": "student",
+      "retailPrice": 14.99,
+      "totalAvailable": null,
+      "eventId": 1
+    },
+    "event": {
+      "id": 1,
+      "name": "Death metal karaoke",
+      "description": "Öriöriöriöriörirprir!!!!!",
+      "totalTickets": 10,
+      "beginsAt": "2055-10-12T12:00:00",
+      "endsAt": "2055-10-12T12:00:00",
+      "ticketSaleBegins": "2055-10-12T12:00:00",
+      "venueId": 1
+    },
+    "venue": {
+      "id": 1,
+      "name": "Bunkkeri",
+      "address": "Bunkkeritie 1",
+      "zipcode": "00100"
+    }
   },
   {
     "id": 3,
-    "barcode": "1728287847228",
+    "barcode": "0ae9cfc8-c163-42d3-9ad8-60ca90bac1331732962836354",
     "usedAt": null,
-    "price": 0.0,
-    "ticketType": null,
-    "saleId": 2
-  },
-  {
-    "id": 4,
-    "barcode": "1728287847230",
-    "usedAt": null,
-    "price": 0.0,
-    "ticketType": null,
-    "saleId": null
+    "price": 30,
+    "deletedAt": null,
+    "ticketTypeId": 2,
+    "saleId": 1,
+    "ticketType": {
+      "id": 2,
+      "name": "student",
+      "retailPrice": 14.99,
+      "totalAvailable": null,
+      "eventId": 1
+    },
+    "event": {
+      "id": 1,
+      "name": "Death metal karaoke",
+      "description": "Öriöriöriöriörirprir!!!!!",
+      "totalTickets": 10,
+      "beginsAt": "2055-10-12T12:00:00",
+      "endsAt": "2055-10-12T12:00:00",
+      "ticketSaleBegins": "2055-10-12T12:00:00",
+      "venueId": 1
+    },
+    "venue": {
+      "id": 1,
+      "name": "Bunkkeri",
+      "address": "Bunkkeritie 1",
+      "zipcode": "00100"
+    }
   }
 ]
 ```

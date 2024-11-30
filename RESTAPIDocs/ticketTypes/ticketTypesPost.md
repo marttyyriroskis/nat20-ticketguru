@@ -19,7 +19,7 @@ Provide all required parameters for the `TicketType` to be created.
 | `name`           | String          | Yes      | The name of the ticket type (1-100 char).                                      |
 | `retailPrice`    | Double          | Yes      | The price of the ticket type.                                                  |
 | `totalAvailable` | Integer OR null | Yes      | The total amount of tickets available of this ticket type OR null if unlimited |
-| `eventId`        | Long        | Yes      | A long representing the event. Must contain the event `id` (Long).          |
+| `eventId`        | Long            | Yes      | A long representing the event. Must contain the event `id` (Long).             |
 
 #### Example Request
 
@@ -31,9 +31,10 @@ All required fields must be sent. `name`, `retailPrice` and `eventId`must not be
 
 ```json
 {
-  "name": "pensioner",
-  "retailPrice": 14.99,
-  "totalAvailable": null,
+  "name": "adult",
+  "retailPrice": 29.99,
+  "totalTickets": null,
+  "availableTickets": 9996,
   "eventId": 1
 }
 ```
@@ -49,8 +50,8 @@ All required fields must be sent. `name`, `retailPrice` and `eventId`must not be
 ```json
 {
   "id": 5,
-  "name": "pensioner",
-  "retailPrice": 14.99,
+  "name": "adult",
+  "retailPrice": 29.99,
   "totalAvailable": null,
   "eventId": 1
 }

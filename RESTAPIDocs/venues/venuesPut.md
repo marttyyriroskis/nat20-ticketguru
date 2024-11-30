@@ -20,27 +20,23 @@ Allow updating `Venue` details of the given `id`.
 
 The request body should be a JSON object representing the `Venue`. It may include the following fields:
 
-| Field                | Type                     | Required | Description                                                     |
-| -------------------- | ------------------------ | -------- | --------------------------------------------------------------- |
-| `name`               | String                   | Yes      | The name of the venue (1-100 char).                             |
-| `address`            | String                   | Yes      | The address of the venue (1-100 char).                          |
-| `zipcode`            | Object                   | Yes      | An object representing the zipcode. Contains the zipcode `id`.  |
+| Field     | Type   | Required | Description                                                    |
+| --------- | ------ | -------- | -------------------------------------------------------------- |
+| `name`    | String | Yes      | The name of the venue (1-100 char).                            |
+| `address` | String | Yes      | The address of the venue (1-100 char).                         |
+| `zipcode` | Object | Yes      | An object representing the zipcode. Contains the zipcode `id`. |
 
 #### Example Request
 
 ```json
-PUT /venues/2
+PUT /venues/4
 Content-Type: application/json
 
-{
-    "name": "Keimon kisahalli",
-    "address": "Kukkakatu 12",
-    "zipcode": {
-            "zipcode": "00100"
-            
-        }  
-    
-}
+    {
+        "name": "Keimo keidas",
+        "address": "Bunkkeritie 1",
+        "zipcode": "00100"
+    }
 ```
 
 ## Success Responses
@@ -53,13 +49,10 @@ Content-Type: application/json
 
 ```json
 {
-    "id": 2,
-    "name": "Keimon kisahalli",
-    "address": "Kukkakatu 12",
-    "zipcode": {
-        "zipcode": "00100",
-        "city": "Helsinki"
-    }
+  "id": 4,
+  "name": "Keimo keidas",
+  "address": "Bunkkeritie 1",
+  "zipcode": "00100"
 }
 ```
 
@@ -78,6 +71,7 @@ Content-Type: application/json
   "message": "Venue not found"
 }
 ```
+
 **Condition** : If the provided `Zipcode` does not exist.
 
 **Code** : `400 BAD REQUEST`
@@ -115,7 +109,7 @@ Content-Type: application/json
 ```json
 {
   "name": "Name must not be empty",
-  "address": "Address must not be empty",  
+  "address": "Address must not be empty"
 }
 ```
 

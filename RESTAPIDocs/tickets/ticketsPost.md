@@ -48,12 +48,36 @@ All required fields must be sent. `price` must not be null.
 
 ```json
 {
-  "barcode": "1728287847109",
+  "id": 5,
+  "barcode": "c7a9f563-0e88-4775-8f28-4f51d614a09c1732967649688",
   "usedAt": null,
   "price": 20.5,
   "deletedAt": null,
   "ticketTypeId": 1,
-  "saleId": 1
+  "saleId": 1,
+  "ticketType": {
+    "id": 1,
+    "name": "adult",
+    "retailPrice": 29.99,
+    "totalAvailable": null,
+    "eventId": 1
+  },
+  "event": {
+    "id": 1,
+    "name": "Death metal karaoke",
+    "description": "Öriöriöriöriörirprir!!!!!",
+    "totalTickets": 10,
+    "beginsAt": "2055-10-12T12:00:00",
+    "endsAt": "2055-10-12T12:00:00",
+    "ticketSaleBegins": "2055-10-12T12:00:00",
+    "venueId": 1
+  },
+  "venue": {
+    "id": 1,
+    "name": "Bunkkeri",
+    "address": "Bunkkeritie 1",
+    "zipcode": "00100"
+  }
 }
 ```
 

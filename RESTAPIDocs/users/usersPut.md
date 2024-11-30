@@ -29,15 +29,14 @@ Allow updating the details of an existing user.
 #### Example Request
 
 ```json
-PUT /api/users/1
+PUT /api/users/4
 Content-Type: application/json
 
 {
-  "id": 1,
   "email": "updated_user@test.com",
   "firstName": "UpdatedUser1",
   "lastName": "Cashier",
-  "roleId": 1
+  "role": null
 }
 ```
 
@@ -51,14 +50,14 @@ Content-Type: application/json
 
 ```json
 {
-  "id": 1,
+  "id": 4,
   "email": "updated_user@test.com",
   "firstName": "UpdatedUser1",
   "lastName": "Cashier",
   "role": {
-    "title": "cashier",
-    "permissionIds": [],
-    "userIds": [1]
+    "title": "user",
+    "permissions": ["USE_TICKETS", "VIEW_TICKETS"],
+    "userIds": [4]
   }
 }
 ```

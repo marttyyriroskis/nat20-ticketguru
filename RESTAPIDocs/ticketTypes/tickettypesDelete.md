@@ -19,7 +19,7 @@ Allow deleting `TicketType` details of the given `id`.
 ## Example Request
 
 ```json
-DELETE /api/tickettypes/2
+DELETE /api/tickettypes/5
 ```
 
 ## Success Responses

@@ -26,12 +26,11 @@ Allow updating the details of an existing role.
 ### Example Request
 
 ```json
-PUT /api/roles/1
+PUT /api/roles/5
 Content-Type: application/json
 
 {
-  "id": 1,
-  "title": "updated role"
+  "title": "user"
 }
 ```
 
@@ -45,9 +44,9 @@ Content-Type: application/json
 
 ```json
 {
-  "title": "updated role",
-  "permissionIds": [],
-  "userIds": [1]
+  "title": "user",
+  "permissions": [],
+  "userIds": []
 }
 ```
 

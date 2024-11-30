@@ -27,25 +27,26 @@ Provide all required parameters in the response body for the `Event` to be updat
 | `totalTickets`     | Integer                  | Yes      | The total number of tickets available for the event.             |
 | `beginsAt`         | String (ISO 8601 format) | Yes      | The start date and time of the event.                            |
 | `endsAt`           | String (ISO 8601 format) | Yes      | The end date and time of the event.                              |
-| `ticketSaleBegins` | String (ISO 8601 format) | No      | The date and time when ticket sales begin.                       |
+| `ticketSaleBegins` | String (ISO 8601 format) | No       | The date and time when ticket sales begin.                       |
 | `venueId`          | Long                     | Yes      | A long representing the venue. Must contain the `venueId` (Long) |
 
 #### Example Request
 
 ```json
-PUT /api/events/2
+PUT /api/events/4
 ```
+
 All required fields must be sent. `name`, `description`, `totalTickets`, `beginsAt` and `endsAt` must not be null.
 
 ```json
 {
-    "name": "Disney On Meth-Ice",
-    "description": "Mikki-hiiret jäällä. Suih suih vaan!",
-    "total_tickets": 10000,
-    "begins_at": "2024-09-29T09:18:26.535823",
-    "ends_at": "2024-09-29T09:18:26.535823",
-    "ticket_sale_begins": "2024-09-29T09:18:26.535823",
-    "venue": 1
+  "name": "Disney On Meth-Ice",
+  "description": "Mikki-hiiret jäällä. Suih suih vaan!",
+  "totalTickets": 10000,
+  "beginsAt": "2025-09-29T09:18:26.535823",
+  "endsAt": "2025-09-29T09:18:26.535823",
+  "ticketSaleBegins": "2025-09-29T09:18:26.535823",
+  "venueId": 1
 }
 ```
 
@@ -59,14 +60,14 @@ All required fields must be sent. `name`, `description`, `totalTickets`, `begins
 
 ```json
 {
-  "id": 2,
+  "id": 4,
   "name": "Disney On Meth-Ice",
   "description": "Mikki-hiiret jäällä. Suih suih vaan!",
-  "total_tickets": 10000,
-  "begins_at": "2024-09-29T09:18:26.535823",
-  "ends_at": "2024-09-29T09:18:26.535823",
-  "ticket_sale_begins": "2024-09-29T09:18:26.535823",
-  "venue": 1
+  "totalTickets": 10000,
+  "beginsAt": "2025-09-29T09:18:26.535823",
+  "endsAt": "2025-09-29T09:18:26.535823",
+  "ticketSaleBegins": "2025-09-29T09:18:26.535823",
+  "venueId": 1
 }
 ```
 
@@ -99,7 +100,6 @@ All required fields must be sent. `name`, `description`, `totalTickets`, `begins
   "message": "Venue not found"
 }
 ```
-
 
 **Condition** : If required fields are missing or null.
 

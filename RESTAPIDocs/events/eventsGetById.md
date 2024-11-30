@@ -19,7 +19,7 @@ Allow getting `Event` details of the given `id`.
 #### Example Request
 
 ```json
-GET /api/events/3
+GET /api/events/1
 ```
 
 ## Success Responses
@@ -32,13 +32,13 @@ GET /api/events/3
 
 ```json
 {
-  "id": 3,
-  "name": "A Night at the Museum",
-  "description": "Night-show at the National Museum",
-  "total_tickets": 500,
-  "begins_at": "2055-10-12T12:00:00",
-  "ends_at": "2055-10-12T12:00:00",
-  "ticket_sale_begins": "2055-10-12T12:00:00",
+  "id": 1,
+  "name": "Death metal karaoke",
+  "description": "Öriöriöriöriörirprir!!!!!",
+  "totalTickets": 10,
+  "beginsAt": "2055-10-12T12:00:00",
+  "endsAt": "2055-10-12T12:00:00",
+  "ticketSaleBegins": "2055-10-12T12:00:00",
   "venueId": 1
 }
 ```

@@ -19,7 +19,7 @@ Allow getting `Venue` details of the given `id`.
 #### Example Request
 
 ```json
-GET /venues/2
+GET /venues/1
 Accept: application/json
 ```
 
@@ -33,13 +33,10 @@ Accept: application/json
 
 ```json
 {
-    "id": 2,
-    "name": "Helsingin jäähalli",
-    "address": "Nordenskiöldinkatu 11-13",
-    "zipcode": {
-        "zipcode": "00250",
-        "city": "Helsinki"
-    }
+  "id": 1,
+  "name": "Bunkkeri",
+  "address": "Bunkkeritie 1",
+  "zipcode": "00100"
 }
 ```
 

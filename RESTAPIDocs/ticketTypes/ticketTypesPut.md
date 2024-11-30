@@ -30,15 +30,17 @@ Provide all required parameters in the response body for the `TicketType` to be 
 #### Example Request
 
 ```json
-PUT /api/tickettypes/1
+PUT /api/tickettypes/5
 ```
+
 All required fields must be sent. `name`, `retailPrice` and `eventId` must not be null.
 
 ```json
 {
   "name": "adult",
-  "retailPrice": 39.99,
-  "totalAvailable": null,
+  "retailPrice": 29.99,
+  "totalTickets": null,
+  "availableTickets": 9996,
   "eventId": 1
 }
 ```
@@ -55,7 +57,7 @@ All required fields must be sent. `name`, `retailPrice` and `eventId` must not b
 {
   "id": 5,
   "name": "adult",
-  "retailPrice": 39.99,
+  "retailPrice": 29.99,
   "totalAvailable": null,
   "eventId": 1
 }
@@ -77,7 +79,7 @@ All required fields must be sent. `name`, `retailPrice` and `eventId` must not b
 }
 ```
 
-**Condition**: If the provided `Event` does not exist. 
+**Condition**: If the provided `Event` does not exist.
 
 **Code** : `404 NOT FOUND`
 
