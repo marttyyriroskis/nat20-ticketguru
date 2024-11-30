@@ -24,9 +24,9 @@ Provide all required parameters for the `Sale`to be created.
 
 ```json
 {
-  "paidAt": "2024-10-04T12:58:29.580761",
+  "paidAt": "2024-11-30T11:03:32.862709",
   "userId": 1,
-  "ticketIds": [4]
+  "ticketIds": [1, 2]
 }
 ```
 

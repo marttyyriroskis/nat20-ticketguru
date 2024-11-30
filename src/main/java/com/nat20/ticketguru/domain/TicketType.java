@@ -43,6 +43,9 @@ public class TicketType {
     @Column(name = "total_tickets")
     private Integer totalTickets;
 
+    @Positive
+    private Integer availableTickets;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "event_id")
@@ -94,6 +97,14 @@ public class TicketType {
 
     public void setTotalTickets(Integer totalTickets) {
         this.totalTickets = totalTickets;
+    }
+
+    public Integer getAvailableTickets() {
+        return availableTickets;
+    }
+
+    public void setAvailableTickets(Integer availableTickets) {
+        this.availableTickets = availableTickets;
     }
 
     public Event getEvent() {

@@ -82,6 +82,7 @@ public class TicketTypeRestController {
         ticketType.setName(ticketTypeDTO.name());
         ticketType.setRetailPrice(ticketTypeDTO.retailPrice());
         ticketType.setTotalTickets(ticketTypeDTO.totalTickets());
+        ticketType.setAvailableTickets(ticketTypeDTO.availableTickets());
         ticketType.setEvent(event);
 
         TicketType savedTicketType = ticketTypeRepository.save(ticketType);

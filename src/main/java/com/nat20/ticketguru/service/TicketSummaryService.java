@@ -2,8 +2,6 @@ package com.nat20.ticketguru.service;
 
 import java.util.List;
 
-import org.h2.command.ddl.RefreshMaterializedView;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
