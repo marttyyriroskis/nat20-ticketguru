@@ -3,6 +3,7 @@ package com.nat20.ticketguru.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.h2.command.ddl.RefreshMaterializedView;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -87,5 +88,14 @@ public class TicketSummaryService {
         Optional<TicketSummary> summary = ticketSummaryRepository.findByTicketTypeId(ticketTypeId);
         // no summary = no tickets sold
         return summary.isPresent() && summary.get().getTicketsSold() != 0;
+    }
+
+    public boolean eventHasSoldNonDeletedTickets(Long eventId) {
+        refreshMateralizedView();
+        eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+        List<TicketSummary> summaries = ticketSummaryRepository.findByEventId(eventId);
+        // if stream is empty, or any tickets are sold, return false
+        return summaries.stream().anyMatch(summary -> summary.getTicketsSold() != 0);
     }
 }

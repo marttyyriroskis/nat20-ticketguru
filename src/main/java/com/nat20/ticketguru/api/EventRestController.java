@@ -22,6 +22,7 @@ import com.nat20.ticketguru.domain.Venue;
 import com.nat20.ticketguru.dto.EventDTO;
 import com.nat20.ticketguru.repository.EventRepository;
 import com.nat20.ticketguru.repository.VenueRepository;
+import com.nat20.ticketguru.service.TicketSummaryService;
 
 import jakarta.validation.Valid;
 
@@ -32,10 +33,12 @@ public class EventRestController {
 
     private final EventRepository eventRepository;
     private final VenueRepository venueRepository;
+    private final TicketSummaryService ticketSummaryService;
 
-    public EventRestController(EventRepository eventRepository, VenueRepository venueRepository) {
+    public EventRestController(EventRepository eventRepository, VenueRepository venueRepository, TicketSummaryService ticketSummaryService) {
         this.eventRepository = eventRepository;
         this.venueRepository = venueRepository;
+        this.ticketSummaryService = ticketSummaryService;
     }
 
     // Get events
@@ -103,7 +106,7 @@ public class EventRestController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Venue ID"));
 
         event.setVenue(venue);
-        
+
         Event editedEvent = eventRepository.save(event);
 
         return ResponseEntity.ok(editedEvent.toDTO());
@@ -116,6 +119,11 @@ public class EventRestController {
 
         Event event = eventRepository.findByIdActive(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+        // check if event has any sold non-deleted tickets
+        if (ticketSummaryService.eventHasSoldNonDeletedTickets(id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete event because it has sold tickets.");
+        }
 
         event.delete();
 
