@@ -56,10 +56,33 @@ public class TicketguruApplication {
                 return;
             }
 
-            System.out.println("Would you like to initialize the database with some sample data? (yes/no)");
+            System.out.println("Would you like to reset and re-initialize the database with some sample data? (yes/no)");
 
             try (Scanner scanner = new Scanner(System.in)) {
                 if (scanner.nextLine().equals("yes")) {
+
+                    log.info("Resetting the database...");
+                    String resetSQL = """
+                        DO $$ 
+                        DECLARE
+                        table_name text;
+                        BEGIN
+                        FOR table_name IN
+                                SELECT tablename
+                                FROM pg_tables
+                                WHERE schemaname = 'public'
+                        LOOP
+                                EXECUTE 'TRUNCATE TABLE ' || quote_ident(table_name) || ' RESTART IDENTITY CASCADE;';
+                        END LOOP;
+                        END $$;
+                                """;
+
+                    jdbcTemplate.execute(resetSQL);
+
+                    // drop materialized view
+                    jdbcTemplate.execute("DROP MATERIALIZED VIEW IF EXISTS event_ticket_summary;");
+
+                    System.out.println("Database reset complete.");
 
                     log.info("Creating a few role test entries");
                     Role ticketInspectorRole = roleRepository.save(new Role("TICKET_INSPECTOR"));
