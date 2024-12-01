@@ -169,17 +169,16 @@ public class SaleRestController {
     public ResponseEntity<List<SaleDTO>> searchSales(
             @RequestParam(required = false) String start,
             @RequestParam(required = false) String end,
-            @RequestParam(required = false) Long userId,
-            @RequestParam(required = false) Long eventId) {
+            @RequestParam(required = false) Long userId) {
 
         LocalDateTime startDateTime = parseToDateTime(start);
         LocalDateTime endDateTime = parseToDateTime(end);
 
-        if (startDateTime == null && endDateTime == null && userId == null && eventId == null) {
+        if (startDateTime == null && endDateTime == null && userId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one search parameter must be provided.");
         }
         try {
-            List<Sale> sales = saleService.searchSales(startDateTime, endDateTime, userId, eventId);
+            List<Sale> sales = saleService.searchSales(startDateTime, endDateTime, userId);
             return ResponseEntity.ok(sales.stream().map(Sale::toDTO).toList());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
