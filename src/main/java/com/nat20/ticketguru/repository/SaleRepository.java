@@ -33,4 +33,6 @@ public interface SaleRepository extends CrudRepository<Sale, Long> {
 
     List<Sale> findByUser(User user);
 
+    List<Sale> findByEventId(Long eventId);
+
 }

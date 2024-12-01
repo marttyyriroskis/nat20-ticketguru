@@ -6,8 +6,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.nat20.ticketguru.domain.Event;
 import com.nat20.ticketguru.domain.Sale;
 import com.nat20.ticketguru.domain.User;
+import com.nat20.ticketguru.repository.EventRepository;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.UserRepository;
 
@@ -16,18 +18,29 @@ public class SaleService {
 
     private final SaleRepository saleRepository;
     private final UserRepository userRepository;
+    private final EventRepository eventRepository;
 
-    public SaleService(SaleRepository saleRepository, UserRepository userRepository) {
+    public SaleService(SaleRepository saleRepository, UserRepository userRepository, EventRepository eventRepository) {
         this.saleRepository = saleRepository;
         this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
     }
 
-    public List<Sale> searchSales(LocalDateTime start, LocalDateTime end, Long userId) {
+    public List<Sale> searchSales(LocalDateTime start, LocalDateTime end, Long userId, Long eventId) {
 
-        Optional<User> user = (userId != null) ? userRepository.findById(userId) : Optional.empty();
+        Optional<User> user = (userId != null) ? userRepository.findByIdActive(userId) : Optional.empty();
+        Optional<Event> event = (eventId != null) ? eventRepository.findByIdActive(eventId) : Optional.empty();
 
         if (userId != null && user.isEmpty()) {
             throw new IllegalArgumentException("User with ID " + userId + " does not exist.");
+        }
+
+        if (eventId != null && event.isEmpty()) {
+            throw new IllegalArgumentException("Event with ID " + eventId + " does not exist.");
+        }
+
+        if (eventId != null) {
+            return saleRepository.findByEventId(eventId);
         }
 
         if (start != null && end != null && userId != null) {
