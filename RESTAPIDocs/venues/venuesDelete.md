@@ -6,7 +6,7 @@ Allow deleting `Venue` details of the given `id`.
 
 **Method** : `DELETE`
 
-**Auth required** : NO
+**Auth required** : YES
 
 **Permissions required** : `DELETE_VENUES`
 
@@ -16,45 +16,17 @@ Allow deleting `Venue` details of the given `id`.
 | --------- | ---- | ----------------------------------------- |
 | `id`      | Long | Unique identifier for the venue to update |
 
-**Data constraints** : `{}`
-
 ## Example Request
 
 ```json
 DELETE api/venues/4
-Content-Type: application/json
 ```
 
 ## Success Responses
 
-**Condition** : Id provided belongs to an venue in the database
+**Condition** : `id` provided belongs to a `Venue` in the database
 
-**Code** : `200 OK`
-
-**Content example** : Returns remaining `Venue` objects in the database
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Bunkkeri",
-    "address": "Bunkkeritie 1",
-    "zipcode": {
-      "zipcode": "00100",
-      "city": "Helsinki"
-    }
-  },
-  {
-    "id": 3,
-    "name": "National Museum",
-    "address": "Museokatu 1",
-    "zipcode": {
-      "zipcode": "00100",
-      "city": "Helsinki"
-    }
-  }
-]
-```
+**Code** : `204 NO CONTENT`
 
 ## Error Response
 

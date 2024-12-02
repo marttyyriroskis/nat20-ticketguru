@@ -20,7 +20,6 @@ Allow retrieving a user's details by their unique identifier.
 
 ```json
 GET /api/users/1
-Accept: application/json
 ```
 
 ## Success Responses
@@ -75,3 +74,12 @@ Accept: application/json
 **Condition**: If the user is not an admin, nor the requested user.
 
 **Code** : `403 FORBIDDEN`
+
+**Content example** :
+
+```json
+{
+  "status": 403,
+  "error": "Forbidden"
+}
+```

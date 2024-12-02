@@ -16,13 +16,10 @@ Allow deleting `Sale` details of the given `id`. When a Sale is deleted, it's de
 | --------- | ---- | ---------------------------------------- |
 | `id`      | Long | Unique identifier for the Sale to delete |
 
-**Data constraints** : `{}`
-
 ## Example Request
 
 ```json
 DELETE api/sales/3
-Content-Type: application/json
 ```
 
 ## Success Response

@@ -10,15 +10,17 @@ Show all Venues the active User can access and with what permission level.
 
 **Permissions required** : `VIEW_VENUES`
 
-**Data constraints** : `{}`
-
 ## Success Responses
 
-**Condition** : User can not see any Venues.
+**Condition** : User cannot see any Venues.
 
 **Code** : `200 OK`
 
-**Content** : `{[]}`
+**Content** :
+
+```json
+[]
+```
 
 ### OR
 
@@ -26,7 +28,7 @@ Show all Venues the active User can access and with what permission level.
 
 **Code** : `200 OK`
 
-**Content** : In this example, the User can see three Venues:
+**Content** : Returns a list of `Venue` objects.
 
 ```json
 [

@@ -14,10 +14,21 @@ Allow retrieving a list of all users.
 
 ```json
 GET /api/users
-Accept: application/json
 ```
 
 ## Success Responses
+
+**Condition** : The request is successful and there are no `User` objects in the system.
+
+**Code** : `200 OK`
+
+**Content** :
+
+```json
+[]
+```
+
+### OR
 
 **Condition** : The request is successful, and there are users in the system.
 
@@ -117,20 +128,4 @@ Accept: application/json
     }
   }
 ]
-```
-
-## Error Responses
-
-**Condition** : If there are no users available.
-
-**Code** : `204 NO CONTENT`
-
-**Content example** :
-
-```json
-{
-  "status": 204,
-  "error": "No content",
-  "message": "No users available"
-}
 ```

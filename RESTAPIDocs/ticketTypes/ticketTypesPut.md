@@ -29,23 +29,17 @@ Provide all required parameters in the response body for the `TicketType` to be 
 
 #### Example Request
 
-```json
-PUT /api/tickettypes/5
-```
-
 All required fields must be sent. `name`, `retailPrice` and `eventId` must not be null.
 
 ```json
+PUT /api/tickettypes/5
+
 {
   "name": "adult",
   "retailPrice": 29.99,
   "totalTickets": null,
   "availableTickets": 9996,
-<<<<<<< HEAD
-  "eventId": 2
-=======
   "eventId": 1
->>>>>>> main
 }
 ```
 

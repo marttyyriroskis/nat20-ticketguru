@@ -6,11 +6,13 @@ Allow adding a new role to the system.
 
 **Method** : `POST`
 
-**Auth required** : Yes
+**Auth required** : YES
 
 **Permissions required** : `CREATE_ROLES`
 
-### Request Body:
+**Data constraints** :
+
+Provide all required parameters for the `Role` to be created.
 
 | Field   | Type   | Description           |
 | ------- | ------ | --------------------- |
@@ -20,7 +22,6 @@ Allow adding a new role to the system.
 
 ```json
 POST /api/roles
-Content-Type: application/json
 
 {
   "title": "admin"
@@ -45,7 +46,7 @@ Content-Type: application/json
 
 ## Error Response
 
-**Condition** : If the role title is already in the database
+**Condition** : If the role title is already in the database.
 
 **Code** : `409 CONFLICT`
 

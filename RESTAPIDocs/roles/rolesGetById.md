@@ -6,7 +6,7 @@ Allow retrieving a role by its unique identifier.
 
 **Method** : `GET`
 
-**Auth required** : NO
+**Auth required** : YES
 
 **Permissions required** : `VIEW_ROLES`
 
@@ -20,7 +20,6 @@ Allow retrieving a role by its unique identifier.
 
 ```json
 GET /api/roles/1
-Accept: application/json
 ```
 
 ## Success Responses

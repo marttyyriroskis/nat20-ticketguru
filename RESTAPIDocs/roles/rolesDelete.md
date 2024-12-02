@@ -6,11 +6,11 @@ Allow deleting a role from the system.
 
 **Method** : `DELETE`
 
-**Auth required** : Yes
+**Auth required** : YES
 
 **Permissions required** : `DELETE_ROLES`
 
-### Path Parameters:
+**Path Parameters** : `{id}`
 
 | Parameter | Type | Description                              |
 | --------- | ---- | ---------------------------------------- |
@@ -26,7 +26,7 @@ DELETE /api/roles/5
 
 **Condition** : Role is deleted successfully.
 
-**Code** : `204 No Content`
+**Code** : `204 NO CONTENT`
 
 ## Error Response
 

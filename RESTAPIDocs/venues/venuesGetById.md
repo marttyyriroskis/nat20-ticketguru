@@ -20,7 +20,6 @@ Allow getting `Venue` details of the given `id`.
 
 ```json
 GET /venues/1
-Accept: application/json
 ```
 
 ## Success Responses

@@ -30,13 +30,12 @@ The request body should be a JSON object representing the `Venue`. It may includ
 
 ```json
 PUT /venues/4
-Content-Type: application/json
 
-    {
-        "name": "Keimo keidas",
-        "address": "Bunkkeritie 1",
-        "zipcode": "00100"
-    }
+  {
+    "name": "Keimo keidas",
+    "address": "Bunkkeritie 1",
+    "zipcode": "00100"
+  }
 ```
 
 ## Success Responses

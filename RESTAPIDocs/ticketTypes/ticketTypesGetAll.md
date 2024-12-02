@@ -34,7 +34,7 @@ GET /api/tickettypes
 
 **Code** : `200 OK`
 
-**Content** : In this example, the `User` can see four `TicketType` objects:
+**Content** : Returns a list of `TicketType` objects.
 
 ```json
 [

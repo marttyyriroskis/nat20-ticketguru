@@ -1,6 +1,6 @@
 # Add a new Venue
 
-Create a new `Venue` entity
+Create a new `Venue` entity.
 
 **URL** : `/api/venues/`
 
@@ -12,7 +12,7 @@ Create a new `Venue` entity
 
 **Data constraints** :
 
-Provide all required parameters for the `Venue`to be created.
+Provide all required parameters for the `Venue` to be created.
 
 | Field     | Type   | Required | Description                                                    |
 | --------- | ------ | -------- | -------------------------------------------------------------- |
@@ -20,9 +20,12 @@ Provide all required parameters for the `Venue`to be created.
 | `address` | String | Yes      | The address of the venue (1-100 char).                         |
 | `zipcode` | Object | Yes      | An object representing the zipcode. Contains the zipcode `id`. |
 
-**Data example** All required fields must be sent. `name`, `address` and `zipcode` must not be null.
+#### Example Request
+
+All required fields must be sent. `name`, `address` and `zipcode` must not be null.
 
 ```json
+POST /api/venues
 {
   "name": "Ryyppyluola",
   "address": "kaljakäytävä 12",

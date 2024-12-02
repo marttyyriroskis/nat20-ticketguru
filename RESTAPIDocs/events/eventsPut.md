@@ -6,7 +6,7 @@ Allow updating `Event` details of the given `id`.
 
 **Method** : `PUT`
 
-**Auth required** : NO
+**Auth required** : YES
 
 **Permissions required** : `EDIT_EVENTS`
 
@@ -32,13 +32,11 @@ Provide all required parameters in the response body for the `Event` to be updat
 
 #### Example Request
 
-```json
-PUT /api/events/4
-```
-
 All required fields must be sent. `name`, `description`, `totalTickets`, `beginsAt` and `endsAt` must not be null.
 
 ```json
+PUT /api/events/4
+
 {
   "name": "Disney On Meth-Ice",
   "description": "Mikki-hiiret jäällä. Suih suih vaan!",

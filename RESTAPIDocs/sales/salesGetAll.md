@@ -10,13 +10,10 @@ Show all Sales the active User can access and with what permission level.
 
 **Permissions required** : `VIEW_SALES`
 
-**Data constraints** : `{}`
-
 ## Example Request
 
 ```json
-GET api/sales
-Content-Type: application/json
+GET /api/sales
 ```
 
 ## Success Responses
@@ -28,7 +25,7 @@ Content-Type: application/json
 **Content** :
 
 ```json
-{[]}
+[]
 ```
 
 ### OR
@@ -37,7 +34,7 @@ Content-Type: application/json
 
 **Code** : `200 OK`
 
-**Content** : In this example, the User can see two Sales:
+**Content** : Returns a list of `Sale` objects.
 
 ```json
 [
