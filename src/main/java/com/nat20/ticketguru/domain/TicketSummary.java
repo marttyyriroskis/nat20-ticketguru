@@ -10,10 +10,15 @@ import com.nat20.ticketguru.dto.TicketSummaryDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
+/**
+ * Entity class for TicketSummary
+ * 
+ * @Subselect instead of table prevents hibernate from trying to make it into a table which conflicts with the material view
+ * @Immutable read-only
+ * @method toDTO()
+ */
 @Entity
-// subselect instead of table prevents hibernate from trying to make it into a table which conflicts with the material view
 @Subselect("SELECT * FROM event_ticket_summary")
-// read-only
 @Immutable
 public class TicketSummary {
 

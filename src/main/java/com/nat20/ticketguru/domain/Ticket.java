@@ -16,6 +16,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
+/**
+ * Entity class for Ticket
+ * 
+ * @ManyToOne relationship to TicketType
+ * @ManyToOne relationship to Sale
+ * @method delete()
+ * @method toDTO()
+ * @method generateBarcode()
+ */
 @Entity
 @Table(name = "tickets")
 public class Ticket {

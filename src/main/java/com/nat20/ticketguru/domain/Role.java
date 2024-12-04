@@ -23,6 +23,17 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 
+/**
+ * Entity class for Role
+ * 
+ * @OneToMany relationship to User
+ * @method delete()
+ * @method isDeleted()
+ * @method addPermissions()
+ * @method removePermissions()
+ * @method hasPermission()
+ * @method toDTO()
+ */
 @Entity
 @Table(name = "roles")
 public class Role {

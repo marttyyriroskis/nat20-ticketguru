@@ -26,6 +26,18 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+/**
+ * Entity class for User
+ * 
+ * @implements UserDetails
+ * @ManyToOne relationship to Role
+ * @OneToMany relationship to Sale
+ * @method delete()
+ * @method isDeleted()
+ * @method hasPermission()
+ * @method toDTO()
+ * @method getAuthorities()
+ */
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {

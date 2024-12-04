@@ -22,6 +22,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Entity class for TicketType
+ * 
+ * @ManyToOne relationship to Event
+ * @OneToMany relationship to Ticket
+ * @method delete()
+ * @method toDTO()
+ */
 @Entity
 @Table(name = "ticket_types")
 public class TicketType {

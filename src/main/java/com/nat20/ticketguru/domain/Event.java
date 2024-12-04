@@ -24,6 +24,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Entity class for Event
+ * 
+ * @ManyToOne relationship to Venue
+ * @OneToMany relationship to TicketType
+ * @method delete()
+ * @method toDTO()
+ */
 @Entity
 @Table(name = "events")
 public class Event {

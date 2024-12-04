@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/**
+ * Entity class for Zipcode
+ */
 @Entity
 @Table(name = "zipcodes")
 public class Zipcode {
