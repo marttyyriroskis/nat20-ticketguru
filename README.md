@@ -16,16 +16,15 @@ Projektin lopputuotteena on käyttövalmis TicketGuru-lipunmyyntijärjestelmä s
 
 # Järjestelmän määrittely
 
-Määrittelyssä järjestelmää tarkastellaan käyttäjän näkökulmasta. Järjestelmän
-toiminnot hahmotellaan käyttötapausten tai käyttäjätarinoiden kautta, ja kuvataan järjestelmän
-käyttäjäryhmät.
+Määrittelyssä järjestelmää tarkastellaan käyttäjän näkökulmasta. Järjestelmän toiminnot hahmotellaan käyttötapausten tai käyttäjätarinoiden kautta, ja kuvataan järjestelmän käyttäjäryhmät.
 
 <details>
 <summary>Käyttäjäryhmät</summary>
 
-- Lipunmyyjä on järjestelmän ensisijainen käyttäjä joka myy asiakkaille tapahtuma lippuja järjestelmän kautta.
-- Tapahtumakoordinaattori lisää uusia tapahtumia tarjolle ja määrittää niille oleelliset tiedot sekä näkee tapahtumaan myytyjen lippujen tilastoja, jotta voi tehdä muutoksia tarvittaessa.
-- Järjestelmää hallitseva ylläpitäjä voi lisätä, muokata ja poistaa käyttäjiä ja niihin liittyviä tietoja, sekä lisätä, muokata ja poistaa käyttäjärooleja. Ylläpitäjä näkee myös järjestelmä raportteja ja lokeja ongelmien ehkäisemiseksi.
+- Lipunmyyjä (**'SALESPERSON'**) voi luoda tai muokata myyntitapahtumia. Hän voi myös selata tapahtumien, lippujen, lipputyyppien tai tapahtumapaikkojen tietoja.
+- Lipuntarkastaja (**'TICKET_INSPECTOR'**) voi tarkastaa myytyjä lippuja ja merkitä ne käytetyiksi.
+- Tapahtumakoordinaattori (**'COORDINATOR'**) voi luoda tai muokata tapahtumia, lipputyyppejä tai tapahtumapaikkoja.
+- Ylläpitäjällä (**'ADMIN'**) on kaikki edellä mainitut oikeudet, sekä lisäksi oikeudet poistaa järjestelmässä olevia tietoja. Hän voi tarvittaessa tarkastella järjestelmälokeja.
 </details>
 
 <details>
@@ -167,6 +166,11 @@ _"Ylläpitäjänä haluan nähdä järjestelmäraportit ja lokit ongelmatilantei
 
 - Ylläpitäjä voi nähdä järjestelmäraportit
 - Ylläpitäjä voi nähdä lokit
+
+**Lisätiedot**
+
+- Ei implementoitu
+
 </details>
 
 <p>&nbsp;</p>
