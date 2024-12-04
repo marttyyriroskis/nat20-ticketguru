@@ -261,7 +261,7 @@ sales-taulu kuvaa yhtä myyntitapahtumaa. Jokaisella myyntitapahtumalla on yksi 
 <details>
 <summary>ticket_summary</summary>
 
-**MATERIALIZED VIEW - miten määritellään?**
+ticket_summary on kiinnitetty näkymä, ei taulu, jolloin sitä ei ole lisätty yllä olevaan kaavioon. Kiinnitetty näkymä kokoaa tietokannasta ennalta määriteltyjä tietoja yhteen paikkaan.
 
 | Kenttä         | Tyyppi | Kuvaus                                                         |
 | -------------- | ------ | -------------------------------------------------------------- |
@@ -278,14 +278,14 @@ sales-taulu kuvaa yhtä myyntitapahtumaa. Jokaisella myyntitapahtumalla on yksi 
 
 ticket_types-taulu sisältää lipputyypit. Yhdessä tapahtumassa voi olla monta lipputyyppiä. Lipputyyppi määrittää aina vain yhtä lippua kerrallaan.
 
-| Kenttä              | Tyyppi      | Kuvaus                                          |
-| ------------------- | ----------- | ----------------------------------------------- |
-| id                  | int PK      | Lipputyypin id                                  |
-| name                | varchar(50) | Lipputyypin nimimerkki                          |
-| retail_price        | double      | Lipputyypin OVH                                 |
-| event_id            | int FK      | Viittaus tapahtumaan [events](#events)-taulussa |
-| **total_available** | **int**     | **Lippuja saatavilla - korjaa entiteetti**      |
-| deleted_at          | datetime    | Mahdollinen poistoajankohta                     |
+| Kenttä        | Tyyppi      | Kuvaus                                          |
+| ------------- | ----------- | ----------------------------------------------- |
+| id            | int PK      | Lipputyypin id                                  |
+| name          | varchar(50) | Lipputyypin nimimerkki                          |
+| retail_price  | double      | Lipputyypin OVH                                 |
+| event_id      | int FK      | Viittaus tapahtumaan [events](#events)-taulussa |
+| total_tickets | int         | Lippuja saatavilla                              |
+| deleted_at    | datetime    | Mahdollinen poistoajankohta                     |
 
 </details>
 
