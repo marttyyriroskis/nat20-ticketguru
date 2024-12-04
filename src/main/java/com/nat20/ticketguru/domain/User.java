@@ -52,6 +52,7 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
 
+    @Column(name = "hashed_password")
     @JsonIgnore
     private String hashedPassword;
 
