@@ -86,7 +86,7 @@ public class TicketTypeRestController {
      * Retrieves a list of active ticket types for a specified event, including their available ticket counts
      *
      * @param eventId the ID of the event for which ticket types are to be retrieved
-     * @return a ResponseEntity containing a list of TicketTypeDTOs with available ticket counts and a status of 200 (OK)
+     * @return a ResponseEntity containing a list of TicketTypeDTOs with available ticket counts and status 200 OK
      * @throws ResponseStatusException if event not found
      */
     @GetMapping("/search")

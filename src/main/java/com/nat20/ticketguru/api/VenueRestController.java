@@ -133,7 +133,7 @@ public class VenueRestController {
      * Delete a venue
      * 
      * @param id the id of the venue to be deleted
-     * @return 204 No Content
+     * @return 204 NO CONTENT
      * @exception ResponseStatusException if venue not found
      */
     @DeleteMapping("/{id}")

@@ -18,10 +18,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class CustomCorsConfig {
 
     /**
-     * Configures CORS (Cross-Origin Resource Sharing) settings for the application.
-     * This method sets the allowed origins, HTTP methods, headers, and credentials 
-     * for cross-origin requests. It is used to ensure that only trusted domains 
-     * are allowed to make requests to the application's API.
+     * Configures CORS settings for the application. Sets the allowed origins,
+     * HTTP methods, headers, and credentials for cross-origin requests.
      * 
      * @return a configured `CorsConfigurationSource` instance for CORS settings
      */
@@ -29,7 +27,8 @@ public class CustomCorsConfig {
     public CorsConfigurationSource getCorsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5500", "http://127.0.0.1:5500", "https://ticket-client.hellmanstudios.fi", "https://ticketguru.store")); // Specify allowed origin(s)
+        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5500", "http://127.0.0.1:5500",
+        "https://ticket-client.hellmanstudios.fi", "https://ticketguru.store")); // Specify allowed origin(s)
         config.setAllowedMethods(List.of("GET", "PUT", "POST", "DELETE", "OPTIONS")); // Allow specified HTTP methods
         config.setAllowedHeaders(List.of("*")); // Allow all headers
         config.setAllowCredentials(true);

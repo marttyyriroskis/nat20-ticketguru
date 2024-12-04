@@ -199,7 +199,7 @@ public class SaleRestController {
      *
      * @param basketDTO the basket containing items to be purchased
      * @param user the currently authenticated user
-     * @return a ResponseEntity containing the created SaleDTO and a status of 201 (Created)
+     * @return a ResponseEntity containing the created SaleDTO and status 201 CREATED
      * @throws ResponseStatusException 422 UNPROCESSABLE ENTITY if an error occurs during sale processing
      */
     @PostMapping("/confirm")
@@ -219,7 +219,7 @@ public class SaleRestController {
      * @param start the start date and time for the search (optional)
      * @param end the end date and time for the search (optional)
      * @param userId the ID of the user associated with the sales (optional)
-     * @return a ResponseEntity containing a list of SaleDTOs matching the search criteria and a status of 200 (OK)
+     * @return a ResponseEntity containing a list of SaleDTOs matching the search criteria and status 200 OK
      * @throws ResponseStatusException if no search parameters are provided
      * @throws ResponseStatusException if sale not found
      */
@@ -256,15 +256,12 @@ public class SaleRestController {
             return null;
         }
         try {
-            // parse as LocalDateTime
             return LocalDateTime.parse(dateStr);
         } catch (DateTimeParseException e) {
             try {
-                // parse as LocalDate
                 LocalDate localDate = LocalDate.parse(dateStr);
-                return localDate.atStartOfDay(); // convert to start of day LocalDateTime object
+                return localDate.atStartOfDay();
             } catch (DateTimeParseException ex) {
-                // does not parse as either
                 return null;
             }
         }
@@ -273,7 +270,7 @@ public class SaleRestController {
     /**
      * Generates a sales report summarizing ticket sales
      *
-     * @return a ResponseEntity containing a list of TicketSummaryDTOs and a status of 200 (OK)
+     * @return a ResponseEntity containing a list of TicketSummaryDTOs and status 200 OK
      */
     @GetMapping("/report")
     @PreAuthorize("hasAuthority('VIEW_SALES')")

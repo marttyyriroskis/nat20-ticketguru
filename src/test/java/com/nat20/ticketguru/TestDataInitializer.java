@@ -26,6 +26,12 @@ import com.nat20.ticketguru.repository.UserRepository;
 import com.nat20.ticketguru.repository.VenueRepository;
 import com.nat20.ticketguru.repository.ZipcodeRepository;
 
+/**
+ * Component for initializing test data for the 'test' profile
+ * 
+ * @author Paul Carlson
+ * @version 1.0
+ */
 @Component
 @Profile("test") // only runs in the 'test' profile
 public class TestDataInitializer implements CommandLineRunner {

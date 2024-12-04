@@ -37,16 +37,14 @@ public class TicketSummaryService {
     }
 
     /**
-     * Refreshes the materialized view `event_ticket_summary` to update ticket data.
-     * This method uses a SQL command to refresh the view concurrently.
+     * Refreshes the materialized view `event_ticket_summary` to update ticket data
      */
     public void refreshMateralizedView() {
         jdbcTemplate.execute("REFRESH MATERIALIZED VIEW CONCURRENTLY event_ticket_summary");
     }
 
     /**
-     * Calculates the number of available tickets for a specific ticket type.
-     * Considers both the event-wide availability and ticket type-specific limits.
+     * Calculates the number of available tickets for a specific ticket type
      * 
      * @param ticketTypeId the ID of the ticket type to check availability for
      * @return the number of available tickets for the specified ticket type
@@ -96,7 +94,7 @@ public class TicketSummaryService {
     }
 
     /**
-     * Converts a `TicketType` entity to a `TicketTypeDTO`, including the number of available tickets.
+     * Converts a `TicketType` entity to a `TicketTypeDTO`, including the number of available tickets
      * 
      * @param ticketType the ticket type to convert
      * @return a DTO containing ticket type data and the number of available tickets

@@ -25,7 +25,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     /**
      * Loads a user by their username (email).
-     * This method is used by Spring Security to authenticate users.
+     * Uses Spring Security for authentication.
      * 
      * @param email the username (email) of the user to load
      * @return a `UserDetails` object representing the authenticated user

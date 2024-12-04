@@ -50,10 +50,10 @@ public class TicketRestController {
 
     /**
      * Retrieves a list of tickets. If a list of IDs is provided, it fetches only the tickets with those IDs.
-     * If no IDs are provided, it retrieves all active tickets
+     * If no IDs are provided, it retrieves all active tickets.
      *
      * @param ids an optional list of ticket IDs to filter the results
-     * @return a ResponseEntity containing a list of TicketDTOs and a status of 200 (OK)
+     * @return a ResponseEntity containing a list of TicketDTOs and status 200 OK
      * @throws ResponseStatusException if requested tickets not found
      */
     @GetMapping
@@ -120,7 +120,7 @@ public class TicketRestController {
      * Marks a ticket as used based on its barcode
      *
      * @param barcode the barcode of the ticket to be used
-     * @return a ResponseEntity containing the updated TicketDTO and a status of 200 (OK)
+     * @return a ResponseEntity containing the updated TicketDTO and status 200 OK
      * @throws ResponseStatusException if ticket not found
      * @throws ResponseStatusException if ticket already used
      */
@@ -208,7 +208,7 @@ public class TicketRestController {
      * Delete a ticket
      * 
      * @param id the id of the ticket to be deleted
-     * @return 204 No Content
+     * @return 204 NO CONTENT
      * @exception ResponseStatusException if ticket not found
      */
     @DeleteMapping("/{id}")
