@@ -222,7 +222,7 @@ events-taulu sisältää tapahtumat. Jokaiselle tapahtumalle luodaan oma rivi. T
 <details>
 <summary>role_permissions</summary>
 
-role_permissions on välitaulu roolien ja niiden lupien välillä. Sillä on siis monen suhde yhteen molempiin tauluihin.
+role_permissions-taululla on monen suhde moneen roles-tauluun. Se on kokoelma lupia, joita voi asettaa yhdelle tai useammalle roolille.
 
 | Kenttä     | Tyyppi      | Kuvaus                                    |
 | ---------- | ----------- | ----------------------------------------- |
