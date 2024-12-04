@@ -26,6 +26,13 @@ import com.nat20.ticketguru.service.TicketSummaryService;
 
 import jakarta.validation.Valid;
 
+/**
+ * REST controller for events
+ * 
+ * @author Janne Airaksinen
+ * @version 1.0
+ */
+
 @RestController
 @RequestMapping("/api/events")
 @Validated
@@ -41,7 +48,11 @@ public class EventRestController {
         this.ticketSummaryService = ticketSummaryService;
     }
 
-    // Get events
+    /**
+     * Get all events
+     * 
+     * @return all events
+     */
     @GetMapping
     @PreAuthorize("hasAuthority('VIEW_EVENTS')")
     public ResponseEntity<List<EventDTO>> getAllEvents() {
@@ -53,7 +64,14 @@ public class EventRestController {
                 .toList());
     }
 
-    // Get event by id
+    /**
+     * Get an event by id
+     * 
+     * @param id the id of the event requested
+     * @return the event requested
+     * @exception ResponseStatusException if unauthorized
+     * @exception ResponseStatusException if event not found
+     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('VIEW_EVENTS')")
     public ResponseEntity<EventDTO> getEventById(@PathVariable Long id) {
@@ -64,7 +82,12 @@ public class EventRestController {
         return ResponseEntity.ok(event.toDTO());
     }
 
-    // Post a new event
+    /**
+     * Add an event
+     * 
+     * @param eventDTO the event to add
+     * @return the event added
+     */
     @PostMapping
     @PreAuthorize("hasAuthority('CREATE_EVENTS')")
     public ResponseEntity<EventDTO> createEvent(@Valid @RequestBody EventDTO eventDTO) {
@@ -87,7 +110,13 @@ public class EventRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(addedEvent.toDTO());
     }
 
-    // Edit event with PUT request
+    /**
+     * Update an event
+     * 
+     * @param id the id of the event to be updated
+     * @param eventDTO the requested updates for the event
+     * @return the updated event
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('EDIT_EVENTS')")
     public ResponseEntity<EventDTO> editEvent(@Valid @RequestBody EventDTO eventDTO, @PathVariable Long id) {
@@ -112,7 +141,13 @@ public class EventRestController {
         return ResponseEntity.ok(editedEvent.toDTO());
     }
 
-    // Delete event with DELETE Request
+    /**
+     * Delete an event
+     * 
+     * @param id the id of the event to be deleted
+     * @return 204 No Content
+     * @exception ResponseStatusException if event not found
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('DELETE_EVENTS')")
     public ResponseEntity<String> deleteEvent(@PathVariable Long id) {

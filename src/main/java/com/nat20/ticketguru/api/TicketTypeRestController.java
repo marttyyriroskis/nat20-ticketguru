@@ -26,6 +26,12 @@ import com.nat20.ticketguru.service.TicketSummaryService;
 
 import jakarta.validation.Valid;
 
+/**
+ * REST controller for ticket types
+ * 
+ * @author Janne Airaksinen
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/tickettypes")
 @Validated
@@ -41,7 +47,11 @@ public class TicketTypeRestController {
         this.ticketSummaryService = ticketSummaryService;
     }
 
-    // Get all ticket types
+    /**
+     * Get all ticket types
+     * 
+     * @return all ticket types
+     */
     @GetMapping
     @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
     public ResponseEntity<List<TicketTypeDTO>> getAllTicketTypes() {
@@ -53,7 +63,14 @@ public class TicketTypeRestController {
                 .toList());
     }
 
-    // Get ticket type by id
+    /**
+     * Get a ticket type by id
+     * 
+     * @param id the id of the ticket type requested
+     * @return the ticket type requested
+     * @exception ResponseStatusException if unauthorized
+     * @exception ResponseStatusException if ticket type not found
+     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
     public ResponseEntity<?> getTicketTypeById(@PathVariable Long id) {
@@ -65,7 +82,13 @@ public class TicketTypeRestController {
         return ResponseEntity.ok(ticketType.toDTO(availableTickets));
     }
 
-    // Search ticket types by eventId, also gives availableTickets
+    /**
+     * Retrieves a list of active ticket types for a specified event, including their available ticket counts
+     *
+     * @param eventId the ID of the event for which ticket types are to be retrieved
+     * @return a ResponseEntity containing a list of TicketTypeDTOs with available ticket counts and a status of 200 (OK)
+     * @throws ResponseStatusException if event not found
+     */
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('VIEW_TICKET_TYPES')")
     public ResponseEntity<List<TicketTypeDTO>> searchTicketTypes(@RequestParam Long eventId) {
@@ -78,7 +101,13 @@ public class TicketTypeRestController {
                 .toList());
     }
 
-    // Add a new ticket type
+    /**
+     * Add a ticket type
+     * 
+     * @param ticketTypeDTO the ticket type to add
+     * @return the ticket type added
+     * @exception ResponseStatusException if event not found
+     */
     @PostMapping
     @PreAuthorize("hasAuthority('CREATE_TICKET_TYPES')")
     public ResponseEntity<TicketTypeDTO> createTicketType(@Valid @RequestBody TicketTypeDTO ticketTypeDTO) {
@@ -98,7 +127,13 @@ public class TicketTypeRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTicketType.toDTO());
     }
 
-    // Update a ticket type
+    /**
+     * Update a ticket type
+     * 
+     * @param id the id of the ticket type to be updated
+     * @param ticketTypeDTO the requested updates for the ticket type
+     * @return the updated ticket type
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('EDIT_TICKET_TYPES')")
     public ResponseEntity<TicketTypeDTO> editTicketType(@Valid @RequestBody TicketTypeDTO ticketTypeDTO, @PathVariable Long id) {
@@ -119,7 +154,13 @@ public class TicketTypeRestController {
         return ResponseEntity.status(HttpStatus.OK).body(savedTicketType.toDTO());
     }
 
-    // Delete a ticket type
+    /**
+     * Delete a ticket type
+     * 
+     * @param id the id of the ticket type to be deleted
+     * @return 204 No Content
+     * @exception ResponseStatusException if ticket type not found
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('DELETE_TICKET_TYPES')")
     public ResponseEntity<String> deleteTicketType(@PathVariable Long id) {

@@ -38,6 +38,12 @@ import com.nat20.ticketguru.service.TicketSummaryService;
 
 import jakarta.validation.Valid;
 
+/**
+ * REST controller for sales
+ * 
+ * @author Paul Carlson
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/sales")
 @Validated
@@ -64,6 +70,11 @@ public class SaleRestController {
         this.ticketSummaryService = ticketSummaryService;
     }
 
+    /**
+     * Get all sales
+     * 
+     * @return all sales
+     */
     @GetMapping
     @PreAuthorize("hasAuthority('VIEW_SALES')")
     public ResponseEntity<List<SaleDTO>> getAllSales() {
@@ -75,6 +86,14 @@ public class SaleRestController {
                 .toList());
     }
 
+    /**
+     * Get a sale by id
+     * 
+     * @param id the id of the sale requested
+     * @return the sale requested
+     * @exception ResponseStatusException if unauthorized
+     * @exception ResponseStatusException if sale not found
+     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('VIEW_SALES')")
     public ResponseEntity<SaleDTO> getSale(@PathVariable Long id) {
@@ -85,6 +104,14 @@ public class SaleRestController {
         return ResponseEntity.ok(sale.toDTO());
     }
 
+    /**
+     * Add a sale
+     * 
+     * @param SaleDTO the sale to add
+     * @return the sale added
+     * @exception ResponseStatusException if user not found
+     * @exception ResponseStatusException if invalid tickets
+     */
     @PostMapping
     @PreAuthorize("hasAuthority('CREATE_SALES')")
     public ResponseEntity<SaleDTO> createSale(@Valid @RequestBody SaleDTO saleDTO) {
@@ -111,6 +138,13 @@ public class SaleRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(addedSale.toDTO());
     }
 
+    /**
+     * Update a sale
+     * 
+     * @param id the id of the sale to be updated
+     * @param editedSaleDTO the requested updates for the sale
+     * @return the updated sale
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('EDIT_SALES')")
     public ResponseEntity<SaleDTO> editSale(@Valid @RequestBody SaleDTO editedSaleDTO, @PathVariable Long id) {
@@ -138,6 +172,13 @@ public class SaleRestController {
         return ResponseEntity.ok(editedSale.toDTO());
     }
 
+    /**
+     * Delete a sale
+     * 
+     * @param id the id of the sale to be deleted
+     * @return 204 No Content
+     * @exception ResponseStatusException if sale not found
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('DELETE_SALES')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -153,6 +194,14 @@ public class SaleRestController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    /**
+     * Confirms a sale from the provided basket
+     *
+     * @param basketDTO the basket containing items to be purchased
+     * @param user the currently authenticated user
+     * @return a ResponseEntity containing the created SaleDTO and a status of 201 (Created)
+     * @throws ResponseStatusException 422 UNPROCESSABLE ENTITY if an error occurs during sale processing
+     */
     @PostMapping("/confirm")
     @PreAuthorize("hasAuthority('CONFIRM_SALES')")
     public ResponseEntity<?> confirmSaleFromBasket(@Valid @RequestBody BasketDTO basketDTO, @AuthenticationPrincipal User user) {
@@ -164,6 +213,16 @@ public class SaleRestController {
         }
     }
 
+    /**
+     * Searches for sales based on optional parameters: start date, end date, and user ID
+     *
+     * @param start the start date and time for the search (optional)
+     * @param end the end date and time for the search (optional)
+     * @param userId the ID of the user associated with the sales (optional)
+     * @return a ResponseEntity containing a list of SaleDTOs matching the search criteria and a status of 200 (OK)
+     * @throws ResponseStatusException if no search parameters are provided
+     * @throws ResponseStatusException if sale not found
+     */
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('VIEW_SALES')")
     public ResponseEntity<List<SaleDTO>> searchSales(
@@ -185,6 +244,13 @@ public class SaleRestController {
         }
     }
 
+    /**
+     * Parses a date string into a LocalDateTime object. If the input is a valid LocalDate,
+     * it will be converted to a LocalDateTime at the start of the day.
+     *
+     * @param dateStr the date string to parse
+     * @return the parsed LocalDateTime object, or null if parsing fails
+     */
     private LocalDateTime parseToDateTime(String dateStr) {
         if (dateStr == null || dateStr.isEmpty()) {
             return null;
@@ -204,6 +270,11 @@ public class SaleRestController {
         }
     }
 
+    /**
+     * Generates a sales report summarizing ticket sales
+     *
+     * @return a ResponseEntity containing a list of TicketSummaryDTOs and a status of 200 (OK)
+     */
     @GetMapping("/report")
     @PreAuthorize("hasAuthority('VIEW_SALES')")
     public ResponseEntity<List<TicketSummaryDTO>> getSalesReport() {
