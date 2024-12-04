@@ -39,6 +39,11 @@ public class TicketTypeTest {
 
     private TicketType ticketType;
 
+    /**
+     * Sets up the test environment by creating and saving the necessary entities in the database.
+     * This method runs before each test to ensure the required data is present for the tests.
+     * It creates and persists a `Zipcode`, `Venue`, `Event`, and a `TicketType` for use in test cases.
+     */
     @BeforeEach
     public void setup() {
         Zipcode zipcode = zipcodeRepository.save(new Zipcode("00100", "Helsinki"));
@@ -55,6 +60,12 @@ public class TicketTypeTest {
         ticketType = ticketTypeRepository.save(new TicketType("adult", 29.99, null, event));
     }
 
+    /**
+     * Tests the soft delete functionality of a `TicketType` by calling the `delete()` method and 
+     * verifying that the `deletedAt` property is set to a `LocalDateTime` instance.
+     * This ensures that the soft delete logic correctly updates the `deletedAt` field when a 
+     * `TicketType` is marked as deleted.
+     */
     @Test
     public void testTicketTypeSoftDelete() {
         ticketType.delete();

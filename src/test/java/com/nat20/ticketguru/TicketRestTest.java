@@ -32,6 +32,11 @@ public class TicketRestTest {
 
     private MockMvc mockMvc;
 
+    /**
+     * Sets up the test environment by initializing `MockMvc` and configuring the `SecurityContext` 
+     * with an authenticated user who has the "VIEW_TICKETS" authority.
+     * This method runs before each test to ensure the `MockMvc` instance is properly set up for HTTP request testing.
+     */
     @BeforeEach
     public void setup() {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("admin@test.com", "admin", List.of(new SimpleGrantedAuthority("VIEW_TICKETS"))));
@@ -40,14 +45,24 @@ public class TicketRestTest {
                 .build();
     }
 
-    // Check that /api/tickets loads
+    /**
+     * Tests the `/api/tickets` endpoint to check if the status code returned is `200 OK`.
+     * This verifies that the endpoint is reachable and responds with the correct HTTP status.
+     * 
+     * @throws Exception if an error occurs during the HTTP request or response handling
+     */
     @Test
     public void statusOk() throws Exception {
         mockMvc.perform(get("/api/tickets"))
             .andExpect(status().isOk());
     }
 
-    // Check that the media type is JSON
+    /**
+     * Tests the `/api/tickets` endpoint to ensure that the response content type is `application/json`.
+     * This verifies that the response is in the expected JSON format.
+     * 
+     * @throws Exception if an error occurs during the HTTP request or response handling
+     */
     @Test
     public void responseTypeApplicationJson() throws Exception {
         mockMvc.perform(get("/api/tickets"))
@@ -55,7 +70,12 @@ public class TicketRestTest {
             .andExpect(status().isOk());
     }
 
-    // Check that the Ticket instance has a barcode
+    /**
+     * Tests the `/api/tickets` endpoint to validate that the JSON response structure is correct.
+     * It checks that the response is an array and that the first ticket in the array has a non-empty `barcode`.
+     * 
+     * @throws Exception if an error occurs during the HTTP request or response handling
+     */
     @Test
     public void validateJsonStructure() throws Exception {
         mockMvc.perform(get("/api/tickets"))
@@ -64,4 +84,5 @@ public class TicketRestTest {
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$[0].barcode").isNotEmpty());
     }
+
 }
