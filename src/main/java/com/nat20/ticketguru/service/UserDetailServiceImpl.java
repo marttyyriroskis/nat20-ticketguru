@@ -8,6 +8,12 @@ import org.springframework.stereotype.Service;
 import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.repository.UserRepository;
 
+/**
+ * Service class for UserDetails
+ * 
+ * @author Julia Hämäläinen
+ * @version 1.0
+ */
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
 
@@ -17,13 +23,20 @@ public class UserDetailServiceImpl implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Loads a user by their username (email).
+     * This method is used by Spring Security to authenticate users.
+     * 
+     * @param email the username (email) of the user to load
+     * @return a `UserDetails` object representing the authenticated user
+     * @throws UsernameNotFoundException if a user with the given email is not found
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username"));
 
         return currentUser;
-        // return our own User implementation instead
     }
 
 }
