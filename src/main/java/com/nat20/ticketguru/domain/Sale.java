@@ -56,6 +56,7 @@ public class Sale {
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Ticket> tickets = new ArrayList<>();
 
+    @JoinColumn(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     public Sale() {

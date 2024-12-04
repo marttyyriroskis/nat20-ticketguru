@@ -194,9 +194,9 @@ Lisäksi lisätään mahdollisesti hallintaosio tapahtumapaikoille.
 
 # Tietokanta
 
-Alla mallikuva tietokannasta, josta käy ilmi tietokannan sisältämät tiedot, taulujen väliset suhteet ja avainten määritykset.
+Alla mallikuva tietokannasta, josta käy ilmi tietokannan sisältämät tiedot, taulujen väliset suhteet ja avainten määritykset. Kiinnitetty näkymä ticket_summary puuttuu.
 
-![Database Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-db-diagram.png)
+![Database Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-db-diagram-2024-12-04.png)
 
 Lisäksi jokainen tietokannan taulu ja niiden attribuutit kuvataan tässä tietohakemistossa.
 
@@ -294,15 +294,15 @@ ticket_types-taulu sisältää lipputyypit. Yhdessä tapahtumassa voi olla monta
 
 tickets-taulu sisältää yksittäisiä lippuja eri tapahtumiin. Lippu toimii myös välitaulunta [sales](#sales) ja [ticket_types](#ticket_types) taulujen välillä.
 
-| Kenttä         | Tyyppi      | Kuvaus                                                         |
-| -------------- | ----------- | -------------------------------------------------------------- |
-| id             | int PK      | Lipun id                                                       |
-| ticket_type_id | int FK      | Viittaus lipun tyyppiin [ticket_types](#ticket_types)-taulussa |
-| sale_id        | int FK      | Viittaus myyntiin [sales](#sales)-taulussa                     |
-| barcode        | varchar(50) | Viivakoodi, jolla voidaan skannata lippu                       |
-| used_at        | datetime    | Päivämäärä ja aika, jolloin lippu on merkitty käytetyksi       |
-| price          | double      | Lipusta maksettu hinta                                         |
-| deleted_at     | datetime    | Mahdollinen poistoajankohta                                    |
+| Kenttä         | Tyyppi   | Kuvaus                                                         |
+| -------------- | -------- | -------------------------------------------------------------- |
+| id             | int PK   | Lipun id                                                       |
+| ticket_type_id | int FK   | Viittaus lipun tyyppiin [ticket_types](#ticket_types)-taulussa |
+| sale_id        | int FK   | Viittaus myyntiin [sales](#sales)-taulussa                     |
+| barcode        | varchar  | Viivakoodi, jolla voidaan skannata lippu                       |
+| used_at        | datetime | Päivämäärä ja aika, jolloin lippu on merkitty käytetyksi       |
+| price          | double   | Lipusta maksettu hinta                                         |
+| deleted_at     | datetime | Mahdollinen poistoajankohta                                    |
 
 </details>
 

@@ -37,14 +37,15 @@ public class Venue {
     private Long id;
 
     @NotEmpty
-    @Size(min = 1, max = 100)
+    @Size(max = 100)
     private String name;
 
     @NotEmpty
-    @Size(min = 1, max = 100)
+    @Size(max = 100)
     private String address;
 
     @NotNull
+    @Size(max = 5)
     @ManyToOne
     private Zipcode zipcode;
 

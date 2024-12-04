@@ -9,11 +9,11 @@ public record VenueDTO(
                 Long id,
 
                 @NotEmpty(message = "Name must not be empty")
-                @Size(min = 1, max = 100)
+                @Size(max = 100)
                 String name,
 
                 @NotEmpty(message = "Address must not be empty")
-                @Size(min = 1, max = 100)
+                @Size(max = 100)
                 String address,
                 
                 @NotEmpty
