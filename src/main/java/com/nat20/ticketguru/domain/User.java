@@ -25,6 +25,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 /**
  * Entity class for User
@@ -46,12 +48,21 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
+    @Size(max = 150)
     @Column(unique = true)
     private String email;
 
+    @NotEmpty
+    @Size(max = 150)
     private String firstName;
+
+    @NotEmpty
+    @Size(max = 150)
     private String lastName;
 
+    @NotEmpty
+    @Size(max = 250)
     @Column(name = "hashed_password")
     @JsonIgnore
     private String hashedPassword;

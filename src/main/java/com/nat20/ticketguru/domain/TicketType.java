@@ -39,7 +39,7 @@ public class TicketType {
     private Long id;
 
     @NotEmpty
-    @Size(min = 1, max = 100)
+    @Size(max = 50)
     private String name;
 
     @NotNull

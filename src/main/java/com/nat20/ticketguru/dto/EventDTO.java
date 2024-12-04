@@ -13,11 +13,11 @@ public record EventDTO(
         Long id,
 
         @NotEmpty(message = "Event name cannot be empty")
-        @Size(min = 1, max = 100, message = "Event name cannot be empty and must be between 1 and 100 characters long")
+        @Size(max = 100, message = "Event name cannot be empty and must be between 1 and 100 characters long")
         String name,
 
         @NotEmpty(message = "Event description cannot be empty")
-        @Size(min = 1, max = 500, message = "Event description cannot be empty and must be between 1 and 500 characters long")
+        @Size(max = 500, message = "Event description cannot be empty and must be between 1 and 500 characters long")
         String description,
 
         @NotNull(message = "Total tickets cannot be null")

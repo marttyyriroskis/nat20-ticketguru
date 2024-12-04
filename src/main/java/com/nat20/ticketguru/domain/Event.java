@@ -41,11 +41,11 @@ public class Event {
     private Long id;
 
     @NotEmpty
-    @Size(min = 1, max = 100)
+    @Size(max = 100)
     private String name;
 
     @NotEmpty
-    @Size(min = 1, max = 500)
+    @Size(max = 500)
     private String description;
 
     @NotNull
