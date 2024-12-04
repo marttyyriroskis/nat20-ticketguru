@@ -3,6 +3,7 @@ package com.nat20.ticketguru;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,8 @@ public class TicketguruApplication {
     private static final Logger log = LoggerFactory.getLogger(TicketguruApplication.class);
 
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Helsinki"));
+
         SpringApplication.run(TicketguruApplication.class, args);
     }
 
