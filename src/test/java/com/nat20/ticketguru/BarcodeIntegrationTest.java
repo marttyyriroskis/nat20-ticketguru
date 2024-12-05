@@ -35,6 +35,10 @@ public class BarcodeIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * Sets up the test environment by authenticating a user and initializing MockMvc for web application context testing.
+     * This method runs before each test and ensures the `SecurityContextHolder` has an authenticated user.
+     */
     @BeforeEach
     public void setup() {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("admin@test.com", "admin", List.of(new SimpleGrantedAuthority("CREATE_TICKETS"))));
@@ -43,7 +47,12 @@ public class BarcodeIntegrationTest {
                 .build();
     }
 
-    // Post two duplicate Tickets, then check their barcodes are dissimilar
+    /**
+     * Tests that posting two tickets with the same details results in tickets with different barcodes.
+     * This test ensures that the barcode generation logic is functioning correctly and that duplicate barcodes are not allowed.
+     * 
+     * @throws Exception if an error occurs during the HTTP request or response handling
+     */
     @Test
     public void testDuplicateBarcodeNotAllowed() throws Exception {
         String ticketPayload = """
@@ -75,6 +84,13 @@ public class BarcodeIntegrationTest {
         assertNotEquals(barcode1, barcode2);
     }
 
+    /**
+     * Extracts the barcode from the response JSON of an HTTP request.
+     * 
+     * @param result the MvcResult object containing the HTTP response
+     * @return the extracted barcode from the response
+     * @throws Exception if an error occurs while parsing the response JSON
+     */
     private String extractBarcodeFromResponse(MvcResult result) throws Exception {
         String jsonResponse = result.getResponse().getContentAsString();
         return com.jayway.jsonpath.JsonPath.read(jsonResponse, "$.barcode");

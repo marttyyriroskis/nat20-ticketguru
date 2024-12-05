@@ -27,6 +27,12 @@ import com.nat20.ticketguru.repository.TicketTypeRepository;
 
 import jakarta.validation.Valid;
 
+/**
+ * REST controller for tickets
+ * 
+ * @author Julia Hämäläinen
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/tickets")
 @Validated
@@ -42,7 +48,14 @@ public class TicketRestController {
         this.saleRepository = saleRepository;
     }
 
-    // Get all tickets, or tickets for specified Ids
+    /**
+     * Retrieves a list of tickets. If a list of IDs is provided, it fetches only the tickets with those IDs.
+     * If no IDs are provided, it retrieves all active tickets.
+     *
+     * @param ids an optional list of ticket IDs to filter the results
+     * @return a ResponseEntity containing a list of TicketDTOs and status 200 OK
+     * @throws ResponseStatusException if requested tickets not found
+     */
     @GetMapping
     @PreAuthorize("hasAuthority('VIEW_TICKETS')")
     public ResponseEntity<List<TicketDTO>> getTickets(@RequestParam(required = false) List<Long> ids) {
@@ -64,7 +77,14 @@ public class TicketRestController {
                 .toList());
     }
 
-    // Get ticket by id
+    /**
+     * Get a ticket by id
+     * 
+     * @param id the id of the ticket requested
+     * @return the ticket requested
+     * @exception ResponseStatusException if unauthorized
+     * @exception ResponseStatusException if ticket not found
+     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('VIEW_TICKETS')")
     public ResponseEntity<TicketDTO> getTicket(@PathVariable Long id) {
@@ -75,7 +95,14 @@ public class TicketRestController {
         return ResponseEntity.ok(ticket.toDTO());
     }
 
-    // Get ticket by barcode
+    /**
+     * Get a ticket by barcode
+     * 
+     * @param barcode the barcode of the ticket requested
+     * @return the ticket requested
+     * @exception ResponseStatusException if unauthorized
+     * @exception ResponseStatusException if ticket not found
+     */
     @PreAuthorize("hasAuthority('VIEW_TICKETS')")
     @GetMapping("/barcode/{barcode}")
     public ResponseEntity<TicketDTO> getTicketByBarcode(@PathVariable String barcode) {
@@ -89,7 +116,14 @@ public class TicketRestController {
         return ResponseEntity.ok(ticket.toDTO());
     }
 
-    // Use ticket
+    /**
+     * Marks a ticket as used based on its barcode
+     *
+     * @param barcode the barcode of the ticket to be used
+     * @return a ResponseEntity containing the updated TicketDTO and status 200 OK
+     * @throws ResponseStatusException if ticket not found
+     * @throws ResponseStatusException if ticket already used
+     */
     @PreAuthorize("hasAuthority('USE_TICKETS')")
     @PutMapping("/use/{barcode}")
     public ResponseEntity<TicketDTO> useTicket(@PathVariable String barcode) {
@@ -111,7 +145,14 @@ public class TicketRestController {
         return ResponseEntity.ok(updatedTicket.toDTO());
     }
 
-    // Post a new ticket
+    /**
+     * Add a ticket
+     * 
+     * @param ticketDTO the ticket to add
+     * @return the ticket added
+     * @exception ResponseStatusException if ticket type not found
+     * @exception ResponseStatusException if sale not found
+     */
     @PostMapping
     @PreAuthorize("hasAuthority('CREATE_TICKETS')")
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO ticketDTO) {
@@ -133,7 +174,13 @@ public class TicketRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(addedTicket.toDTO());
     }
 
-    // Edit ticket
+    /**
+     * Update a ticket
+     * 
+     * @param id the id of the ticket to be updated
+     * @param ticketDTO the requested updates for the ticket
+     * @return the updated ticket
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('EDIT_TICKETS')")
     public ResponseEntity<TicketDTO> updateTicket(@Valid @RequestBody TicketDTO ticketDTO, @PathVariable Long id) {
@@ -157,7 +204,13 @@ public class TicketRestController {
         return ResponseEntity.ok(updatedTicket.toDTO());
     }
 
-    // Delete ticket
+    /**
+     * Delete a ticket
+     * 
+     * @param id the id of the ticket to be deleted
+     * @return 204 NO CONTENT
+     * @exception ResponseStatusException if ticket not found
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('DELETE_TICKETS')")
     public ResponseEntity<TicketDTO> deleteTicket(@PathVariable Long id) {

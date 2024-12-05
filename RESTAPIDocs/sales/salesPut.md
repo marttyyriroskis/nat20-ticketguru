@@ -26,11 +26,12 @@ Provide all required fields for the `Sale`to be edited.
 | `user`    | Object                   | Yes      | An object representing the user. It must contain the user `id` (Long)                       |
 | `tickets` | List of objects          | Yes      | A list containing the sold ticket objects. Each object must contain the ticket `id` (Long). |
 
-**Data example** All required fields must be sent. `Tickets` must not be null and must contain at least one valid `id`.
+#### Example Request
+
+All required fields must be sent. `Tickets` must not be null and must contain at least one valid `id`.
 
 ```json
 PUT api/sales/3
-Content-Type: application/json
 
 {
     "paidAt": "2024-11-30T11:03:32.862709",
@@ -45,11 +46,11 @@ Content-Type: application/json
 
 ## Success Response
 
-**Condition** : Data provided is valid. `Tickets` is not null, and contains at least one valid `id`.
+**Condition** : Data provided is valid.
 
 **Code** : `200 OK`
 
-**Content example**
+**Content example** : Returns the updated `Sale` object.
 
 ```json
 {

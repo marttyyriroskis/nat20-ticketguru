@@ -13,7 +13,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -21,6 +20,14 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Entity class for Venue
+ * 
+ * @ManyToOne relationship to Zipcode
+ * @OneToMany relationship to Event
+ * @method delete()
+ * @method toDTO()
+ */
 @Entity
 @Table(name = "venues")
 public class Venue {
@@ -30,16 +37,16 @@ public class Venue {
     private Long id;
 
     @NotEmpty
-    @Size(min = 1, max = 100)
+    @Size(max = 100)
     private String name;
 
     @NotEmpty
-    @Size(min = 1, max = 100)
+    @Size(max = 100)
     private String address;
 
     @NotNull
+    @Size(max = 5)
     @ManyToOne
-    @JoinColumn(name = "zipcode")
     private Zipcode zipcode;
 
     @Column(name = "deleted_at")

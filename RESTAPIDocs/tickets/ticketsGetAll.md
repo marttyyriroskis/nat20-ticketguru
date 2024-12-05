@@ -40,7 +40,7 @@ GET /tickets
 
 **Code** : `200 OK`
 
-**Content** : In this example, the User can see three `Ticket` objects:
+**Content** : Returns a list of `Ticket` objects.
 
 ```json
 [

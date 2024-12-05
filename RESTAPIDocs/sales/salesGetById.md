@@ -20,7 +20,6 @@ Allow getting `Sale` details of the given `id`.
 
 ```json
 GET /sales/1
-Accept: application/json
 ```
 
 ## Success Response

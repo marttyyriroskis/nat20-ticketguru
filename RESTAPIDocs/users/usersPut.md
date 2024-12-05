@@ -10,13 +10,13 @@ Allow updating the details of an existing user.
 
 **Permissions required** : `EDIT_USERS`
 
-### Path Parameters:
+**Path Parameters** :
 
 | Parameter | Type | Description                              |
 | --------- | ---- | ---------------------------------------- |
 | `id`      | Long | Unique identifier for the user to update |
 
-### Request Body:
+**Data constraints** :
 
 | Field       | Type   | Description                                                    |
 | ----------- | ------ | -------------------------------------------------------------- |
@@ -30,7 +30,6 @@ Allow updating the details of an existing user.
 
 ```json
 PUT /api/users/4
-Content-Type: application/json
 
 {
   "email": "updated_user@test.com",

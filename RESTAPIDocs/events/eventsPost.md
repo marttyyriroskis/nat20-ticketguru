@@ -26,13 +26,11 @@ Provide all required parameters for the `Event` to be created.
 
 #### Example Request
 
-```json
-POST /api/events
-```
-
 All required fields must be sent. `name`, `description`, `totalTickets`, `beginsAt` and `endsAt` must not be null.
 
 ```json
+POST /api/events
+
 {
   "name": "Vuoden harmain päivä",
   "description": "Vedetään märkää niin että ikenet turpoo.",

@@ -6,7 +6,7 @@ Allow retrieving a list of all roles.
 
 **Method** : `GET`
 
-**Auth required** : NO
+**Auth required** : YES
 
 **Permissions required** : `VIEW_ROLES`
 
@@ -14,7 +14,6 @@ Allow retrieving a list of all roles.
 
 ```json
 GET /api/roles
-Accept: application/json
 ```
 
 ## Success Responses

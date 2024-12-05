@@ -36,6 +36,10 @@ public class ConfirmSaleIntegrationTest {
     @MockBean
     private TicketSummaryService ticketSummaryService;
 
+    /**
+     * Sets up the test environment by initializing `MockMvc` and configuring a mock response for the `ticketSummaryService`.
+     * This method runs before each test and ensures that the `MockMvc` instance is properly set up for HTTP request testing.
+     */
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -45,6 +49,12 @@ public class ConfirmSaleIntegrationTest {
                 .thenReturn(10); // Simulate 10 tickets available
     }
 
+    /**
+     * Tests the behavior of the `/api/sales/confirm` endpoint with a valid `BasketDTO` payload.
+     * This test verifies that the endpoint returns a `201 Created` status when a valid basket is submitted.
+     * 
+     * @throws Exception if an error occurs during the HTTP request or response handling
+     */
     @Test
     public void testConfirmValidBasketDTO() throws Exception {
         String validBasketPayload = """
@@ -69,6 +79,12 @@ public class ConfirmSaleIntegrationTest {
 
     }
 
+    /**
+     * Tests the behavior of the `/api/sales/confirm` endpoint with an invalid `BasketDTO` payload.
+     * This test verifies that the endpoint returns a `400 Bad Request` status when a payload that lacks required fields is submitted.
+     * 
+     * @throws Exception if an error occurs during the HTTP request or response handling
+     */
     @Test
     public void testConfirmInvalidBasketDTO() throws Exception {
         String invalidBasketPayload = """
@@ -91,4 +107,5 @@ public class ConfirmSaleIntegrationTest {
                 .content(invalidBasketPayload))
                 .andExpect(status().isBadRequest());
     }
+
 }

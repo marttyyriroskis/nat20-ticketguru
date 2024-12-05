@@ -6,17 +6,19 @@ Allow updating the details of an existing role.
 
 **Method** : `PUT`
 
-**Auth required** : Yes
+**Auth required** : YES
 
 **Permissions required** : `EDIT_ROLES`
 
-### Path Parameters:
+**Path Parameters** :
 
 | Parameter | Type | Description                              |
 | --------- | ---- | ---------------------------------------- |
 | `id`      | Long | Unique identifier for the role to update |
 
-### Request Body:
+**Data constraints** :
+
+Provide all required parameters in the response body for the `Role` to be updated.
 
 | Field   | Type   | Description                                                    |
 | ------- | ------ | -------------------------------------------------------------- |
@@ -27,7 +29,6 @@ Allow updating the details of an existing role.
 
 ```json
 PUT /api/roles/5
-Content-Type: application/json
 
 {
   "title": "user"

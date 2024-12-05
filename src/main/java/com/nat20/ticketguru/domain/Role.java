@@ -22,7 +22,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
+/**
+ * Entity class for Role
+ * 
+ * @OneToMany relationship to User
+ * @method delete()
+ * @method isDeleted()
+ * @method addPermissions()
+ * @method removePermissions()
+ * @method hasPermission()
+ * @method toDTO()
+ */
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -32,6 +44,7 @@ public class Role {
     private Long id;
 
     @NotEmpty
+    @Size(max = 50)
     @Column(unique = true)
     private String title;
 

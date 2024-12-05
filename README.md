@@ -2,7 +2,7 @@
 
 Tiimi: Janne Airaksinen, Paul Carlson, Jesse Hellman, Julia Hämäläinen & Tomi Lappalainen
 
-## Johdanto
+# Johdanto
 
 Tässä projektissa luodaan lipunmyyntijärjestelmä TicketGuru, jonka avulla lipputoimisto voi seurata tapahtumiaan ja tarjolla olevia lippuja sekä myydä lippuja asiakkaille.
 
@@ -14,21 +14,23 @@ Teknologioina projektissa käytetään Javaa, Spring Boot -viitekehystä ja Post
 
 Projektin lopputuotteena on käyttövalmis TicketGuru-lipunmyyntijärjestelmä sekä siihen liittyvä dokumentaatio.
 
-## Järjestelmän määrittely
+# Järjestelmän määrittely
 
-Määrittelyssä järjestelmää tarkastellaan käyttäjän näkökulmasta. Järjestelmän
-toiminnot hahmotellaan käyttötapausten tai käyttäjätarinoiden kautta, ja kuvataan järjestelmän
-käyttäjäryhmät.
+Määrittelyssä järjestelmää tarkastellaan käyttäjän näkökulmasta. Järjestelmän toiminnot hahmotellaan käyttötapausten tai käyttäjätarinoiden kautta, ja kuvataan järjestelmän käyttäjäryhmät.
 
-### Käyttäjäryhmät
+<details>
+<summary>Käyttäjäryhmät</summary>
 
-- Lipunmyyjä on järjestelmän ensisijainen käyttäjä joka myy asiakkaille tapahtuma lippuja järjestelmän kautta.
-- Tapahtumakoordinaattori lisää uusia tapahtumia tarjolle ja määrittää niille oleelliset tiedot sekä näkee tapahtumaan myytyjen lippujen tilastoja, jotta voi tehdä muutoksia tarvittaessa.
-- Järjestelmää hallitseva ylläpitäjä voi lisätä, muokata ja poistaa käyttäjiä ja niihin liittyviä tietoja, sekä lisätä, muokata ja poistaa käyttäjärooleja. Ylläpitäjä näkee myös järjestelmä raportteja ja lokeja ongelmien ehkäisemiseksi.
+- Lipunmyyjä (**'SALESPERSON'**) voi luoda tai muokata myyntitapahtumia. Hän voi myös selata tapahtumien, lippujen, lipputyyppien tai tapahtumapaikkojen tietoja.
+- Lipuntarkastaja (**'TICKET_INSPECTOR'**) voi tarkastaa myytyjä lippuja ja merkitä ne käytetyiksi.
+- Tapahtumakoordinaattori (**'COORDINATOR'**) voi luoda tai muokata tapahtumia, lipputyyppejä tai tapahtumapaikkoja.
+- Ylläpitäjällä (**'ADMIN'**) on kaikki edellä mainitut oikeudet, sekä lisäksi oikeudet poistaa järjestelmässä olevia tietoja. Hän voi tarvittaessa tarkastella järjestelmälokeja.
+</details>
 
-### Käyttäjätarinat
+<details>
+<summary>Käyttäjätarinat</summary>
 
-#### Käyttäjätarina 1
+### Käyttäjätarina 1
 
 _"Lipunmyyjänä haluan nähdä tulevat tapahtumat ja saatavilla olevat liput pysyäkseni ajan tasalla."_
 
@@ -37,7 +39,7 @@ _"Lipunmyyjänä haluan nähdä tulevat tapahtumat ja saatavilla olevat liput py
 - Lipunmyyjä näkee kaikki tulevat tapahtumat ja niihin liittyvät tiedot: päivämäärä, aika ja tapahtuman nimi
 - Lipunmyyjä näkee tapahtuman saatavilla olevien lippujen määrän
 
-#### Käyttäjätarina 2
+### Käyttäjätarina 2
 
 _"Lipunmyyjänä haluan valita tapahtuman ja haluamani määrän lippuja voidakseni palvella asiakkaitani."_
 
@@ -47,7 +49,7 @@ _"Lipunmyyjänä haluan valita tapahtuman ja haluamani määrän lippuja voidaks
 - Lipunmyyjä voi valita haluamansa määrän lippuja per lippu tyyppi myytäväksi valittuun tapahtumaan
 - Täyteen varattujen tapahtumien lippuja ei voida myydä
 
-#### Käyttäjätarina 3
+### Käyttäjätarina 3
 
 _"Lipunmyyjänä haluan tulostaa myydyt liput viimeistelläkseni ostotapahtuman."_
 
@@ -56,7 +58,7 @@ _"Lipunmyyjänä haluan tulostaa myydyt liput viimeistelläkseni ostotapahtuman.
 - Lipunmyyjä voi tulostaa myydyt liput
 - Tulostetussa lipussa on kaikki olennaiset tiedot: tapahtuma, tapahtumapaikka, lipputyyppi, lipun hinta ja lipun yksilöllinen koodi
 
-#### Käyttäjätarina 4
+### Käyttäjätarina 4
 
 _"Lipunmyyjänä haluan voida etsiä myytyä lippua ongelmatilanteessa."_
 
@@ -65,7 +67,7 @@ _"Lipunmyyjänä haluan voida etsiä myytyä lippua ongelmatilanteessa."_
 - Lipunmyyjä voi etsiä myytyä lippua yksilöllisen koodin avulla
 - Haku näyttää kaikki olennaiset tiedot: myyntitapahtuma, ostoajankohta, tapahtuma, lippu tyyppi ja hinta
 
-#### Käyttäjätarina 5
+### Käyttäjätarina 5
 
 _"Lipunmyyjänä haluan voida peruuttaa myydyn lipun, jotta asiakas saa rahansa takaisin."_
 
@@ -74,7 +76,7 @@ _"Lipunmyyjänä haluan voida peruuttaa myydyn lipun, jotta asiakas saa rahansa 
 - Lipunmyyjä voi peruuttaa lipun
 - Peruutettua lippua ei voida enää käyttää tapahtumassa
 
-#### Käyttäjätarina 6
+### Käyttäjätarina 6
 
 _"Tapahtumakoordinaattorina haluan muokata tapahtumia, jos niissä on virhe."_
 
@@ -82,7 +84,7 @@ _"Tapahtumakoordinaattorina haluan muokata tapahtumia, jos niissä on virhe."_
 
 - Tapahtumakoordinaattori voi muokata tiettyjä tietoja tapahtumasta, kuten kuvausta, maksimilippujen määrää, lippujen tyyppejä tai hintoja
 
-#### Käyttäjätarina 7
+### Käyttäjätarina 7
 
 _"Tapahtumakoordinaattorina haluan luoda uuden tapahtuman, jotta lippuja voidaan myydä tapahtumaan."_
 
@@ -91,7 +93,7 @@ _"Tapahtumakoordinaattorina haluan luoda uuden tapahtuman, jotta lippuja voidaan
 - Tapahtumakoordinaattori voi luoda uuden tapahtuman kaikilla olennaisilla tiedoilla (tapahtuman nimi, aika, paikka, kuvaus, kaupunki, lippujen tyypit, hinnat ja myytävien lippujen maksimimäärä)
 - Tapahtuma näkyy tapahtumakoordinaattoreille ja lipunmyyjille oikealla lipputilanteella
 
-#### Käyttäjätarina 8
+### Käyttäjätarina 8
 
 _"Tapahtumakoordinaattorina haluan nähdä myyntiraportteja, jotta voin seurata tietyn tapahtuman myyntiä ja tehdä muutoksia tarvittaessa."_
 
@@ -99,7 +101,7 @@ _"Tapahtumakoordinaattorina haluan nähdä myyntiraportteja, jotta voin seurata 
 
 - Tapahtumakoordinaattori näkee myyntiraportit (myydyt liput tyypeittäin, summat ja yksittäiset myynnit)
 
-#### Käyttäjätarina 9
+### Käyttäjätarina 9
 
 _"Ylläpitäjänä haluan lisätä käyttäjiä, jotta ihmiset voivat käyttää järjestelmää."_
 
@@ -108,7 +110,7 @@ _"Ylläpitäjänä haluan lisätä käyttäjiä, jotta ihmiset voivat käyttää
 - Ylläpitäjä voi luoda uusia käyttäjiä kaikilla olennaisilla tiedoilla (vähimmäisvaatimus: sähköpostiosoite ja salasana)
 - Uudet käyttäjät voivat kirjautua sisään
 
-#### Käyttäjätarina 10
+### Käyttäjätarina 10
 
 _"Ylläpitäjänä haluan poistaa käyttäjiä, jotta käyttäjätiedot ovat ajantasaisia."_
 
@@ -117,7 +119,7 @@ _"Ylläpitäjänä haluan poistaa käyttäjiä, jotta käyttäjätiedot ovat aja
 - Ylläpitäjä voi poistaa käyttäjiä
 - Poistettujen käyttäjien tiedot eivät ole enää saatavilla järjestelmässä
 
-#### Käyttäjätarina 11
+### Käyttäjätarina 11
 
 _"Ylläpitäjänä haluan muokata käyttäjiä, jotta käyttäjätiedot ovat ajantasaisia."_
 
@@ -126,7 +128,7 @@ _"Ylläpitäjänä haluan muokata käyttäjiä, jotta käyttäjätiedot ovat aja
 - Ylläpitäjä voi muokata käyttäjiä
 - Muokattujen käyttäjien tiedot ovat ajantasaisia
 
-#### Käyttäjätarina 12
+### Käyttäjätarina 12
 
 _"Ylläpitäjänä haluan lisätä käyttäjärooleja, jotta vain järjestelmään oikeutetut voivat käyttää sitä."_
 
@@ -136,7 +138,7 @@ _"Ylläpitäjänä haluan lisätä käyttäjärooleja, jotta vain järjestelmä�
 - Roolit muuttuvat sen mukaisesti
 - Käyttäjien oikeudet määräytyvät heidän rooliensa perusteella
 
-#### Käyttäjätarina 13
+### Käyttäjätarina 13
 
 _"Ylläpitäjänä haluan muokata käyttäjärooleja, jotta vain järjestelmään oikeutetut voivat käyttää sitä."_
 
@@ -146,7 +148,7 @@ _"Ylläpitäjänä haluan muokata käyttäjärooleja, jotta vain järjestelmää
 - Roolit muuttuvat sen mukaisesti
 - Käyttäjien oikeudet määräytyvät heidän rooliensa perusteella
 
-#### Käyttäjätarina 14
+### Käyttäjätarina 14
 
 _"Ylläpitäjänä haluan poistaa käyttäjärooleja, jotta vain järjestelmään oikeutetut voivat käyttää sitä."_
 
@@ -156,7 +158,7 @@ _"Ylläpitäjänä haluan poistaa käyttäjärooleja, jotta vain järjestelmää
 - Roolit muuttuvat sen mukaisesti
 - Käyttäjien oikeudet määräytyvät heidän rooliensa perusteella
 
-#### Käyttäjätarina 15
+### Käyttäjätarina 15
 
 _"Ylläpitäjänä haluan nähdä järjestelmäraportit ja lokit ongelmatilanteissa."_
 
@@ -165,7 +167,15 @@ _"Ylläpitäjänä haluan nähdä järjestelmäraportit ja lokit ongelmatilantei
 - Ylläpitäjä voi nähdä järjestelmäraportit
 - Ylläpitäjä voi nähdä lokit
 
-## Käyttöliittymä
+**Lisätiedot**
+
+- Ei implementoitu
+
+</details>
+
+<p>&nbsp;</p>
+
+# Käyttöliittymä
 
 ![GUI Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-gui-diagram.png)
 
@@ -182,90 +192,16 @@ Yllä oleva kuva esittää TicketGuru-ohjelman käyttöliittymää ja sen eri n�
 
 Lisäksi lisätään mahdollisesti hallintaosio tapahtumapaikoille.
 
-## Tietokanta
+# Tietokanta
 
-Alla mallikuva tietokannasta, josta käy ilmi tietokannan sisältämät tiedot, taulujen väliset suhteet ja avainten määritykset.
+Alla mallikuva tietokannasta, josta käy ilmi tietokannan sisältämät tiedot, taulujen väliset suhteet ja avainten määritykset. Kiinnitetty näkymä ticket_summary puuttuu.
 
-![Database Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-db-diagram.png)
+![Database Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-db-diagram-2024-12-04.png)
 
 Lisäksi jokainen tietokannan taulu ja niiden attribuutit kuvataan tässä tietohakemistossa.
 
-### permissions
-
-permissions-taulu sisältää luvat. Roolilla voi olla monta lupaa, ja sama lupa voi kuulua useampaan eri rooliin. Siksi näillä on välitaulu, role_permissions.
-
-| Kenttä | Tyyppi      | Kuvaus        |
-| ------ | ----------- | ------------- |
-| id     | int PK      | Luvan id      |
-| title  | varchar(50) | Luvan otsikko |
-
-### role_permissions
-
-role_permissions on välitaulu roolien ja niiden lupien välillä. Sillä on siis monen suhde yhteen molempiin tauluihin.
-
-| Kenttä        | Tyyppi | Kuvaus                                               |
-| ------------- | ------ | ---------------------------------------------------- |
-| role_id       | int PK | Viittaus rooliin [roles](#roles)-taulussa            |
-| permission_id | int PK | Viittaus lupaan [permissions](#permissions)-taulussa |
-
-### roles
-
-roles-taulu määrittää kaikki mahdolliset käyttäjäroolit, joita käyttäjillä voi olla.
-
-| Kenttä | Tyyppi      | Kuvaus      |
-| ------ | ----------- | ----------- |
-| id     | int PK      | Roolin id   |
-| title  | varchar(50) | Roolin nimi |
-
-### users
-
-users-taulu sisältää käyttäjät. Yhdellä käyttäjällä on vain yksi rooli, mutta sama rooli voi kuulua useammalle käyttäjälle.
-
-| Kenttä     | Tyyppi       | Kuvaus                                    |
-| ---------- | ------------ | ----------------------------------------- |
-| id         | int PK       | Käyttäjän id                              |
-| email      | varchar(150) | Käyttäjän email                           |
-| first_name | varchar(150) | Käyttäjän etunimi                         |
-| last_name  | varchar(150) | Käyttäjän sukunimi                        |
-| password   | varchar(250) | Salasanan hash(+salt)                     |
-| role_id    | int FK       | Viittaus rooliin [roles](#roles)-taulussa |
-
-### sales
-
-sales-taulu kuvaa yhtä myyntitapahtumaa. Jokaisella myyntitapahtumalla on yksi myynnin hoitanut käyttäjä.
-
-| Kenttä  | Tyyppi   | Kuvaus                                    |
-| ------- | -------- | ----------------------------------------- |
-| id      | int PK   | Myyntitapahtuman id                       |
-| paid_at | datetime | Myyntihetki                               |
-| user_id | int FK   | Viittaus myyjään [users](#users)-taulussa |
-
-### tickets
-
-tickets-taulu sisältää yksittäisiä lippuja eri tapahtumiin. Lippu toimii myös välitaulunta [sales](#sales) ja [ticket_types](#ticket_types) taulujen välillä.
-
-| Kenttä         | Tyyppi      | Kuvaus                                                         |
-| -------------- | ----------- | -------------------------------------------------------------- |
-| id             | int PK      | Lipun id                                                       |
-| ticket_type_id | int FK      | Viittaus lipun tyyppiin [ticket_types](#ticket_types)-taulussa |
-| sale_id        | int FK      | Viittaus myyntiin [sales](#sales)-taulussa                     |
-| barcode        | varchar(50) | Viivakoodi, jolla voidaan skannata lippu                       |
-| used_at        | datetime    | Päivämäärä ja aika, jolloin lippu on merkitty käytetyksi       |
-| price          | double      | Lipusta maksettu hinta                                         |
-
-### ticket_types
-
-ticket_types-taulu sisältää lipputyypit. Yhdessä tapahtumassa voi olla monta lipputyyppiä. Lipputyyppi määrittää aina vain yhtä lippua kerrallaan.
-
-| Kenttä          | Tyyppi      | Kuvaus                                          |
-| --------------- | ----------- | ----------------------------------------------- |
-| id              | int PK      | Lipputyypin id                                  |
-| name            | varchar(50) | Lipputyypin nimimerkki                          |
-| retail_price    | double      | Lipputyypin OVH                                 |
-| event_id        | int FK      | Viittaus tapahtumaan [events](#events)-taulussa |
-| total_available | int         | Lippuja saatavilla                              |
-
-### events
+<details>
+<summary>events</summary>
 
 events-taulu sisältää tapahtumat. Jokaiselle tapahtumalle luodaan oma rivi. Tapahtuma pidetään aina yhdessä tapahtumapaikassa (venue), mutta yhdessä tapahtumapaikassa voidaan pitää monta tapahtumaa eri aikoihin.
 
@@ -276,22 +212,134 @@ events-taulu sisältää tapahtumat. Jokaiselle tapahtumalle luodaan oma rivi. T
 | total_tickets      | int          | Myytävien loppujen määrä                              |
 | begins_at          | datetime     | Tapahtuman aloituspäivä ja -aika                      |
 | ends_at            | datetime     | Tapahtuman päättymispäivä ja -aika                    |
-| ticket_sale_begins | date time    | Tapahtuman lipunmyynnin aloituspäivä ja -aika         |
+| ticket_sale_begins | datetime     | Tapahtuman lipunmyynnin aloituspäivä ja -aika         |
 | description        | varchar(500) | Tapahtuman kuvaus                                     |
 | venue              | int FK       | Viittaus tapahtumapaikkaan [venues](#venues)-taulussa |
+| deleted_at         | datetime     | Mahdollinen poistoajankohta                           |
 
-### venues
+</details>
+
+<details>
+<summary>role_permissions</summary>
+
+role_permissions-taululla on monen suhde moneen roles-tauluun. Se on kokoelma lupia, joita voi asettaa yhdelle tai useammalle roolille.
+
+| Kenttä     | Tyyppi      | Kuvaus                                    |
+| ---------- | ----------- | ----------------------------------------- |
+| role_id    | int PK      | Viittaus rooliin [roles](#roles)-taulussa |
+| permission | varchar(50) | Lupa                                      |
+
+</details>
+
+<details>
+<summary>roles</summary>
+
+roles-taulu määrittää kaikki mahdolliset käyttäjäroolit, joita käyttäjillä voi olla.
+
+| Kenttä     | Tyyppi      | Kuvaus                      |
+| ---------- | ----------- | --------------------------- |
+| id         | int PK      | Roolin id                   |
+| title      | varchar(50) | Roolin nimi                 |
+| deleted_at | datetime    | Mahdollinen poistoajankohta |
+
+</details>
+
+<details>
+<summary>sales</summary>
+
+sales-taulu kuvaa yhtä myyntitapahtumaa. Jokaisella myyntitapahtumalla on yksi myynnin hoitanut käyttäjä.
+
+| Kenttä     | Tyyppi   | Kuvaus                                    |
+| ---------- | -------- | ----------------------------------------- |
+| id         | int PK   | Myyntitapahtuman id                       |
+| paid_at    | datetime | Myyntihetki                               |
+| user_id    | int FK   | Viittaus myyjään [users](#users)-taulussa |
+| deleted_at | datetime | Mahdollinen poistoajankohta               |
+
+</details>
+
+<details>
+<summary>ticket_summary</summary>
+
+ticket_summary on kiinnitetty näkymä, ei taulu, jolloin sitä ei ole lisätty yllä olevaan kaavioon. Kiinnitetty näkymä kokoaa tietokannasta ennalta määriteltyjä tietoja yhteen paikkaan.
+
+| Kenttä         | Tyyppi | Kuvaus                                                         |
+| -------------- | ------ | -------------------------------------------------------------- |
+| ticket_type_id | int PK | Viittaus lipun tyyppiin [ticket_types](#ticket_types)-taulussa |
+| event_id       | int FK | Viittaus tapahtumaan [events](#events)-taulussa                |
+| tickets_sold   | int    | Myytyjen lippujen määrä                                        |
+| tickets_total  | int    | Lippujen kokonaismäärä                                         |
+| total_revenue  | double | Myytyjen lippujen summa                                        |
+
+</details>
+
+<details>
+<summary>ticket_types</summary>
+
+ticket_types-taulu sisältää lipputyypit. Yhdessä tapahtumassa voi olla monta lipputyyppiä. Lipputyyppi määrittää aina vain yhtä lippua kerrallaan.
+
+| Kenttä        | Tyyppi      | Kuvaus                                          |
+| ------------- | ----------- | ----------------------------------------------- |
+| id            | int PK      | Lipputyypin id                                  |
+| name          | varchar(50) | Lipputyypin nimimerkki                          |
+| retail_price  | double      | Lipputyypin OVH                                 |
+| event_id      | int FK      | Viittaus tapahtumaan [events](#events)-taulussa |
+| total_tickets | int         | Lippuja saatavilla                              |
+| deleted_at    | datetime    | Mahdollinen poistoajankohta                     |
+
+</details>
+
+<details>
+<summary>tickets</summary>
+
+tickets-taulu sisältää yksittäisiä lippuja eri tapahtumiin. Lippu toimii myös välitaulunta [sales](#sales) ja [ticket_types](#ticket_types) taulujen välillä.
+
+| Kenttä         | Tyyppi   | Kuvaus                                                         |
+| -------------- | -------- | -------------------------------------------------------------- |
+| id             | int PK   | Lipun id                                                       |
+| ticket_type_id | int FK   | Viittaus lipun tyyppiin [ticket_types](#ticket_types)-taulussa |
+| sale_id        | int FK   | Viittaus myyntiin [sales](#sales)-taulussa                     |
+| barcode        | varchar  | Viivakoodi, jolla voidaan skannata lippu                       |
+| used_at        | datetime | Päivämäärä ja aika, jolloin lippu on merkitty käytetyksi       |
+| price          | double   | Lipusta maksettu hinta                                         |
+| deleted_at     | datetime | Mahdollinen poistoajankohta                                    |
+
+</details>
+
+<details>
+<summary>users</summary>
+
+users-taulu sisältää käyttäjät. Yhdellä käyttäjällä on vain yksi rooli, mutta sama rooli voi kuulua useammalle käyttäjälle.
+
+| Kenttä          | Tyyppi       | Kuvaus                                    |
+| --------------- | ------------ | ----------------------------------------- |
+| id              | int PK       | Käyttäjän id                              |
+| email           | varchar(150) | Käyttäjän email                           |
+| first_name      | varchar(150) | Käyttäjän etunimi                         |
+| last_name       | varchar(150) | Käyttäjän sukunimi                        |
+| hashed_password | varchar(250) | Salasanan hash(+salt)                     |
+| role_id         | int FK       | Viittaus rooliin [roles](#roles)-taulussa |
+| deleted_at      | datetime     | Mahdollinen poistoajankohta               |
+
+</details>
+
+<details>
+<summary>venues</summary>
 
 venues-taulu sisältää tapahtumapaikat. Yksi tapahtumapaikka on aina yhdessä postinumerossa, mutta yhdellä postinumerolla voi olla useampia tapahtumia.
 
-| Kenttä  | Tyyppi        | Kuvaus                                                           |
-| ------- | ------------- | ---------------------------------------------------------------- |
-| id      | int PK        | tapahtumapaikan id                                               |
-| name    | varchar(100)  | tapahtumapaikan nimi                                             |
-| address | varchar(100)  | tapahtumapaikan osoite                                           |
-| zipcode | varchar(5) FK | Viittaus tapahtumapaikan postiosoitteeseen [zipcodes](#zipcodes) |
+| Kenttä     | Tyyppi        | Kuvaus                                                           |
+| ---------- | ------------- | ---------------------------------------------------------------- |
+| id         | int PK        | tapahtumapaikan id                                               |
+| name       | varchar(100)  | tapahtumapaikan nimi                                             |
+| address    | varchar(100)  | tapahtumapaikan osoite                                           |
+| zipcode    | varchar(5) FK | Viittaus tapahtumapaikan postiosoitteeseen [zipcodes](#zipcodes) |
+| deleted_at | datetime      | Mahdollinen poistoajankohta                                      |
 
-### zipcodes
+</details>
+
+<details>
+<summary>zipcodes</summary>
 
 zipcodes-taulu sisältää tapahtumapaikkojen osoitteiden postinumerot ja kaupungit.
 
@@ -300,7 +348,11 @@ zipcodes-taulu sisältää tapahtumapaikkojen osoitteiden postinumerot ja kaupun
 | zipcode | varchar(5) PK | Postinumero                    |
 | city    | varchar(100)  | Postinumeron mukainen kaupunki |
 
-## Tekninen kuvaus
+</details>
+
+<p>&nbsp;</p>
+
+# Tekninen kuvaus
 
 Teknisessä kuvauksessa esitetään järjestelmän toteutuksen suunnittelussa tehdyt tekniset
 ratkaisut, esim.
@@ -321,7 +373,7 @@ Tämän lisäksi
 - ohjelmiston pitää olla organisoitu komponentteihin niin, että turhalta toistolta
   vältytään
 
-## Testaus
+# Testaus
 
 Tässä kohdin selvitetään, miten ohjelmiston oikea toiminta varmistetaan
 testaamalla projektin aikana: millaisia testauksia tehdään ja missä vaiheessa.
@@ -330,7 +382,7 @@ erillisiin dokumentteihin.
 
 Tänne kirjataan myös lopuksi järjestelmän tunnetut ongelmat, joita ei ole korjattu.
 
-## Asennustiedot
+# Asennustiedot
 
 ## Spring Boot -sovelluksen käyttöönotto tuotantopalvelimella
 
@@ -338,9 +390,11 @@ Tässä ohjeessa käydään läpi Spring Boot -sovelluksen käyttöönotto NGINX
 
 ---
 
-### Esivaatimukset
+<details>
+<summary>Esivaatimukset</summary>
 
 1. Näiden ohjeiden noudattamiseksi tarvitset kaksi asiaa:
+
    - Verkkotunnuksen (esim. saatavilla [hover.com](https://hover.com):sta)
    - VPS:n (Virtual Private Server). [Hetzner](https://hetzner.com) tai [DigitalOcean](https://digitalocean.com) ovat suosittuja palveluntarjoajia.
 
@@ -348,14 +402,19 @@ Tässä ohjeessa käydään läpi Spring Boot -sovelluksen käyttöönotto NGINX
 
 Seuraavassa esimerkissä meillä on `hellmanstudios.fi` domain ja luomme sille tg subdomainin, eli `tg.hellmanstudios.fi`, jossa TicketGuru Spring Boot sovellus isännöidään.
 
-### Vaihe 1: Git-repositorion kloonaus
+</details>
+
+<details>
+<summary>Vaihe 1: Git-repositorion kloonaus</summary>
 
 1. **Siirry kotihakemistoon** (jos et ole jo siellä):
+
    ```bash
    cd ~
    ```
 
 2. **Kloonaa repositorio** GitHubista:
+
    ```bash
    git clone https://github.com/marttyyriroskis/nat20-ticketguru.git tg.hellmanstudios.fi
    ```
@@ -364,16 +423,20 @@ Seuraavassa esimerkissä meillä on `hellmanstudios.fi` domain ja luomme sille t
    ```bash
    cd tg.hellmanstudios.fi
    ```
+   </details>
 
-### Vaihe 2: PostgreSQL-tietokannan määrittäminen
+<details>
+<summary>Vaihe 2: PostgreSQL-tietokannan määrittäminen</summary>
 
 1. **Asenna PostgreSQL** (jos sitä ei ole jo asennettu):
+
    ```bash
    sudo apt update
    sudo apt install postgresql postgresql-contrib
    ```
 
 2. **Kirjaudu PostgreSQL:ään** käyttäjänä `postgres`:
+
    ```bash
    sudo -i -u postgres
    ```
@@ -401,20 +464,25 @@ Seuraavassa esimerkissä meillä on `hellmanstudios.fi` domain ja luomme sille t
    ```bash
    exit
    ```
+   </details>
 
-### Vaihe 3: Sovelluksen paikallisen profiilin määrittäminen
+<details>
+<summary>Vaihe 3: Sovelluksen paikallisen profiilin määrittäminen</summary>
 
 1. **Kopioi `application-local.properties.example`** tiedostoksi `application-local.properties`:
+
    ```bash
    cp src/main/resources/application-local.properties.example src/main/resources/application-local.properties
    ```
 
 2. **Muokkaa `application-local.properties`** PostgreSQL-yhteyden määrittämiseksi:
+
    ```bash
    nano src/main/resources/application-local.properties
    ```
 
 3. **Lisää seuraavat PostgreSQL-konfiguraatiot** tiedostoon `application-local.properties`:
+
    ```properties
    DB_HOST=localhost
    DB_PORT=5432
@@ -424,19 +492,25 @@ Seuraavassa esimerkissä meillä on `hellmanstudios.fi` domain ja luomme sille t
    ```
 
 4. **Tallenna ja sulje tiedosto**.
+</details>
 
-### Vaihe 4: Rakenna Spring Boot JAR
+<details>
+<summary>Vaihe 4: Rakenna Spring Boot JAR</summary>
 
 1. **Rakenna JAR-tiedosto** käyttämällä Mavenia:
+
    ```bash
    mvn clean package
    ```
 
    Tämä luo JAR-tiedoston sijaintiin `/home/user/tg.hellmanstudios.fi/target/ticketguru-0.0.1-SNAPSHOT.jar`. "user" on oma käyttäjätunnuksesi
+   </details>
 
-### Vaihe 5: Systemd-palvelutiedoston asettaminen
+<details>
+<summary>Vaihe 5: Systemd-palvelutiedoston asettaminen</summary>
 
 1. **Luo uusi systemd-palvelutiedosto** sovellukselle:
+
    ```bash
    sudo nano /etc/systemd/system/tg.service
    ```
@@ -463,11 +537,13 @@ Seuraavassa esimerkissä meillä on `hellmanstudios.fi` domain ja luomme sille t
    ```
 
 3. **Lataa systemd uudelleen** uuden palvelutiedoston ottamiseksi käyttöön:
+
    ```bash
    sudo systemctl daemon-reload
    ```
 
 4. **Ota palvelu käyttöön ja käynnistä se**:
+
    ```bash
    sudo systemctl enable tg.service
    sudo systemctl start tg.service
@@ -477,10 +553,13 @@ Seuraavassa esimerkissä meillä on `hellmanstudios.fi` domain ja luomme sille t
    ```bash
    sudo systemctl status tg.service
    ```
+   </details>
 
-### Vaihe 6: NGINX:n konfigurointi käänteisenä välityspalvelimena
+<details>
+<summary>Vaihe 6: NGINX:n konfigurointi käänteisenä välityspalvelimena</summary>
 
 1. **Luo NGINX-konfiguraatiotiedosto** sovelluksellesi:
+
    ```bash
    sudo nano /etc/nginx/sites-available/tg
    ```
@@ -503,6 +582,7 @@ Seuraavassa esimerkissä meillä on `hellmanstudios.fi` domain ja luomme sille t
    ```
 
 3. **Ota konfiguraatio käyttöön** luomalla symbolinen linkki `sites-enabled`-hakemistoon:
+
    ```bash
    sudo ln -s /etc/nginx/sites-available/tg /etc/nginx/sites-enabled/
    ```
@@ -512,14 +592,17 @@ Seuraavassa esimerkissä meillä on `hellmanstudios.fi` domain ja luomme sille t
    sudo nginx -t
    sudo systemctl reload nginx
    ```
+   </details>
 
-### Vaihe 7: A-tietueen asettaminen DNS asetuksista
+<details>
+<summary>Vaihe 7: A-tietueen asettaminen DNS asetuksista</summary>
 
 Alla on käytetty [Cloudflarea](https://cloudflare.com), joka on vahvasti suositeltu, mutta domain nimien palveluntarjoajilla on aina omat DNS asetussivut, joihin alla olevaa on helppo soveltaa.
 
 1. **Kirjaudu Cloudflareen** ja siirry `hellmanstudios.fi` -verkkotunnuksen DNS-asetuksiin.
 
 2. **Luo uusi A-tietue**:
+
    - **Tyyppi**: `A`
    - **Nimi**: `tg` (tämä luo `tg.hellmanstudios.fi`)
    - **IPv4-osoite**: Syötä palvelimesi IP-osoite
@@ -527,13 +610,15 @@ Alla on käytetty [Cloudflarea](https://cloudflare.com), joka on vahvasti suosit
    - **Välitystila**: Käytössä (oranssi pilvi), jos haluat käyttää Cloudflarea, tai Pois päältä (harmaa pilvi) ohittaaksesi sen.
 
 3. **Tallenna tietue**.
+</details>
 
-### Vaihe 8: Käyttöönoton tarkistaminen
+<details>
+<summary>Vaihe 8: Käyttöönoton tarkistaminen</summary>
 
 1. Avaa selain ja siirry osoitteeseen `http://tg.hellmanstudios.fi`.
 2. Sinun pitäisi nähdä Spring Boot -sovelluksesi palvelevan NGINX:n kautta, kytkettynä PostgreSQL-tietokantaan ja käytettävissä `tg.hellmanstudios.fi` -aliverkkotunnuksella.
 
-### Deployment Script
+Deployment Script
 Alla olevat kommennot suorittamalla voit päivittää ohjelman palvelimella
 
 ```bash
@@ -546,11 +631,4 @@ echo "your-sudo-password"  | sudo -S systemctl start rentanything
 echo "🚀 Application deployed!"
 ```
 
-## Käynnistys- ja käyttöohje
-
-Tyypillisesti tässä riittää kertoa ohjelman käynnistykseen tarvittava URL sekä
-mahdolliset kirjautumiseen tarvittavat tunnukset. Jos järjestelmän
-käynnistämiseen tai käyttöön liittyy joitain muita toimenpiteitä tai toimintajärjestykseen liittyviä asioita, nekin kerrotaan tässä yhteydessä.
-
-Usko tai älä, tulet tarvitsemaan tätä itsekin, kun tauon jälkeen palaat
-järjestelmän pariin !
+</details>

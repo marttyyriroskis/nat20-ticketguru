@@ -23,24 +23,17 @@ Provide all required parameters for the `TicketType` to be created.
 
 #### Example Request
 
-```json
-POST /api/tickettypes
-```
-
 All required fields must be sent. `name`, `retailPrice` and `eventId`must not be null.
 
 ```json
+POST /api/tickettypes
+
 {
   "name": "adult",
   "retailPrice": 29.99,
   "totalTickets": null,
   "availableTickets": 9996,
-<<<<<<< HEAD
-  "eventId": 2,
-  "ticketIds": [1, 2]
-=======
   "eventId": 1
->>>>>>> main
 }
 ```
 

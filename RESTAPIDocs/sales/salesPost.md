@@ -12,7 +12,7 @@ Create a new `Sale` entity
 
 **Data constraints** :
 
-Provide all required parameters for the `Sale`to be created.
+Provide all required parameters for the `Sale` to be created.
 
 | Field     | Type                     | Required | Description                                                                                 |
 | --------- | ------------------------ | -------- | ------------------------------------------------------------------------------------------- |
@@ -20,9 +20,13 @@ Provide all required parameters for the `Sale`to be created.
 | `user`    | Object                   | Yes      | An object representing the user. It must contain the user `id` (Long)                       |
 | `tickets` | List of objects          | Yes      | A list containing the sold ticket objects. Each object must contain the ticket `id` (Long). |
 
-**Data example** All required fields must be sent. `user` and `tickets` must not be null. `Tickets` must contain at least one valid `id`.
+#### Example Request
+
+All required fields must be sent. `user` and `tickets` must not be null. `Tickets` must contain at least one valid `id`.
 
 ```json
+POST /api/events
+
 {
   "paidAt": "2024-11-30T11:03:32.862709",
   "userId": 1,
@@ -39,17 +43,11 @@ Provide all required parameters for the `Sale`to be created.
 **Content example**
 
 ```json
-POST api/sales
-Content-Type: application/json
-
 {
-    "id": 3,
-    "paidAt": "2024-11-30T11:03:32.862709",
-    "userId": 1,
-    "ticketIds": [
-        1,
-        2
-    ]
+  "id": 3,
+  "paidAt": "2024-11-30T11:03:32.862709",
+  "userId": 1,
+  "ticketIds": [1, 2]
 }
 ```
 

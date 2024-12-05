@@ -17,6 +17,12 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 
 import com.nat20.ticketguru.service.UserDetailServiceImpl;
 
+/**
+ * Configuration class for WebSecurity
+ * 
+ * @author Julia Hämäläinen
+ * @version 1.0
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
@@ -30,6 +36,15 @@ public class WebSecurityConfig {
         this.customCorsConfig = customCorsConfig;
     }
 
+    /**
+     * Configures the security settings for the application.
+     * This method sets up CORS, CSRF protection, authorization rules, HTTP headers, 
+     * form login, and logout configurations.
+     * 
+     * @param http the HttpSecurity instance for configuring web security
+     * @return the configured SecurityFilterChain
+     * @throws Exception if an error occurs while configuring the security
+     */
     private static final AntPathRequestMatcher[] WHITE_LIST_URLS = {
         new AntPathRequestMatcher("/h2-console"),
         new AntPathRequestMatcher("/index"),
@@ -63,6 +78,15 @@ public class WebSecurityConfig {
 
     }
 
+    /**
+     * Configures the global authentication manager with a custom user details service 
+     * and password encoder.
+     * This method sets up the authentication manager to use the specified 
+     * UserDetailsService and a BCrypt password encoder for password hashing and verification.
+     * 
+     * @param auth the AuthenticationManagerBuilder instance for configuring authentication
+     * @throws Exception if an error occurs while configuring the authentication manager
+     */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());

@@ -11,6 +11,16 @@ import com.nat20.ticketguru.domain.User;
 import com.nat20.ticketguru.repository.SaleRepository;
 import com.nat20.ticketguru.repository.UserRepository;
 
+/**
+ * Searches for sales based on the provided filters: date range and user ID.
+ * Combines different filtering criteria to retrieve sales that match the specified conditions.
+ *
+ * @param start the start of the date range, or null for no start date
+ * @param end the end of the date range, or null for no end date
+ * @param userId the ID of the user, or null for no user
+ * @return a list of sales matching the specified criteria
+ * @throws IllegalArgumentException if User is not found
+ */
 @Service
 public class SaleService {
 

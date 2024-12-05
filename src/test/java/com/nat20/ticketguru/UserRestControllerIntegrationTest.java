@@ -26,6 +26,11 @@ public class UserRestControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * Test to verify that an admin user is able to create a new user through the /api/users endpoint.
+     * This test sets up an admin user, mocks the authentication context, and sends a POST request
+     * with the new user's details. It expects a 201 Created status if the request is successful.
+     */
     @Test
     void adminUserCanCreateNewUser() throws Exception {
         User adminUser = new User("admin@test.com", "Admin", "Admin", "hashedPassword");
@@ -56,7 +61,11 @@ public class UserRestControllerIntegrationTest {
                 .andExpect(status().isCreated());
     }
 
-
+    /**
+     * Test to verify that a non-admin user (e.g., a salesperson) cannot create a new user through the /api/users endpoint.
+     * This test sets up a salesperson user, mocks the authentication context, and sends a POST request
+     * with the new user's details. It expects a 403 Forbidden status if the request is denied due to insufficient permissions.
+     */
     @Test
     void nonAdminUserCannotCreateNewUser() throws Exception {
         User salespersonUser = new User("salesperson@test.com", "Salesperson", "User", "hashedPassword");

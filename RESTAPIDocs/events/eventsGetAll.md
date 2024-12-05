@@ -34,7 +34,7 @@ GET /api/events
 
 **Code** : `200 OK`
 
-**Content** : In this example, the `User` can see three `Event` objects:
+**Content** : Returns a list of `Event` objects.
 
 ```json
 [

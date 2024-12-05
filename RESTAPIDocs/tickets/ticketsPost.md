@@ -24,19 +24,18 @@ Provide all required parameters for the `Ticket` to be created.
 
 #### Example Request
 
-````json
-POST /tickets
-
 All required fields must be sent. `price` must not be null.
 
 ```json
+POST /tickets
+
 {
     "usedAt": null,
     "price": 20.5,
     "ticketTypeId": 1,
     "saleId": 1
 }
-````
+```
 
 ## Success Responses
 

@@ -24,6 +24,12 @@ import com.nat20.ticketguru.dto.VenueDTO;
 
 import jakarta.validation.Valid;
 
+/**
+ * REST controller for venues
+ * 
+ * @author Tomi Lappalainen
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/venues")
 @Validated
@@ -37,7 +43,11 @@ public class VenueRestController {
         this.zipcodeRepository = zipcodeRepository;
     }
 
-    // Get venues
+    /**
+     * Get all venues
+     * 
+     * @return all venues
+     */
     @GetMapping
     @PreAuthorize("hasAuthority('VIEW_VENUES')")
     public ResponseEntity<List<VenueDTO>> getAllVenues() {
@@ -49,7 +59,14 @@ public class VenueRestController {
                 .toList());
     }
 
-    // Get venue by id
+    /**
+     * Get a venue by id
+     * 
+     * @param id the id of the venue requested
+     * @return the venue requested
+     * @exception ResponseStatusException if unauthorized
+     * @exception ResponseStatusException if venue not found
+     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('VIEW_VENUES')")
     public ResponseEntity<VenueDTO> getVenueById(@PathVariable Long id) {
@@ -60,7 +77,13 @@ public class VenueRestController {
             return ResponseEntity.ok(venue.toDTO());
     }
 
-    // Post a new venue
+    /**
+     * Add a venue
+     * 
+     * @param venueDTO the venue to add
+     * @return the venue added
+     * @exception ResponseStatusException if zipcode not found
+     */
     @PostMapping
     @PreAuthorize("hasAuthority('CREATE_VENUES')")
     public ResponseEntity<VenueDTO> createVenue(@Valid @RequestBody VenueDTO venueDTO) {
@@ -79,7 +102,13 @@ public class VenueRestController {
 
     }
 
-    // Edit venue with PUT request
+    /**
+     * Update a venue
+     * 
+     * @param id the id of the venue to be updated
+     * @param venueDTO the requested updates for the venue
+     * @return the updated venue
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('EDIT_VENUES')")
     public ResponseEntity<VenueDTO> editVenue(@Valid @RequestBody VenueDTO venueDTO, @PathVariable Long id) {
@@ -100,7 +129,13 @@ public class VenueRestController {
 
     }
 
-    // Delete venue with DELETE Request
+    /**
+     * Delete a venue
+     * 
+     * @param id the id of the venue to be deleted
+     * @return 204 NO CONTENT
+     * @exception ResponseStatusException if venue not found
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('DELETE_VENUES')")
     public ResponseEntity<String> deleteVenue(@PathVariable Long id) {

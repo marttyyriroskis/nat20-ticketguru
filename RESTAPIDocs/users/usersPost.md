@@ -6,7 +6,7 @@ Allow adding a new user to the system.
 
 **Method** : `POST`
 
-**Auth required** : Yes
+**Auth required** : YES
 
 **Permissions required** : `CREATE_USERS`
 
@@ -24,7 +24,6 @@ Allow adding a new user to the system.
 
 ```json
 POST /api/users
-Content-Type: application/json
 
 {
   "email": "tes11t13311@test.com",

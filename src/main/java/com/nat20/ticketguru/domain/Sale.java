@@ -22,6 +22,14 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Entity class for Sale
+ * 
+ * @ManyToOne relationship to User
+ * @OneToMany relationship to Ticket
+ * @method delete()
+ * @method toDTO()
+ */
 @Entity
 @Table(name = "sales")
 public class Sale {
@@ -48,6 +56,7 @@ public class Sale {
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Ticket> tickets = new ArrayList<>();
 
+    @JoinColumn(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     public Sale() {

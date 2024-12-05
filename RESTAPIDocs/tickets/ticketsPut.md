@@ -29,13 +29,11 @@ Provide all required parameters in the response body for the `Ticket` to be upda
 
 #### Example Request
 
-```json
-PUT /api/tickets/5
-```
-
 All required fields must be sent. `price` must not be null.
 
 ```json
+PUT /api/tickets/5
+
 {
   "usedAt": null,
   "price": 300.5,

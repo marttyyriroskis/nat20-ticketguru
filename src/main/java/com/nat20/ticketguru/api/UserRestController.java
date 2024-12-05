@@ -88,7 +88,7 @@ public class UserRestController {
     /**
      * Add a user
      * 
-     * @param user the user to add
+     * @param ucDTO the user to add
      * @return the user added
      * @exception ResponseStatusException if role not found
      */
