@@ -222,12 +222,14 @@ events-taulu sisältää tapahtumat. Jokaiselle tapahtumalle luodaan oma rivi. T
 <details>
 <summary>role_permissions</summary>
 
-role_permissions-taululla on monen suhde moneen roles-tauluun. Se on kokoelma lupia, joita voi asettaa yhdelle tai useammalle roolille.
+role_permissions-taulu luodaan säilyttämään lista lupia, jotka kuuluvat tietylle roolille. Tämä suhde on kuvailtu kaavassa monen suhteena moneen
+permissions- ja role-taulujen välillä. Kuitenkaan tietokannassa permissions-taulu ei itsessään säilytä minkäänlaista dataa: luvat kuuluvat
+role_permissions-taulun puolelle. Tämä johtuu Role-entiteetin @ElementCollection-annotaatiosta.
 
-| Kenttä     | Tyyppi      | Kuvaus                                    |
-| ---------- | ----------- | ----------------------------------------- |
-| role_id    | int PK      | Viittaus rooliin [roles](#roles)-taulussa |
-| permission | varchar(50) | Lupa                                      |
+| Kenttä     | Tyyppi         | Kuvaus                                    |
+| ---------- | -------------- | ----------------------------------------- |
+| role_id    | int PK         | Viittaus rooliin [roles](#roles)-taulussa |
+| permission | varchar(50) PK | Lupa                                      |
 
 </details>
 
