@@ -17,6 +17,7 @@ public record VenueDTO(
                 String address,
                 
                 @NotEmpty
+                @Size(max = 5)
                 String zipcode,
 
                 List<Long> eventIds

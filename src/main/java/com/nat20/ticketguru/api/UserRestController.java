@@ -86,6 +86,22 @@ public class UserRestController {
     }
 
     /**
+     * Get self information
+     * 
+     * @return the authenticated user
+     * @exception ResponseStatusException if user not found
+     * @exception ResponseStatusException if unauthorized
+     */
+    @GetMapping("/self")
+    public ResponseEntity<UserDTO> getSelf(@AuthenticationPrincipal User user) {
+
+        User getUser = userRepository.findByIdActive(user.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        return ResponseEntity.ok(getUser.toDTO());
+    }
+
+    /**
      * Add a user
      * 
      * @param ucDTO the user to add
