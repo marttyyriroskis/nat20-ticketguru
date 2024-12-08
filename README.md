@@ -361,24 +361,17 @@ zipcodes-taulu sisältää tapahtumapaikkojen osoitteiden postinumerot ja kaupun
 
 # Tekninen kuvaus
 
-Teknisessä kuvauksessa esitetään järjestelmän toteutuksen suunnittelussa tehdyt tekniset
-ratkaisut, esim.
+Tässä esitellään TicketGuru-sovelluksen tekninen kuvaus.
 
-- Missä mikäkin järjestelmän komponentti ajetaan (tietokone, palvelinohjelma)
-  ja komponenttien väliset yhteydet (vaikkapa tähän tyyliin:
-  https://security.ufl.edu/it-workers/risk-assessment/creating-an-information-systemdata-flow-diagram/)
-- Palvelintoteutuksen yleiskuvaus: teknologiat, deployment-ratkaisut yms.
-- Keskeisten rajapintojen kuvaukset, esimerkit REST-rajapinta. Tarvittaessa voidaan rajapinnan käyttöä täsmentää
-  UML-sekvenssikaavioilla.
-- Toteutuksen yleisiä ratkaisuja, esim. turvallisuus.
+Palvelintoteutuksessa on käytetty Javaa ja Spring Boot -viitekehystä. Spring Bootin viitekehyksen lisäksi palvelimen ohjelmoinnissa on käytetty Mavernia build automation -työkaluna, Bcrypt-algoritmia salasanojen suojaukseen ja testauksessa JUnit-viitekehystä sekä Mockitoa. Tietokantaratkaisuina on käytetty kehitysvaiheessa H2 ajoaikaista tietokantaa ja julkaistussa versiossa PostgreSQL-relaatiotietokantaa. Selaintoteutus on JavaScript-pohjainen. Selaintoteutuksessa on lisäksi käytetty Vite-työkalua, React-kirjastoa (sekä monia muita Reactia täydentäviä kirjastoja) ja Tailwind CSS -viitekehystä.
 
-Tämän lisäksi
+Ohjelmakoodi sekä selain- että palvelinpuolen toteutuksessa on soveltuvilta osin kommentoitu. Muuttujat, metodit ja luokat noudattavat johdonmukaista nimeämiskäytäntöä. Sovelluksen eri osat ovat eritelty uudelleenkäytettäviin komponentteihin.
 
-- ohjelmakoodin tulee olla kommentoitua
-- luokkien, metodien ja muuttujien tulee olla kuvaavasti nimettyjä ja noudattaa
-  johdonmukaisia nimeämiskäytäntöjä
-- ohjelmiston pitää olla organisoitu komponentteihin niin, että turhalta toistolta
-  vältytään
+Sovellus käyttää autentikointiin ja auktorisointiin basic access authentication -ratkaisua, jossa HTTP-pyynnön headerissa välitetään kirjautumistiedot. TicketGuru-sovelluksen kirjautumistietoina käytetään käyttäjän sähköpostiosoitetta ja käyttäjän salasanaa.
+
+Sovellus on julkaistu NGINX-palvelimelle. Asennustiedot löydät kohdasta [Asennustiedot](#asennustiedot).
+
+Sovellus hyödyntää tiedon siirtämiseen selaimen ja palvelimen välillä REST API -rajapintoja. Täyden REST API -dokumentaation löydät täältä: [API_README.md](RESTAPIDocs/API_README.md)
 
 # Testaus
 
