@@ -177,20 +177,25 @@ _"Ylläpitäjänä haluan nähdä järjestelmäraportit ja lokit ongelmatilantei
 
 # Käyttöliittymä
 
-![GUI Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-gui-diagram.png)
+![GUI Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-gui-diagram-2024-12-08.png)
 
-Yllä oleva kuva esittää TicketGuru-ohjelman käyttöliittymää ja sen eri näkymien välisiä siirtymiä
+Yllä oleva kuva esittää TicketGuru-sovellukset käyttöliittymää ja sen eri näkymien välisiä siirtymiä
 
-- Päävalikko: Käyttäjän aloitusvalikko, josta pääsee kaikkiin ohjelman osioihin.
-  - Lipunmyynti: Toiminto, joka kattaa lipunmyyntiprosessin. Täältä siirrytään seuraaviin:
-    - Myyntitapahtumat: Näyttää yksityiskohtaisesti kaikki myyntitapahtumat.
-    - Lippujen tulostus: Tulostaa myydyt liput asiakkaalle.
-  - Raportit: Näyttää myyntitapahtumien raportit.
-  - Tapahtumahallinta: Täältä hallitaan tapahtumia, mukaan lukien:
-    - Lipputyypit: Mahdollistaa erilaisten lipputyyppien määrittelyn ja hallinnan.
-  - Lippujen tarkastus: Tarkistaa ostettujen lippujen kelpoisuuden tapahtuman sisäänkäynnillä.
-
-Lisäksi lisätään mahdollisesti hallintaosio tapahtumapaikoille.
+- Päävalikko: Käyttäjän aloitusvalikko, josta pääsee kaikkiin sovelluksen osioihin
+   - Lipunmyynti: Täällä hoidetaan koko lipunmyyntiprosessi
+      - Valittujen lippujen lisäys ostoskoriin ja myynti asiakkaalle
+      - Myytyjen lippujen tulostus asiakkaalle
+   - Lippujen tarkastus: Täällä tarkistetaan ostettujen lippujen kelpoisuus tapahtuman sisäänkäynnillä
+      - Lippujen tarkastus ja merkitseminen käytetyksi
+   - Tapahtumat: Täältä hallitaan tapahtumia ja tapahtumien lipputyyppejä
+      - Tapahtumien lisäys, muokkaus ja poisto
+      - Lipputyyppien lisäys, muokkaus ja poisto tapahtumista
+   - Tapahtumapaikat: Täällä hallitaan tapahtumapaikkoja
+      - Tapahtumapaikkojen lisäys, muokkaus ja poisto
+   - Raportit: Täällä tarkastellaan myyntitapahtumien summaraportteja
+      - Summaraporttien tarkastelu tapahtuma- ja lipputyyppitasoilla
+   - Käyttäjienhallinta: Täällä hallitaan sovelluksen käyttäjiä
+      - Käyttäjien lisäys, muokkaus ja poisto
 
 # Tietokanta
 
