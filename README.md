@@ -182,20 +182,20 @@ _"Ylläpitäjänä haluan nähdä järjestelmäraportit ja lokit ongelmatilantei
 Yllä oleva kuva esittää TicketGuru-sovellukset käyttöliittymää ja sen eri näkymien välisiä siirtymiä
 
 - Päävalikko: Käyttäjän aloitusvalikko, josta pääsee kaikkiin sovelluksen osioihin
-   - Lipunmyynti: Täällä hoidetaan koko lipunmyyntiprosessi
-      - Valittujen lippujen lisäys ostoskoriin ja myynti asiakkaalle
-      - Myytyjen lippujen tulostus asiakkaalle
-   - Lippujen tarkastus: Täällä tarkistetaan ostettujen lippujen kelpoisuus tapahtuman sisäänkäynnillä
-      - Lippujen tarkastus ja merkitseminen käytetyksi
-   - Tapahtumat: Täältä hallitaan tapahtumia ja tapahtumien lipputyyppejä
-      - Tapahtumien lisäys, muokkaus ja poisto
-      - Lipputyyppien lisäys, muokkaus ja poisto tapahtumista
-   - Tapahtumapaikat: Täällä hallitaan tapahtumapaikkoja
-      - Tapahtumapaikkojen lisäys, muokkaus ja poisto
-   - Raportit: Täällä tarkastellaan myyntitapahtumien summaraportteja
-      - Summaraporttien tarkastelu tapahtuma- ja lipputyyppitasoilla
-   - Käyttäjienhallinta: Täällä hallitaan sovelluksen käyttäjiä
-      - Käyttäjien lisäys, muokkaus ja poisto
+  - Lipunmyynti: Täällä hoidetaan koko lipunmyyntiprosessi
+    - Valittujen lippujen lisäys ostoskoriin ja myynti asiakkaalle
+    - Myytyjen lippujen tulostus asiakkaalle
+  - Lippujen tarkastus: Täällä tarkistetaan ostettujen lippujen kelpoisuus tapahtuman sisäänkäynnillä
+    - Lippujen tarkastus ja merkitseminen käytetyksi
+  - Tapahtumat: Täältä hallitaan tapahtumia ja tapahtumien lipputyyppejä
+    - Tapahtumien lisäys, muokkaus ja poisto
+    - Lipputyyppien lisäys, muokkaus ja poisto tapahtumista
+  - Tapahtumapaikat: Täällä hallitaan tapahtumapaikkoja
+    - Tapahtumapaikkojen lisäys, muokkaus ja poisto
+  - Raportit: Täällä tarkastellaan myyntitapahtumien summaraportteja
+    - Summaraporttien tarkastelu tapahtuma- ja lipputyyppitasoilla
+  - Käyttäjienhallinta: Täällä hallitaan sovelluksen käyttäjiä
+    - Käyttäjien lisäys, muokkaus ja poisto
 
 # Tietokanta
 
