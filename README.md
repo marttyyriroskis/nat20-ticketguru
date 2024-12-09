@@ -201,7 +201,7 @@ Yllä oleva kuva esittää TicketGuru-sovellukset käyttöliittymää ja sen eri
 
 Alla mallikuva tietokannasta, josta käy ilmi tietokannan sisältämät tiedot, taulujen väliset suhteet ja avainten määritykset. Kiinnitetty näkymä ticket_summary puuttuu.
 
-![Database Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-db-diagram-2024-12-09.png)
+![Database Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-db-diagram-2024-12-09-fixed.png)
 
 Lisäksi jokainen tietokannan taulu ja niiden attribuutit kuvataan tässä tietohakemistossa.
 
