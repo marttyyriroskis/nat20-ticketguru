@@ -58,10 +58,11 @@ Content-Type: application/json
 
 ```json
 {
-  "id": 11,
-  "paidAt": "2024-11-02T12:41:16.633473",
-  "userId": 1,
-  "ticketIds": [21, 22, 23]
+  "id": 8,
+  "paidAt": "2024-12-09T15:52:58.9825813",
+  "userId": 2,
+  "transactionTotal": 119.95,
+  "ticketIds": [24, 25, 26, 27, 28]
 }
 ```
 

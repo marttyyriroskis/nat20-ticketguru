@@ -256,12 +256,14 @@ roles-taulu määrittää kaikki mahdolliset käyttäjäroolit, joita käyttäji
 
 sales-taulu kuvaa yhtä myyntitapahtumaa. Jokaisella myyntitapahtumalla on yksi myynnin hoitanut käyttäjä.
 
-| Kenttä     | Tyyppi   | Kuvaus                                    |
-| ---------- | -------- | ----------------------------------------- |
-| id         | int PK   | Myyntitapahtuman id                       |
-| paid_at    | datetime | Myyntihetki                               |
-| user_id    | int FK   | Viittaus myyjään [users](#users)-taulussa |
-| deleted_at | datetime | Mahdollinen poistoajankohta               |
+| Kenttä           | Tyyppi       | Kuvaus                                                    |
+| ---------------- | ------------ | --------------------------------------------------------- |
+| id               | int PK       | Myyntitapahtuman id                                       |
+| paid_at          | datetime     | Myyntihetki                                               |
+| user_id          | int FK       | Viittaus myyjään [users](#users)-taulussa                 |
+| ticketIds        | List(int FK) | Viittaus myytyihin lippuihin [tikcets](#tickets)-taulussa |
+| transactionTotal | BigDecimal   | Myyntitapahtuman kokonaissumma                            |
+| deleted_at       | datetime     | Mahdollinen poistoajankohta                               |
 
 </details>
 
