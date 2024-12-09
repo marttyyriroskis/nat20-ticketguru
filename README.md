@@ -377,12 +377,13 @@ Sovellus hyödyntää tiedon siirtämiseen selaimen ja palvelimen välillä REST
 
 # Testaus
 
-Tässä kohdin selvitetään, miten ohjelmiston oikea toiminta varmistetaan
-testaamalla projektin aikana: millaisia testauksia tehdään ja missä vaiheessa.
-Testauksen tarkemmat sisällöt ja testisuoritusten tulosten raportit kirjataan
-erillisiin dokumentteihin.
+Ohjelmisto on testattu kolmella eri tasolla: yksikkö-, integrointi- ja end-to-end-tasoilla. Yksikkötestit ovat osin automatisoituja, mutta suurimmilta osin sitä on tehty ohjelmiston rakentamisen yhteydessä. Yksikkötestausta täydentämässä ja API-dokumentaation mukaista käytöstä varmentamassa on myös laaja Postman-testaus, josta lisätietoa täällä: [Postman-työtila](https://nat206.postman.co/workspace/Nat20-TicketGuru-Api~9985232f-e7f5-499b-bb30-0c64a6e0fbc2/collection/38434116-ce74e663-61e4-45a2-824e-f3c8f12af1a2?action=share&creator=38646589&active-environment=38646589-61becd5d-c5c7-4dd0-be50-ae5d6cfd64aa).
 
-Tänne kirjataan myös lopuksi järjestelmän tunnetut ongelmat, joita ei ole korjattu.
+Integrointitestaus on toteutettu täysin automaatiolla, ts. JUnit-testiluokilla. Dokumentaatio näitä ja end-to-end-testejä koskien löytyy täältä: [TESTDocs](TESTDocs/Testidokumentaatio.xlsx). Integrointitestauksessa ajatus on ollut testata mahdollisimman laaja otanta ohjelmiston metodeja kuitenkaan täysin lausekattavaa testausta tekemättä aikarajoitteiden vuoksi. End-to-end-testauksen ajatuksena on ollut varmistaa, että projektin vaatimuksissa määritellyt elementit toimivat käyttäjätarinoiden mukaisesti.
+
+Testaus aloitettiin projektin sprintillä kymmenen. Koska sprinttejä oli yhteensä kolmetoista, kyse oli loppuvaiheen tehtävästä. Aikapaineesta huolimatta testauksesta saatiin riittävä.
+
+Käyttäjätarinaa 15 ei ole implementoitu osana tätä projektia sen alhaisen prioriteetin ja aikapaineiden takia. Tunnettuina ongelmina ovat tietyt esteettiset haitat ohjelmiston käyttöliittymäpuolella (mm. tausta muuttuu valkoiseksi filtteripainiketta klikattaessa). Läpi menemättömät testit ovat merkitty dokumentaatiossa koodilla NOK ja kommentoitu testiluokissa.
 
 # Asennustiedot
 

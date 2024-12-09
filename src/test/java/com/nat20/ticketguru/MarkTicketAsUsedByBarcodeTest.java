@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import jakarta.transaction.Transactional;
 
 import com.nat20.ticketguru.domain.Ticket;
-//import com.nat20.ticketguru.dto.TicketDTO;
 import com.nat20.ticketguru.repository.TicketRepository;
 import com.nat20.ticketguru.api.TicketRestController;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -79,7 +77,11 @@ public class MarkTicketAsUsedByBarcodeTest {
 
     }
 
-    /* 7-12-2024 JH: Could not get to work, returning to it later
+    /**
+     * Tests the successful execution of the `getTicketByBarcode` method in the `TicketRestController`.
+     * This test verifies that the method returns a `ResponseEntity` with a status of 200 (OK)
+     * and a valid `TicketDTO` when a ticket with the specified barcode exists. Does NOT work as of
+     * 9/12/2024.
     @Test
     void getTicketByBarcode_success() {
 
@@ -109,7 +111,11 @@ public class MarkTicketAsUsedByBarcodeTest {
 
     }
 
-    /* 7-12-2024 JH: Could not get to work, returning to it later
+    /**
+     * Tests the behavior of the `getTicketByBarcode` method when a ticket is not found.
+     * This test ensures that the method throws a `ResponseStatusException` with a status of 404 (NOT_FOUND)
+     * and an appropriate error message if the ticket with the specified barcode does not exist. Does NOT
+     * work as of 9/12/2024.
     @Test
     void useTicket_success() {
 

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
@@ -19,8 +18,6 @@ import static org.mockito.Mockito.*;
 import org.mockito.MockitoAnnotations;
 
 import com.nat20.ticketguru.api.SaleRestController;
-//import com.nat20.ticketguru.domain.Sale;
-//import com.nat20.ticketguru.dto.SaleDTO;
 
 import com.nat20.ticketguru.service.SaleService;
 
@@ -73,12 +70,17 @@ public class SearchSaleTest {
                 .build();
     }
 
-    /* 7-12-2024 JH: Could not get to work, returning to it later
+    /**
+     * Tests the successful execution of the `searchSales` method in the `SaleRestController`.
+     * 
+     * This test verifies that the `searchSales` method returns a `ResponseEntity` with a status
+     * of 200 (OK) and a list of `SaleDTO` objects that matches the number of sales returned
+     * by the `SaleService`. Does NOT work as of 9/12/2024.
     @Test
     void searchSales_success() {
         
-        String start = "2000-12-01T00:00";
-        String end = "2100-12-07T23:59";
+        String start = "2023-12-01T00:00";
+        String end = "2025-12-07T23:59";
         Long userId = 1L;
 
         List<Sale> sales = List.of(new Sale());
