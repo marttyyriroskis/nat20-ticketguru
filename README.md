@@ -10,7 +10,7 @@ Projektin asiakkaana toimii lipputoimisto. Järjestelmän varsinaiset käyttäj�
 
 TicketGuru-järjestelmän avulla lipputoimisto voi tehostaa liiketoimintaansa myymällä lippuja helpommin, seuraamalla tapahtuma- ja lipputarjontaa sekä pohjaamalla päätöksentekoaan järjestelmän tuottamiin liiketoiminnan raportteihin.
 
-Teknologioina projektissa käytetään Javaa, Spring Boot -viitekehystä ja PostgreSQL-relaatiotietokantaa. Käyttöliittymänä hyödynnetään Thymeleafia. Järjestelmää on tarkoitus käyttää desktop-tietokoneelta; tabletti- tai mobiilikäyttöliittymiä ei tässä projektissa rakenneta.
+Teknologioina projektissa käytetään Javaa, Spring Boot -viitekehystä ja PostgreSQL-relaatiotietokantaa. Käyttöliittymän pohjalla käytetään JavaScriptiä, Reactia ja Tailwind-kirjastoa. Sovellus on julkaistu NGINX-palvelimelle. Järjestelmää on tarkoitus käyttää desktop-tietokoneelta; tabletti- tai mobiilikäyttöliittymiä ei tässä projektissa rakenneta.
 
 Projektin lopputuotteena on käyttövalmis TicketGuru-lipunmyyntijärjestelmä sekä siihen liittyvä dokumentaatio.
 
@@ -177,20 +177,25 @@ _"Ylläpitäjänä haluan nähdä järjestelmäraportit ja lokit ongelmatilantei
 
 # Käyttöliittymä
 
-![GUI Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-gui-diagram.png)
+![GUI Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-gui-diagram-2024-12-08.png)
 
-Yllä oleva kuva esittää TicketGuru-ohjelman käyttöliittymää ja sen eri näkymien välisiä siirtymiä
+Yllä oleva kuva esittää TicketGuru-sovellukset käyttöliittymää ja sen eri näkymien välisiä siirtymiä
 
-- Päävalikko: Käyttäjän aloitusvalikko, josta pääsee kaikkiin ohjelman osioihin.
-  - Lipunmyynti: Toiminto, joka kattaa lipunmyyntiprosessin. Täältä siirrytään seuraaviin:
-    - Myyntitapahtumat: Näyttää yksityiskohtaisesti kaikki myyntitapahtumat.
-    - Lippujen tulostus: Tulostaa myydyt liput asiakkaalle.
-  - Raportit: Näyttää myyntitapahtumien raportit.
-  - Tapahtumahallinta: Täältä hallitaan tapahtumia, mukaan lukien:
-    - Lipputyypit: Mahdollistaa erilaisten lipputyyppien määrittelyn ja hallinnan.
-  - Lippujen tarkastus: Tarkistaa ostettujen lippujen kelpoisuuden tapahtuman sisäänkäynnillä.
-
-Lisäksi lisätään mahdollisesti hallintaosio tapahtumapaikoille.
+- Päävalikko: Käyttäjän aloitusvalikko, josta pääsee kaikkiin sovelluksen osioihin
+  - Lipunmyynti: Täällä hoidetaan koko lipunmyyntiprosessi
+    - Valittujen lippujen lisäys ostoskoriin ja myynti asiakkaalle
+    - Myytyjen lippujen tulostus asiakkaalle
+  - Lippujen tarkastus: Täällä tarkistetaan ostettujen lippujen kelpoisuus tapahtuman sisäänkäynnillä
+    - Lippujen tarkastus ja merkitseminen käytetyksi
+  - Tapahtumat: Täältä hallitaan tapahtumia ja tapahtumien lipputyyppejä
+    - Tapahtumien lisäys, muokkaus ja poisto
+    - Lipputyyppien lisäys, muokkaus ja poisto tapahtumista
+  - Tapahtumapaikat: Täällä hallitaan tapahtumapaikkoja
+    - Tapahtumapaikkojen lisäys, muokkaus ja poisto
+  - Raportit: Täällä tarkastellaan myyntitapahtumien summaraportteja
+    - Summaraporttien tarkastelu tapahtuma- ja lipputyyppitasoilla
+  - Käyttäjienhallinta: Täällä hallitaan sovelluksen käyttäjiä
+    - Käyttäjien lisäys, muokkaus ja poisto
 
 # Tietokanta
 
@@ -251,12 +256,14 @@ roles-taulu määrittää kaikki mahdolliset käyttäjäroolit, joita käyttäji
 
 sales-taulu kuvaa yhtä myyntitapahtumaa. Jokaisella myyntitapahtumalla on yksi myynnin hoitanut käyttäjä.
 
-| Kenttä     | Tyyppi   | Kuvaus                                    |
-| ---------- | -------- | ----------------------------------------- |
-| id         | int PK   | Myyntitapahtuman id                       |
-| paid_at    | datetime | Myyntihetki                               |
-| user_id    | int FK   | Viittaus myyjään [users](#users)-taulussa |
-| deleted_at | datetime | Mahdollinen poistoajankohta               |
+| Kenttä           | Tyyppi       | Kuvaus                                                    |
+| ---------------- | ------------ | --------------------------------------------------------- |
+| id               | int PK       | Myyntitapahtuman id                                       |
+| paid_at          | datetime     | Myyntihetki                                               |
+| user_id          | int FK       | Viittaus myyjään [users](#users)-taulussa                 |
+| ticketIds        | List(int FK) | Viittaus myytyihin lippuihin [tikcets](#tickets)-taulussa |
+| transactionTotal | BigDecimal   | Myyntitapahtuman kokonaissumma                            |
+| deleted_at       | datetime     | Mahdollinen poistoajankohta                               |
 
 </details>
 
@@ -356,24 +363,17 @@ zipcodes-taulu sisältää tapahtumapaikkojen osoitteiden postinumerot ja kaupun
 
 # Tekninen kuvaus
 
-Teknisessä kuvauksessa esitetään järjestelmän toteutuksen suunnittelussa tehdyt tekniset
-ratkaisut, esim.
+Tässä esitellään TicketGuru-sovelluksen tekninen kuvaus.
 
-- Missä mikäkin järjestelmän komponentti ajetaan (tietokone, palvelinohjelma)
-  ja komponenttien väliset yhteydet (vaikkapa tähän tyyliin:
-  https://security.ufl.edu/it-workers/risk-assessment/creating-an-information-systemdata-flow-diagram/)
-- Palvelintoteutuksen yleiskuvaus: teknologiat, deployment-ratkaisut yms.
-- Keskeisten rajapintojen kuvaukset, esimerkit REST-rajapinta. Tarvittaessa voidaan rajapinnan käyttöä täsmentää
-  UML-sekvenssikaavioilla.
-- Toteutuksen yleisiä ratkaisuja, esim. turvallisuus.
+Palvelintoteutuksessa on käytetty Javaa ja Spring Boot -viitekehystä. Spring Bootin viitekehyksen lisäksi palvelimen ohjelmoinnissa on käytetty Mavernia build automation -työkaluna, Bcrypt-algoritmia salasanojen suojaukseen ja testauksessa JUnit-viitekehystä sekä Mockitoa. Tietokantaratkaisuina on käytetty kehitysvaiheessa H2 ajoaikaista tietokantaa ja julkaistussa versiossa PostgreSQL-relaatiotietokantaa. Selaintoteutus on JavaScript-pohjainen. Selaintoteutuksessa on lisäksi käytetty Vite-työkalua, React-kirjastoa (sekä monia muita Reactia täydentäviä kirjastoja) ja Tailwind CSS -viitekehystä.
 
-Tämän lisäksi
+Ohjelmakoodi sekä selain- että palvelinpuolen toteutuksessa on soveltuvilta osin kommentoitu. Muuttujat, metodit ja luokat noudattavat johdonmukaista nimeämiskäytäntöä. Sovelluksen eri osat ovat eritelty uudelleenkäytettäviin komponentteihin.
 
-- ohjelmakoodin tulee olla kommentoitua
-- luokkien, metodien ja muuttujien tulee olla kuvaavasti nimettyjä ja noudattaa
-  johdonmukaisia nimeämiskäytäntöjä
-- ohjelmiston pitää olla organisoitu komponentteihin niin, että turhalta toistolta
-  vältytään
+Sovellus käyttää autentikointiin ja auktorisointiin basic access authentication -ratkaisua, jossa HTTP-pyynnön headerissa välitetään kirjautumistiedot. TicketGuru-sovelluksen kirjautumistietoina käytetään käyttäjän sähköpostiosoitetta ja käyttäjän salasanaa.
+
+Sovellus on julkaistu NGINX-palvelimelle. Asennustiedot löydät kohdasta [Asennustiedot](#asennustiedot).
+
+Sovellus hyödyntää tiedon siirtämiseen selaimen ja palvelimen välillä REST API -rajapintoja. Täyden REST API -dokumentaation löydät täältä: [API_README.md](RESTAPIDocs/API_README.md)
 
 # Testaus
 
