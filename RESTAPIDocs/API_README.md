@@ -26,7 +26,7 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 
 | Permission    | Request | TICKET INSPECTOR | SALESPERSON | COORDINATOR | ADMIN |
 | ------------- | ------- | ---------------- | ----------- | ----------- | ----- |
-| VIEW_EVENTS   | GET     | NO               | YES         | YES         | YES   |
+| VIEW_EVENTS   | GET     | YES              | YES         | YES         | YES   |
 | CREATE_EVENTS | POST    | NO               | NO          | YES         | YES   |
 | EDIT_EVENTS   | PUT     | NO               | NO          | YES         | YES   |
 | DELETE_EVENTS | DELETE  | NO               | NO          | NO          | YES   |
@@ -113,7 +113,7 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 
 | Permission          | Request | TICKET INSPECTOR | SALESPERSON | COORDINATOR | ADMIN |
 | ------------------- | ------- | ---------------- | ----------- | ----------- | ----- |
-| VIEW_TICKET_TYPES   | GET     | NO               | YES         | YES         | YES   |
+| VIEW_TICKET_TYPES   | GET     | YES              | YES         | YES         | YES   |
 | CREATE_TICKET_TYPES | POST    | NO               | NO          | YES         | YES   |
 | EDIT_TICKET_TYPES   | PUT     | NO               | NO          | YES         | YES   |
 | DELETE_TICKET_TYPES | DELETE  | NO               | NO          | YES         | YES   |
@@ -153,7 +153,7 @@ In order to be able to use APIs, you need to be authenticated and have the corre
 
 | Permission    | Request | TICKET INSPECTOR | SALESPERSON | COORDINATOR | ADMIN |
 | ------------- | ------- | ---------------- | ----------- | ----------- | ----- |
-| VIEW_VENUES   | GET     | NO               | YES         | YES         | YES   |
+| VIEW_VENUES   | GET     | YES              | YES         | YES         | YES   |
 | CREATE_VENUES | POST    | NO               | NO          | YES         | YES   |
 | EDIT_VENUES   | PUT     | NO               | NO          | YES         | YES   |
 | DELETE_VENUES | DELETE  | NO               | NO          | YES         | YES   |

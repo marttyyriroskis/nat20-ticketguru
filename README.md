@@ -383,7 +383,7 @@ Integrointitestaus on toteutettu täysin automaatiolla, ts. JUnit-testiluokilla.
 
 Testaus aloitettiin projektin sprintillä kymmenen. Koska sprinttejä oli yhteensä kolmetoista, kyse oli loppuvaiheen tehtävästä. Aikapaineesta huolimatta testauksesta saatiin riittävä.
 
-Käyttäjätarinaa 15 ei ole implementoitu osana tätä projektia sen alhaisen prioriteetin ja rajallisen ajan takia. Tunnettuina ongelmina ovat tietyt esteettiset haitat ohjelmiston käyttöliittymäpuolella (mm. tausta muuttuu valkoiseksi taulukon filtteripainiketta klikattaessa). Muita tunnettuja ongelmia ovat: lipunmyyjä ei pysty perumaan myytyä lippua; tapahtumavastaava ei näe myyntiraportteja ja adminin tekemä uusi käyttäjä ei pääse kirjautumaan sisään. Integrointitestauksessa läpi menemättömät testit ovat merkitty dokumentaatiossa koodilla NOK ja kommentoitu testiluokissa.
+Käyttäjätarinaa 15 ei ole implementoitu osana tätä projektia sen alhaisen prioriteetin ja rajallisen ajan takia. Tunnettuina ongelmina ovat tietyt esteettiset haitat ohjelmiston käyttöliittymäpuolella (mm. tausta muuttuu valkoiseksi taulukon filtteripainiketta klikattaessa). Muita tunnettuja ongelmia ovat: lipunmyyjä ei pysty perumaan myytyä lippua ja adminin tekemä uusi käyttäjä ei pääse kirjautumaan sisään. Integrointitestauksessa läpi menemättömät testit ovat merkitty dokumentaatiossa koodilla NOK ja kommentoitu testiluokissa.
 
 # Asennustiedot
 

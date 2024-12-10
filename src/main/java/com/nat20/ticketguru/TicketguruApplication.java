@@ -96,7 +96,10 @@ public class TicketguruApplication {
                     log.info("Add a few permissions to roles");
                     ticketInspectorRole.addPermissions(
                             Permission.VIEW_TICKETS,
-                            Permission.USE_TICKETS);
+                            Permission.USE_TICKETS,
+                            Permission.VIEW_EVENTS,
+                            Permission.VIEW_VENUES,
+                            Permission.VIEW_TICKET_TYPES);
                     salespersonRole.addPermissions(
                             Permission.VIEW_EVENTS,
                             Permission.VIEW_SALES,
@@ -131,6 +134,7 @@ public class TicketguruApplication {
                     String salespersonPass = BCrypt.hashpw("salesperson", BCrypt.gensalt());
                     String adminPass = BCrypt.hashpw("admin", BCrypt.gensalt());
                     String coordinatorPass = BCrypt.hashpw("coordinator", BCrypt.gensalt());
+                    String inspectorPass = BCrypt.hashpw("inspector", BCrypt.gensalt());
                     // salesperson@test.com "salesperson", admin@test.com "admin", "coordinator@test.com" "coordinator"
                     userRepository.save(new User("salesperson@test.com", "salesperson1", "Cashier", salespersonPass,
                             roleRepository.findByTitle("SALESPERSON").get()));
@@ -138,6 +142,8 @@ public class TicketguruApplication {
                             roleRepository.findByTitle("ADMIN").get()));
                     userRepository.save(new User("coordinator@test.com", "Coordinator1", "Event Coordinator", coordinatorPass,
                             roleRepository.findByTitle("COORDINATOR").get()));
+                        userRepository.save(new User("inspector@test.com", "Inspector1", "Ticket Inspector", inspectorPass,
+                            roleRepository.findByTitle("TICKET_INSPECTOR").get()));
 
                     log.info("Creating a few zipcode test entries");
                     zipcodeRepository.save(new Zipcode("00100", "Helsinki"));
