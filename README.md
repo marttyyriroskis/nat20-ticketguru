@@ -177,25 +177,60 @@ _"Ylläpitäjänä haluan nähdä järjestelmäraportit ja lokit ongelmatilantei
 
 # Käyttöliittymä
 
-![GUI Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-gui-diagram-2024-12-08.png)
+![GUI Diagram](https://raw.githubusercontent.com/marttyyriroskis/nat20-ticketguru/refs/heads/dev/images/ticketguru-gui-diagram-2024-12-10.png)
 
 Yllä oleva kuva esittää TicketGuru-sovellukset käyttöliittymää ja sen eri näkymien välisiä siirtymiä
 
-- Päävalikko: Käyttäjän aloitusvalikko, josta pääsee kaikkiin sovelluksen osioihin
-  - Lipunmyynti: Täällä hoidetaan koko lipunmyyntiprosessi
-    - Valittujen lippujen lisäys ostoskoriin ja myynti asiakkaalle
-    - Myytyjen lippujen tulostus asiakkaalle
-  - Lippujen tarkastus: Täällä tarkistetaan ostettujen lippujen kelpoisuus tapahtuman sisäänkäynnillä
-    - Lippujen tarkastus ja merkitseminen käytetyksi
-  - Tapahtumat: Täältä hallitaan tapahtumia ja tapahtumien lipputyyppejä
-    - Tapahtumien lisäys, muokkaus ja poisto
-    - Lipputyyppien lisäys, muokkaus ja poisto tapahtumista
-  - Tapahtumapaikat: Täällä hallitaan tapahtumapaikkoja
-    - Tapahtumapaikkojen lisäys, muokkaus ja poisto
-  - Raportit: Täällä tarkastellaan myyntitapahtumien summaraportteja
-    - Summaraporttien tarkastelu tapahtuma- ja lipputyyppitasoilla
-  - Käyttäjienhallinta: Täällä hallitaan sovelluksen käyttäjiä
-    - Käyttäjien lisäys, muokkaus ja poisto
+<details>
+<summary>Päävalikko</summary>
+Käyttäjän aloitusvalikko, josta pääsee kaikkiin sovelluksen osioihin
+</details>
+
+<details>
+<summary>Lipunmyynti</summary>
+<b>Täällä hoidetaan koko lipunmyyntiprosessi</b></br>
+Valittujen lippujen lisäys ostoskoriin ja myynti asiakkaalle</br>
+Myytyjen lippujen tulostus asiakkaalle
+</details>
+
+<details>
+<summary>Myyntitapahtumat</summary>
+<b>Täällä tarkastellaan myyntitapahtumia</b></br>
+Myyntitapahtumien ja niissä myytyjen lippujen tarkastelu
+</details>
+
+<details>
+<summary>Lippujen tarkastus</summary>
+<b>Täällä tarkistetaan ostettujen lippujen kelpoisuus tapahtuman sisäänkäynnillä</b></br>
+Lippujen tarkastus ja merkitseminen käytetyksi
+</details>
+
+<details>
+<summary>Tapahtumat</summary>
+<b>Täältä hallitaan tapahtumia ja tapahtumien lipputyyppejä</b></br>
+Tapahtumien lisäys, muokkaus ja poisto</br>
+Lipputyyppien lisäys, muokkaus ja poisto tapahtumista
+</details>
+
+<details>
+<summary>Tapahtumapaikat</summary>
+<b>Täällä hallitaan tapahtumapaikkoja</b></br>
+Tapahtumapaikkojen lisäys, muokkaus ja poisto
+</details>
+
+<details>
+<summary>Myyntiraportit</summary>
+<b>Täällä tarkastellaan myyntitapahtumien summaraportteja</b></br>
+Summaraporttien tarkastelu tapahtuma- ja lipputyyppitasoilla
+</details>
+
+<details>
+<summary>Käyttäjienhallinta</summary>
+<b>Täällä hallitaan sovelluksen käyttäjiä</b></br>
+Käyttäjien lisäys, muokkaus ja poisto
+</details>
+
+<p>&nbsp;</p>
 
 # Tietokanta
 
@@ -363,9 +398,7 @@ zipcodes-taulu sisältää tapahtumapaikkojen osoitteiden postinumerot ja kaupun
 
 # Tekninen kuvaus
 
-Tässä esitellään TicketGuru-sovelluksen tekninen kuvaus.
-
-Palvelintoteutuksessa on käytetty Javaa ja Spring Boot -viitekehystä. Spring Bootin viitekehyksen lisäksi palvelimen ohjelmoinnissa on käytetty Mavernia build automation -työkaluna, Bcrypt-algoritmia salasanojen suojaukseen ja testauksessa JUnit-viitekehystä sekä Mockitoa. Tietokantaratkaisuina on käytetty kehitysvaiheessa H2 ajoaikaista tietokantaa ja julkaistussa versiossa PostgreSQL-relaatiotietokantaa. Selaintoteutus on JavaScript-pohjainen. Selaintoteutuksessa on lisäksi käytetty Vite-työkalua, React-kirjastoa (sekä monia muita Reactia täydentäviä kirjastoja) ja Tailwind CSS -viitekehystä.
+Palvelintoteutuksessa on käytetty Javaa ja Spring Boot -viitekehystä. Spring Bootin viitekehyksen lisäksi palvelimen ohjelmoinnissa on käytetty Mavenia build automation -työkaluna, Bcrypt-algoritmia salasanojen suojaukseen ja testauksessa JUnit-viitekehystä sekä Mockitoa. Tietokantaratkaisuina on käytetty kehitysvaiheessa H2 ajoaikaista tietokantaa ja julkaistussa versiossa PostgreSQL-relaatiotietokantaa. Selaintoteutus on JavaScript-pohjainen. Selaintoteutuksessa on lisäksi käytetty Vite-työkalua, React-kirjastoa (sekä monia muita Reactia täydentäviä kirjastoja) ja Tailwind CSS -viitekehystä.
 
 Ohjelmakoodi sekä selain- että palvelinpuolen toteutuksessa on soveltuvilta osin kommentoitu. Muuttujat, metodit ja luokat noudattavat johdonmukaista nimeämiskäytäntöä. Sovelluksen eri osat ovat eritelty uudelleenkäytettäviin komponentteihin.
 
