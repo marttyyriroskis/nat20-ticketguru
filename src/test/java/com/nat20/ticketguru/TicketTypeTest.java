@@ -1,8 +1,10 @@
 package com.nat20.ticketguru;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
-//import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,7 @@ import com.nat20.ticketguru.domain.Event;
 import com.nat20.ticketguru.domain.TicketType;
 import com.nat20.ticketguru.domain.Venue;
 import com.nat20.ticketguru.domain.Zipcode;
-//import com.nat20.ticketguru.dto.TicketTypeDTO;
+import com.nat20.ticketguru.dto.TicketTypeDTO;
 import com.nat20.ticketguru.repository.EventRepository;
 import com.nat20.ticketguru.repository.TicketTypeRepository;
 import com.nat20.ticketguru.repository.VenueRepository;
@@ -74,27 +76,17 @@ public class TicketTypeTest {
                 "delete() method failed, deletedAt should be of type LocalDateTime");
     }
 
-/*
-* Does not work as of 26/11/2024, will need extensive fixes due to changes in TicketTypeDTO class
-*
+    /**
+     * Tests the creation of a TicketTypeDTO from a TicketType entity.
+     * Verifies that the DTO created by the `toDTO` method matches the expected DTO.
+     */
     @Test
     public void testTicketTypeDTOCreation() {
-        Zipcode zipcode = zipcodeRepository.save(new Zipcode("00100", "Helsinki"));
-        Venue venue = venueRepository.save(new Venue("Bunkkeri", "Bunkkeritie 1", zipcode));
-        Event event = eventRepository.save(new Event(
-                "Death metal karaoke",
-                "Öriöriöriöriörirprir!!!!!",
-                10,
-                LocalDateTime.of(2055, 10, 12, 12, 0),
-                LocalDateTime.of(2055, 10, 12, 12, 0),
-                venue)
-                );
-
-        TicketType ticketTypeDTOControl = ticketTypeRepository.save(new TicketType("child", 19.99, 10, event));
+        List<Long> emptyList = new ArrayList<>();
+        TicketTypeDTO ticketTypeDTOControl = new TicketTypeDTO(ticketType.getId(), "adult", 29.99, null, null,
+                ticketType.getEvent().getId(), emptyList);
         TicketTypeDTO ticketTypeDTO = ticketType.toDTO();
-
         assertEquals(ticketTypeDTOControl, ticketTypeDTO, "DTOs don't match");
     }
-*/
 
 }

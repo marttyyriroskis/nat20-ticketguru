@@ -9,18 +9,24 @@ import jakarta.validation.constraints.Size;
 
 public record TicketTypeDTO(
         Long id,
+
         @NotEmpty(message = "Ticket type name cannot be empty")
         @Size(max = 50, message = "Ticket type name must be between 1 and 50 characters long")
         String name,
+
         @NotNull
         @Positive(message = "Ticket type price must be positive")
         double retailPrice,
+
         @Positive(message = "Total tickets must be positive or null")
         Integer totalTickets,
+
         @Positive(message = "Available tickets must be positive or null")
         Integer availableTickets,
+
         @NotNull(message = "Event must not be null")
         Long eventId,
+        
         List<Long> ticketIds) {
 
 }

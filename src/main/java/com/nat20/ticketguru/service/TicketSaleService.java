@@ -1,5 +1,6 @@
 package com.nat20.ticketguru.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ import jakarta.transaction.Transactional;
 
 /**
  * Service class for TicketSale
- * 
+ *
  * @author Paul Carlson
  * @version 1.0
  */
@@ -47,12 +48,15 @@ public class TicketSaleService {
     }
 
     /**
-     * Generates tickets for the specified ticket type and quantity.
-     * Validates the availability of tickets before generating and creates a list of tickets with the specified attributes.
-     * 
-     * @param ticketItemDTO the DTO containing the ticket type ID, price, and quantity
+     * Generates tickets for the specified ticket type and quantity. Validates
+     * the availability of tickets before generating and creates a list of
+     * tickets with the specified attributes.
+     *
+     * @param ticketItemDTO the DTO containing the ticket type ID, price, and
+     * quantity
      * @return a list of generated tickets
-     * @throws IllegalArgumentException if the specified ticket type does not exist or if the requested quantity exceeds availability
+     * @throws IllegalArgumentException if the specified ticket type does not
+     * exist or if the requested quantity exceeds availability
      */
     @Transactional
     public List<Ticket> generateTickets(TicketItemDTO ticketItemDTO) {
@@ -78,13 +82,15 @@ public class TicketSaleService {
     }
 
     /**
-     * Processes a ticket sale by generating tickets for the items in the basket and associating them with a sale.
-     * Saves the sale and its tickets to the database and updates the materialized view for ticket availability.
-     * 
+     * Processes a ticket sale by generating tickets for the items in the basket
+     * and associating them with a sale. Saves the sale and its tickets to the
+     * database and updates the materialized view for ticket availability.
+     *
      * @param basketDTO the DTO containing the tickets in the sale
      * @param userId the ID of the user making the purchase
      * @return a DTO representing the completed sale
-     * @throws IllegalArgumentException if any ticket type does not exist or if requested ticket quantities exceed availability
+     * @throws IllegalArgumentException if any ticket type does not exist or if
+     * requested ticket quantities exceed availability
      */
     @Transactional
     public SaleDTO processSale(BasketDTO basketDTO, Long userId) {
@@ -92,12 +98,15 @@ public class TicketSaleService {
         Sale sale = new Sale();
         sale.setUser(userRepository.findById(userId).get());
 
-        // TODO: check ticket availability
         List<Ticket> tickets = basketDTO.ticketItems().stream()
                 .flatMap(ticketItemDTO -> generateTickets(ticketItemDTO).stream())
                 .peek(ticket -> ticket.setSale(sale))
                 .collect(Collectors.toList());
 
+        BigDecimal total = tickets.stream()
+                .map(ticket -> BigDecimal.valueOf(ticket.getPrice()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        sale.setTransactionTotal(total);
         saleRepository.save(sale);
         ticketRepository.saveAll(tickets);
 
@@ -107,7 +116,7 @@ public class TicketSaleService {
 
     /**
      * Maps a sale entity and its tickets to a SaleDTO object
-     * 
+     *
      * @param sale the sale entity to be mapped
      * @param tickets the list of tickets associated with the sale
      * @return a SaleDTO representing the sale and its associated tickets
@@ -117,6 +126,7 @@ public class TicketSaleService {
                 sale.getId(),
                 sale.getPaidAt(),
                 sale.getUserId(),
+                sale.getTransactionTotal(),
                 tickets.stream()
                         .map(Ticket::getId)
                         .collect(Collectors.toList()));

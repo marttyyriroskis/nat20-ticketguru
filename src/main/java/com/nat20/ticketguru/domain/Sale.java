@@ -1,5 +1,6 @@
 package com.nat20.ticketguru.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +59,16 @@ public class Sale {
 
     @JoinColumn(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    private BigDecimal transactionTotal;
+
+    public BigDecimal getTransactionTotal() {
+        return transactionTotal;
+    }
+
+    public void setTransactionTotal(BigDecimal transactionTotal) {
+        this.transactionTotal = transactionTotal;
+    }
 
     public Sale() {
         this.paidAt = LocalDateTime.now();
@@ -118,6 +129,7 @@ public class Sale {
                 this.id,
                 this.paidAt,
                 this.user.getId(),
+                this.transactionTotal,
                 this.tickets.stream()
                         .map(Ticket::getId)
                         .collect(Collectors.toList())

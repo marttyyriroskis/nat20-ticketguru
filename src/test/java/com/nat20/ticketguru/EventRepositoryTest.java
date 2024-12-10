@@ -233,16 +233,11 @@ public class EventRepositoryTest {
             savedVenue
         );
 
-        // Act
-        Event savedEvent = eventRepository.save(event);
+        // Act & Assert
+        assertThrows(ConstraintViolationException.class, () -> {
+            eventRepository.save(event);
+        });
 
-        Event fetchedEvent = eventRepository.findById(savedEvent.getId()).orElse(null);
-
-
-
-        // Assert
-        
-        assertNotEquals("00100", fetchedEvent.getVenue().getZipcode().getZipcode(), "Event venue ID should match saved venue");
     }
 
     @Test
