@@ -22,7 +22,7 @@ GET /sales/report
 
 **Code** : `200 OK`
 
-**Content example** : Returns a list of ticket summaries by `ticketTypeId`.
+**Content example** : Returns a list of ticket summaries by `ticketTypeId`. `ticketsTotal` field reports the total amount of non-deleted tickets generated in the database (sold + printed). A ticket sold for the price of 0 is considered printed.
 
 ```json
 [

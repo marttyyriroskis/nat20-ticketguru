@@ -312,8 +312,8 @@ ticket_summary on kiinnitetty näkymä, ei taulu, jolloin sitä ei ole lisätty 
 | ticket_type_id | int PK | Viittaus lipun tyyppiin [ticket_types](#ticket_types)-taulussa |
 | event_id       | int FK | Viittaus tapahtumaan [events](#events)-taulussa                |
 | tickets_sold   | int    | Myytyjen lippujen määrä                                        |
-| tickets_total  | int    | Lippujen kokonaismäärä                                         |
-| total_revenue  | double | Myytyjen lippujen summa                                        |
+| tickets_total  | int    | Luotujen lippujen kokonaismäärä (myydyt + tulostetut)          |
+| total_revenue  | double | Myytyjen lippujen hintojen summa                               |
 
 </details>
 
